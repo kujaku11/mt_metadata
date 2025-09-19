@@ -1,0 +1,88 @@
+{
+    "title": "filter_base",
+    "type": "object",
+    "properties": {
+        "name": {
+            "default": "",
+            "description": "Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
+            "title": "name",
+            "examples": "\"lowpass_magnetic\"",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "comments": {
+            "default": null,
+            "description": "Any comments about the filter.",
+            "title": "comments",
+            "examples": "ambient air temperature",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "type": {
+            "default": "",
+            "description": "Type of filter, must be one of the available filters.",
+            "title": "type",
+            "examples": "fap_table",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "fap_table",
+                "zpk",
+                "time_delay",
+                "coefficient",
+                "fir",
+                "other"
+            ]
+        },
+        "units_in": {
+            "default": "",
+            "description": "Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
+            "title": "units_in",
+            "examples": "count",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "units_out": {
+            "default": "",
+            "description": "Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
+            "title": "units_out",
+            "examples": "millivolt",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "calibration_date": {
+            "default": null,
+            "description": "Most recent date of filter calibration in ISO format of YYY-MM-DD.",
+            "title": "calibration_date",
+            "examples": "2020-01-01",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "date-time"
+        },
+        "gain": {
+            "default": 1.0,
+            "description": "scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
+            "title": "gain",
+            "examples": "1.0",
+            "type": "number",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "type",
+        "units_in",
+        "units_out",
+        "gain"
+    ],
+    "description": "filter_base"
+}

@@ -1,96 +1,122 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import (
-    write_lines,
-    dict_to_xml,
-    element_to_string,
-)
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import Person
-from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.utils.mttime import MTime, get_now_utc
+# =====================================================
+from typing import Annotated
+from xml.etree import cElementTree as et
+
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator
+
 from mt_metadata import __version__
-
-# =============================================================================
-attr_dict = get_schema("provenance", SCHEMA_FN_PATHS)
-person_dict = get_schema(
-    "person",
-    SCHEMA_FN_PATHS,
-)
-attr_dict.add_dict(
-    person_dict,
-    "creator",
-    keys=["name", "comments", "url", "org", "org_url", "email"],
-)
-attr_dict.add_dict(
-    person_dict,
-    "submitter",
-    keys=["name", "comments", "url", "org", "org_url", "email"],
-)
-# =============================================================================
+from mt_metadata.base import MetadataBase
+from mt_metadata.base.helpers import dict_to_xml, element_to_string
+from mt_metadata.common import Person
+from mt_metadata.common.mttime import MTime
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 
-class Provenance(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Provenance(MetadataBase):
+    create_time: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="date and time the file was created",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["2020-02-08T12:23:40.324600+00:00"],
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
+    creating_application: Annotated[
+        str,
+        Field(
+            default="mt_metadata",
+            description="name of the application that created the XML file",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["EMTF File Conversion Utilities 4.0"],
+            },
+        ),
+    ]
 
-        self._creation_dt = MTime()
-        self.submitter = Person()
-        self.creator = Person()
+    creator: Annotated[
+        Person,
+        Field(
+            default_factory=Person,  # type: ignore
+            description="Person or group responsible for creating the data",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["Person(name='John Doe', email='john.doe@example.com')"],
+            },
+        ),
+    ]
+    submitter: Annotated[
+        Person,
+        Field(
+            default_factory=Person,  # type: ignore
+            description="Person or group responsible for submitting the data",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [
+                    "Person(name='Jane Smith', email='jane.smith@example.com')"
+                ],
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    @field_validator("create_time", mode="before")
+    @classmethod
+    def validate_create_time(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        if isinstance(field_value, MTime):
+            return field_value
+        return MTime(time_stamp=field_value)
 
-    @property
-    def create_time(self):
-        return self._creation_dt.iso_str.split(".")[0]
-
-    @create_time.setter
-    def create_time(self, dt_str):
-        self._creation_dt.parse(dt_str)
-
-    def to_xml(self, string=False, required=True):
+    def read_dict(self, input_dict: dict) -> None:
         """
+        Read the Provenance object from a dictionary.
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        input_dict : dict
+            The input dictionary containing the Provenance data.
+        """
+        helpers._read_element(self, input_dict, "provenance")
 
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+        """
+        Convert the Provenance object to XML format.
+
+        Parameters
+        ----------
+        string : bool, optional
+            Whether to return the XML as a string, by default False
+        required : bool, optional
+            Whether all required fields must be present, by default True
+
+        Returns
+        -------
+        str | et.Element
+            The XML representation of the Provenance object
         """
 
         self.creating_application = f"mt_metadata {__version__}"
-        self.create_time = get_now_utc()
+        self.create_time = MTime(time_stamp=None).now()
 
-        element = dict_to_xml(
-            self.to_dict(nested=True, required=required), self._attr_dict
-        )
+        element = dict_to_xml(self.to_dict(nested=True, required=required))
         if not string:
             return element
         else:
             return element_to_string(element)
-
-    def read_dict(self, input_dict):
-        """
-
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        helpers._read_element(self, input_dict, "provenance")

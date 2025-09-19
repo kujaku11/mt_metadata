@@ -1,168 +1,441 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
 from collections import OrderedDict
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import (
-    Person,
+from typing import Annotated
+
+from loguru import logger
+from pydantic import computed_field, Field, field_validator, ValidationInfo
+from pyproj import CRS
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import (
+    AuthorPerson,
+    BasicLocationNoDatum,
     Citation,
-    Location,
-    TimePeriod,
+    Comment,
+    Copyright,
     Fdsn,
-    Station,
     FundingSource,
+    TimePeriodDate,
 )
-from .filters import (
-    PoleZeroFilter,
+from mt_metadata.common.list_dict import ListDict
+from mt_metadata.timeseries import Station
+from mt_metadata.timeseries.filters import (
     CoefficientFilter,
-    TimeDelayFilter,
     FIRFilter,
     FrequencyResponseTableFilter,
+    PoleZeroFilter,
+    TimeDelayFilter,
 )
-from mt_metadata.utils.list_dict import ListDict
 
-# =============================================================================
-attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
-attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS),
-    "acquired_by",
-    keys=["author", "comments", "organization"],
-)
-attr_dict.add_dict(
-    get_schema("funding_source", SCHEMA_FN_PATHS),
-    "funding_source",
-)
-attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_dataset")
-attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_journal")
-attr_dict.add_dict(
-    get_schema("location", SCHEMA_FN_PATHS),
-    "northwest_corner",
-    keys=["latitude", "longitude"],
-)
-attr_dict.add_dict(
-    get_schema("location", SCHEMA_FN_PATHS),
-    "southeast_corner",
-    keys=["latitude", "longitude"],
-)
-attr_dict.add_dict(
-    get_schema("geographic_location", SCHEMA_FN_PATHS),
-    None,
-    keys=["country", "state"],
-)
-attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS),
-    "project_lead",
-    keys=["author", "email", "organization"],
-)
-attr_dict["project_lead.email"]["required"] = True
-attr_dict["project_lead.organization"]["required"] = True
 
-attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
-# =============================================================================
-class Survey(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
 
-    def __init__(self, **kwargs):
 
-        self.acquired_by = Person()
-        self.fdsn = Fdsn()
-        self.citation_dataset = Citation()
-        self.citation_journal = Citation()
-        self.northwest_corner = Location()
-        self.project_lead = Person()
-        self.funding_source = FundingSource()
-        self.southeast_corner = Location()
-        self.time_period = TimePeriod()
-        self.stations = ListDict()
-        self.filters = {}
+class Survey(MetadataBase):
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="Alpha numeric ID that will be unique for archiving.",
+            alias=None,
+            pattern=r"^[a-zA-Z0-9_\- ]+$",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["EMT20"],
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    comments: Annotated[
+        Comment,
+        Field(
+            default_factory=lambda: Comment(),
+            description="Any comments about the survey.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["long survey"],
+            },
+        ),
+    ]
 
-    def __add__(self, other):
-        if isinstance(other, Survey):
-            self.stations.extend(other.stations)
+    datum: Annotated[
+        str | int,
+        Field(
+            default="WGS 84",
+            description="Datum of latitude and longitude coordinates. Should be a well-known datum, such as WGS84, and will be the reference datum for all locations.  This is important for the user, they need to make sure all coordinates in the survey and child items (i.e. stations, channels) are referenced to this datum.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["WGS 84"],
+            },
+        ),
+    ]
 
-            return self
+    geographic_name: Annotated[
+        str,
+        Field(
+            default="",
+            description="Closest geographic reference to survey, usually a city but could be a landmark or some other common geographic reference point.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["Yukon"],
+            },
+        ),
+    ]
+
+    name: Annotated[
+        str,
+        Field(
+            default="",
+            description="Descriptive name of the survey.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["MT Characterization of Yukon Terrane"],
+            },
+        ),
+    ]
+
+    project: Annotated[
+        str,
+        Field(
+            default="",
+            description="Alpha numeric name for the project e.g USGS-GEOMAG.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["YUTOO"],
+            },
+        ),
+    ]
+
+    stations: Annotated[
+        ListDict | list | dict | OrderedDict | tuple,
+        Field(
+            default_factory=ListDict,
+            description="List of stations recorded in the survey.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["ListDict[Station(id=id)]"],
+            },
+        ),
+    ]
+
+    filters: Annotated[
+        ListDict | list | dict | OrderedDict | tuple,
+        Field(
+            default_factory=ListDict,
+            description="List of filters for channel responses.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["ListDict[Filter()]"],
+            },
+        ),
+    ]
+
+    summary: Annotated[
+        str,
+        Field(
+            default="",
+            description="Summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [
+                    "long project of characterizing mineral resources in Yukon"
+                ],
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriodDate,
+        Field(
+            default_factory=TimePeriodDate,
+            description="End date of the survey in UTC.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [
+                    "TimePeriodDate(start_date='2000-01-01', end_date='2000-01-31')"
+                ],
+            },
+        ),
+    ]
+
+    fdsn: Annotated[
+        Fdsn,
+        Field(
+            default_factory=Fdsn,
+            description="FDSN web service information.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Fdsn()"],
+            },
+        ),
+    ]
+
+    acquired_by: Annotated[
+        AuthorPerson,
+        Field(
+            default_factory=AuthorPerson,
+            description="Person or group that acquired the data.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Person()"],
+            },
+        ),
+    ]
+
+    funding_source: Annotated[
+        FundingSource,
+        Field(
+            default_factory=FundingSource,
+            description="Funding source for the survey.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["FundingSource()"],
+            },
+        ),
+    ]
+
+    citation_dataset: Annotated[
+        Citation,
+        Field(
+            default_factory=Citation,
+            description="Citation for the dataset.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Citation()"],
+            },
+        ),
+    ]
+
+    citation_journal: Annotated[
+        Citation,
+        Field(
+            default_factory=Citation,
+            description="Citation for the journal.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Citation()"],
+            },
+        ),
+    ]
+
+    northwest_corner: Annotated[
+        BasicLocationNoDatum,
+        Field(
+            default_factory=BasicLocationNoDatum,
+            description="Northwest corner of the survey area.",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+                "examples": ["BasicLocationNoDatum()"],
+            },
+        ),
+    ]
+
+    southeast_corner: Annotated[
+        BasicLocationNoDatum,
+        Field(
+            default_factory=BasicLocationNoDatum,
+            description="Southeast corner of the survey area.",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+                "examples": ["BasicLocationNoDatum()"],
+            },
+        ),
+    ]
+
+    country: Annotated[
+        list[str] | str | None,
+        Field(
+            default=None,
+            description="Country where the survey was conducted.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Canada"],
+            },
+        ),
+    ]
+
+    state: Annotated[
+        list[str] | str | None,
+        Field(
+            default=None,
+            description="State or province where the survey was conducted.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Yukon"],
+            },
+        ),
+    ]
+
+    project_lead: Annotated[
+        AuthorPerson,
+        Field(
+            default_factory=AuthorPerson,
+            description="Person or group that led the project.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Person()"],
+            },
+        ),
+    ]
+
+    release_license: Annotated[
+        str,
+        Field(
+            default="CC-BY-4.0",
+            description="Release license for the data.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["CC-BY-4.0"],
+            },
+        ),
+    ]
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value
+
+    @field_validator("datum", mode="before")
+    @classmethod
+    def validate_datum(cls, value: str | int) -> str:
+        """
+        Validate the datum value and convert it to the appropriate enum type.
+        """
+        try:
+            datum_crs = CRS.from_user_input(value)
+            return datum_crs.name
+        except Exception:
+            raise ValueError(
+                f"Invalid datum value: {value}. Must be a valid CRS string or identifier."
+            )
+
+    @field_validator("release_license", mode="before")
+    @classmethod
+    def validate_release_license(cls, value: str, info: ValidationInfo) -> str:
+        """
+        Validate that the value is a valid license.
+        """
+        if isinstance(value, str):
+            copyright_object = Copyright(release_license=value)
+            return copyright_object.release_license
+
+    @field_validator("country", "state", mode="before")
+    @classmethod
+    def validate_areas(cls, value) -> list[str]:
+        """validate country and state to be a list"""
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",")]
+        elif isinstance(value, (list, tuple)):
+            return list(value)
+        elif value == None:
+            return None
         else:
-            msg = f"Can only merge Survey objects, not {type(other)}"
-            self.logger.error(msg)
-            raise TypeError(msg)
+            raise TypeError(f"Cannot make a list from types {type(value)}.")
 
-    def __len__(self):
-        return len(self.stations)
-
-    @property
-    def stations(self):
-        """Return station list"""
-        return self._stations
-
-    @stations.setter
-    def stations(self, value):
-        """set the station list"""
+    @field_validator("stations", mode="before")
+    @classmethod
+    def validate_stations(cls, value, info: ValidationInfo) -> ListDict:
         if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input station_list must be an iterable, should be a list or dict "
+                "input stations must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
         fails = []
-        self._stations = ListDict()
+        stations = ListDict()
         if isinstance(value, (dict, ListDict, OrderedDict)):
             value_list = value.values()
 
         elif isinstance(value, (list, tuple)):
             value_list = value
 
-        for ii, station in enumerate(value_list):
-
-            if isinstance(station, (dict, OrderedDict)):
-                s = Station()
-                s.from_dict(station)
-                self._stations.append(s)
-            elif not isinstance(station, Station):
-                msg = f"Item {ii} is not type(Station); type={type(station)}"
+        for ii, station_entry in enumerate(value_list):
+            if isinstance(station_entry, (dict, OrderedDict)):
+                try:
+                    station = Station()
+                    station.from_dict(station_entry)
+                    stations.append(station)
+                except KeyError:
+                    msg = f"Item {ii} is not type(Station); type={type(station_entry)}"
+                    fails.append(msg)
+                    logger.error(msg)
+            elif not isinstance(station_entry, (Station)):
+                msg = f"Item {ii} is not type(Run); type={type(station_entry)}"
                 fails.append(msg)
-                self.logger.error(msg)
+                logger.error(msg)
             else:
-                self._stations.append(station)
+                stations.append(station_entry)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
-    @property
-    def station_names(self):
-        """Return names of station in survey"""
-        return self.stations.keys()
+        return stations
 
-    @property
-    def filters(self):
-        """A dictionary of available filters"""
-        return self._filters
-
-    @filters.setter
-    def filters(self, value):
-        """
-        Set the filters dictionary
-
-        :param value: dictionary of filter objects
-        :type value: dictionary
-
+    @field_validator("filters", mode="before")
+    @classmethod
+    def validate_filters(
+        cls, value: str | list | ListDict, info: ValidationInfo
+    ) -> ListDict:
         """
 
+        Parameters
+        ----------
+        value : _type_
+            _description_
+        info : ValidationInfo
+            _description_
+
+        Returns
+        -------
+        ListDict
+            _description_
+        """
         filters = ListDict()
         fails = []
         if value is None:
@@ -170,13 +443,15 @@ class Survey(Base):
 
         if isinstance(value, list):
             if len(value) > 0:
-                if isinstance(value[0], (dict, OrderedDict, ListDict)):
-                    for ff in value:
+                for ff in value:
+                    if isinstance(ff, (dict, OrderedDict, ListDict)):
                         f_type = ff["type"]
                         if f_type is None:
-                            msg = "filter type is None do not know how to read the filter"
+                            msg = (
+                                "filter type is None do not know how to read the filter"
+                            )
                             fails.append(msg)
-                            self.logger.error(msg)
+                            logger.error(msg)
                         if f_type.lower() in ["zpk"]:
                             f = PoleZeroFilter()
                         elif f_type.lower() in ["coefficient"]:
@@ -190,20 +465,34 @@ class Survey(Base):
                         else:
                             msg = f"filter type {f_type} not supported."
                             fails.append(msg)
-                            self.logger.error(msg)
+                            logger.error(msg)
 
                         f.from_dict(ff)
                         filters[f.name] = f
+                    elif isinstance(
+                        ff,
+                        (
+                            PoleZeroFilter,
+                            CoefficientFilter,
+                            FrequencyResponseTableFilter,
+                            TimeDelayFilter,
+                            FIRFilter,
+                        ),
+                    ):
+                        filters[ff.name] = ff
+                    else:
+                        msg = f"Item {ff} is not Filter type; type={type(ff)}"
+                        fails.append(msg)
+                        logger.error(msg)
 
         elif not isinstance(value, (dict, OrderedDict, ListDict)):
             msg = (
                 "Filters must be a dictionary with keys = names of filters, "
                 f"not {type(value)}"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
         else:
-
             for k, v in value.items():
                 if not isinstance(
                     v,
@@ -217,13 +506,77 @@ class Survey(Base):
                 ):
                     msg = f"Item {k} is not Filter type; type={type(v)}"
                     fails.append(msg)
-                    self.logger.error(msg)
+                    logger.error(msg)
                 else:
                     filters[k.lower()] = v
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
-        self._filters = filters
+        return filters
+
+    @computed_field
+    @property
+    def survey_extent(self) -> dict:
+        """
+        Return the survey extent as a dictionary with keys 'northwest' and 'southeast'.
+        """
+        return {
+            "latitude": {
+                "min": self.southeast_corner.latitude,
+                "max": self.northwest_corner.latitude,
+            },
+            "longitude": {
+                "min": self.northwest_corner.longitude,
+                "max": self.southeast_corner.longitude,
+            },
+        }
+
+    def merge(self, other: "Survey", inplace=False) -> "Survey":
+        """
+        Merge surveys together using the original metadata but adding other's stations.
+
+        Parameters
+        ----------
+        other : Survey
+            Survey object
+        inplace : bool, optional
+            merge in place, by default False
+
+        Returns
+        -------
+        Survey
+            merged surveys
+
+        Raises
+        ------
+        TypeError
+            If items cannot be merged.
+        """
+        if isinstance(other, Survey):
+            self.stations.extend(other.stations)
+            self.update_all()
+            if not inplace:
+                return self
+        else:
+            msg = f"Can only merge Survey objects, not {type(other)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
+    @property
+    def n_stations(self) -> int:
+        """
+        Return the number of stations in the station.
+
+        :return: number of runs in the station
+        :rtype: int
+
+        """
+        return len(self.stations)
+
+    @property
+    def station_names(self):
+        """Return names of station in survey"""
+        return self.stations.keys()
 
     @property
     def filter_names(self):
@@ -275,7 +628,7 @@ class Survey(Base):
 
         if self.has_station(station_obj.id):
             self.stations[station_obj.id].update(station_obj)
-            self.logger.warning(
+            logger.warning(
                 f"Station {station_obj.id} already exists, updating metadata"
             )
         else:
@@ -299,7 +652,7 @@ class Survey(Base):
         if self.has_station(station_id):
             return self.stations[station_id]
         else:
-            self.logger.warning(f"Could not find station {station_id}")
+            logger.warning(f"Could not find station {station_id}")
             return None
 
     def remove_station(self, station_id, update=True):
@@ -317,24 +670,28 @@ class Survey(Base):
                 self.update_bounding_box()
                 self.update_time_period()
         else:
-            self.logger.warning(f"Could not find {station_id} to remove.")
+            logger.warning(f"Could not find {station_id} to remove.")
 
     def update_bounding_box(self):
         """
         Update the bounding box of the survey from the station information
 
         """
-        if self.__len__() > 0:
+        if self.n_stations > 0:
             lat = []
             lon = []
             for station in self.stations:
-                lat.append(station.location.latitude)
-                lon.append(station.location.longitude)
+                if station.location.latitude is not None:
+                    lat.append(station.location.latitude)
+                if station.location.longitude is not None:
+                    lon.append(station.location.longitude)
 
-            self.southeast_corner.latitude = min(lat)
-            self.southeast_corner.longitude = max(lon)
-            self.northwest_corner.latitude = max(lat)
-            self.northwest_corner.longitude = min(lon)
+            if not len(lat) == 0:
+                self.southeast_corner.latitude = min(lat)
+                self.northwest_corner.latitude = max(lat)
+            if not len(lon) == 0:
+                self.southeast_corner.longitude = max(lon)
+                self.northwest_corner.longitude = min(lon)
 
     def update_time_period(self):
         """
@@ -344,21 +701,28 @@ class Survey(Base):
             start = []
             end = []
             for station in self.stations:
-                if station.time_period.start != "1980-01-01T00:00:00+00:00":
+                if not station.time_period.start_is_default():
                     start.append(station.time_period.start)
-                if station.time_period.end != "1980-01-01T00:00:00+00:00":
+                if not station.time_period.end_is_default():
                     end.append(station.time_period.end)
 
             if start:
-                if self.time_period.start == "1980-01-01T00:00:00+00:00":
-                    self.time_period.start = min(start)
+                if self.time_period.start_is_default():
+                    self.time_period.start_date = min(start)
                 else:
-                    if self.time_period.start > min(start):
-                        self.time_period.start = min(start)
+                    if self.time_period.start_date > min(start):
+                        self.time_period.start_date = min(start)
 
             if end:
-                if self.time_period.end == "1980-01-01T00:00:00+00:00":
-                    self.time_period.end = max(end)
+                if self.time_period.end_is_default():
+                    self.time_period.end_date = max(end)
                 else:
-                    if self.time_period.end < max(end):
-                        self.time_period.end = max(end)
+                    if self.time_period.end_date < max(end):
+                        self.time_period.end_date = max(end)
+
+    def update_all(self):
+        """
+        Update time period and bounding box
+        """
+        self.update_time_period()
+        self.update_bounding_box()

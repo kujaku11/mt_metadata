@@ -1,0 +1,83 @@
+{
+    "title": "citation",
+    "type": "object",
+    "properties": {
+        "title": {
+            "default": null,
+            "description": "Full title of the citation",
+            "title": "title",
+            "examples": "Paper Title",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "authors": {
+            "default": null,
+            "description": "author names",
+            "title": "authors",
+            "examples": "M.Tee A. Roura",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "year": {
+            "default": null,
+            "description": "Year of citation",
+            "title": "year",
+            "examples": "2020",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "date-time"
+        },
+        "volume": {
+            "default": null,
+            "description": "Journal volume of the citation",
+            "title": "volume",
+            "examples": "12",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "pages": {
+            "default": null,
+            "description": "Page numbers of the citation",
+            "title": "pages",
+            "examples": "10-15",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "journal": {
+            "default": null,
+            "description": "Journal title of citation",
+            "title": "journal",
+            "examples": "Journal of Geophysical Research",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "doi": {
+            "default": null,
+            "description": "doi number of the citation",
+            "title": "doi",
+            "examples": "###/###",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "uri"
+        },
+        "survey_d_o_i": {
+            "default": null,
+            "description": "doi number of the survey",
+            "title": "survey_d_o_i",
+            "examples": "###/###",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "uri"
+        }
+    },
+    "required": [],
+    "description": "citation"
+}

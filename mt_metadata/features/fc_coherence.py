@@ -1,60 +1,91 @@
-# -*- coding: utf-8 -*-
-"""
-
-    This is a placeholder for FCCoherence feature class, which computes the magnitude-squared coherence
-    from frequency-domain Fourier coefficients (FCs). It is a work in progress and will be
-    implemented in the future.
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from ..transfer_functions.processing.window import Window
-from typing import Tuple
+# =====================================================
+from typing import Annotated
 
 import numpy as np
-import scipy.signal as ssig
+from pydantic import computed_field, Field, model_validator
 
-# =============================================================================
-attr_dict = get_schema("feature", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("coherence", SCHEMA_FN_PATHS), None)
-attr_dict.add_dict(Window()._attr_dict, "window")
+from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.features.coherence import Coherence
+from mt_metadata.features.feature import Feature
 
 
-# =============================================================================
-class FCCoherence(Base):
-    """
-    Computes magnitude-squared coherence from frequency-domain Fourier coefficients (FCs).
+# =====================================================
+class BandDefinitionTypeEnum(StrEnumerationBase):
+    Q = "Q"
+    fractional_bandwidth = "fractional bandwidth"
+    user_defined = "user defined"
 
-    Given two sets of FCs (complex arrays, shape: [n_windows, n_freqs]), computes:
-        Cxy(f) = |Sxy(f)|^2 / (Sxx(f) * Syy(f))
-    where:
-        Sxy(f) = mean(FC1(f) * conj(FC2(f)), axis=0)  # cross-power
-        Sxx(f) = mean(|FC1(f)|^2, axis=0)             # auto-power
-        Syy(f) = mean(|FC2(f)|^2, axis=0)             # auto-power
-    """
-    __doc__ = write_lines(attr_dict)
 
-    def __init__(self, **kwargs):
-        self.channel_1 = None
-        self.channel_2 = None
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        self.name = "fc_coherence"
-        self.domain = "frequency"
-        self.description = (
+class QRadiusEnum(StrEnumerationBase):
+    constant_Q = "constant Q"
+    user_defined = "user defined"
+
+
+class FCCoherence(Coherence, Feature):
+    minimum_fcs: Annotated[
+        int,
+        Field(
+            default=2,
+            description="The minimum number of Fourier coefficients needed to compute the feature.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["2"],
+            },
+        ),
+    ]
+
+    band_definition_type: Annotated[
+        BandDefinitionTypeEnum,
+        Field(
+            default="Q",
+            description="How the feature frequency bands are defined.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["user defined"],
+            },
+        ),
+    ]
+
+    q_radius: Annotated[
+        QRadiusEnum,
+        Field(
+            default="constant Q",
+            description="How the feature frequency bands are defined.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["user defined"],
+            },
+        ),
+    ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_defaults(cls, data: dict) -> dict:
+        data["name"] = "fc_coherence"
+        data["domain"] = "frequency"
+        data["description"] = (
             "Magnitude-squared coherence computed from frequency-domain Fourier coefficients (FCs). "
             "Cxy(f) = |Sxy(f)|^2 / (Sxx(f) * Syy(f)), where Sxy is the cross-power spectrum, "
             "Sxx and Syy are auto-power spectra, all estimated by averaging over windows."
         )
+        return data
 
+    @computed_field
     @property
     def channel_pair_str(self) -> str:
         return f"{self.channel_1}, {self.channel_2}"
 
-    def compute(self, fc1: np.ndarray, fc2: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def compute(
+        self, fc1: np.ndarray, fc2: np.ndarray
+    ) -> tuple[np.ndarray | None, np.ndarray]:
         """
         Compute magnitude-squared coherence from FCs.
 
@@ -76,6 +107,14 @@ class FCCoherence(Base):
         sxy = np.mean(fc1 * np.conj(fc2), axis=0)
         sxx = np.mean(np.abs(fc1) ** 2, axis=0)
         syy = np.mean(np.abs(fc2) ** 2, axis=0)
-        # Magnitude-squared coherence
-        coherence = np.abs(sxy) ** 2 / (sxx * syy)
+
+        # Magnitude-squared coherence with protection against division by zero
+        denominator = sxx * syy
+
+        # Use numpy error handling to suppress division warnings
+        with np.errstate(divide="ignore", invalid="ignore"):
+            coherence = np.abs(sxy) ** 2 / denominator
+
+        # Replace any infinite or NaN values with 0
+        coherence = np.where(np.isfinite(coherence), coherence, 0.0)
         return None, coherence

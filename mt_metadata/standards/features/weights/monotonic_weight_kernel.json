@@ -1,0 +1,57 @@
+{
+    "title": "monotonic_weight_kernel",
+    "type": "object",
+    "properties": {
+        "threshold": {
+            "default": "'low cut'",
+            "description": "Which side of a threshold should be downweighted.",
+            "title": "threshold",
+            "examples": "low cut",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "low cut",
+                "high cut"
+            ]
+        },
+        "style": {
+            "default": "'taper'",
+            "description": "Tapering/activation function to use between transition bounds.",
+            "title": "style",
+            "examples": "activation",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "taper",
+                "activation"
+            ]
+        },
+        "transition_lower_bound": {
+            "default": -1000000000.0,
+            "description": "Start of the taper region (weight begins to change).",
+            "title": "transition_lower_bound",
+            "examples": "-inf",
+            "type": "number",
+            "alias": null,
+            "units": null
+        },
+        "transition_upper_bound": {
+            "default": 1000000000.0,
+            "description": "End of the taper region (weight finishes changing).",
+            "title": "transition_upper_bound",
+            "examples": "+inf",
+            "type": "number",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "threshold",
+        "style",
+        "transition_lower_bound",
+        "transition_upper_bound"
+    ],
+    "description": "monotonic_weight_kernel"
+}

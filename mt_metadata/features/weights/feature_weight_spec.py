@@ -1,128 +1,175 @@
-"""
-FeatureWeightSpec is the next key layer of abstraction after WeightKernels.
+# =====================================================
+# Imports
+# =====================================================
+from enum import Enum
+from typing import Annotated
 
-It ties together a feature (including its parameterization),
-and one or more weighting kernels (like MonotonicWeightKernel).
-
-This will let you do things like:
-- Evaluate "coherence" between ex and hy with a taper kernel
-- Apply multiple kernels to the same feature (e.g., low cut and high cut)
-- Plug this into a higher-level channel weighting model
-
-"""
-
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from mt_metadata.features.feature import Feature
-from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
-from mt_metadata.features.weights.monotonic_weight_kernel import ActivationMonotonicWeightKernel
-from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicWeightKernel
-from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
 import numpy as np
+from loguru import logger
+from pydantic import Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.features.coherence import Coherence
+from mt_metadata.features.fc_coherence import FCCoherence
+from mt_metadata.features.feature import Feature
+from mt_metadata.features.weights.activation_monotonic_weight_kernel import (
+    ActivationMonotonicWeightKernel,
+)
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
+from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
+    TaperMonotonicWeightKernel,
+)
 
 
-attr_dict = get_schema("base", SCHEMA_FN_PATHS)
-# no need to add to attr dict if we have lists of mtmetadata objs.
-# attr_dict.add_dict(Feature()._attr_dict, "feature")
+## for new features import and add to this dictionary.
+feature_classes = {
+    "base": Feature,
+    "coherence": Coherence,
+    "fc_coherence": FCCoherence,
+}
 
-class FeatureWeightSpec(Base):
-    """
-    FeatureWeightSpec
-
-    Defines how a particular feature is used to weight an output channel.
-    Includes parameters needed to compute the feature and one or more
-    weight kernels to evaluate its influence.
-    """
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-        """
-            Consstuctor.
-        """
-        self._feature = None  # <-- initialize the backing variable directly
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        weight_kernels = kwargs.get("weight_kernels", [])
-        self.weight_kernels = weight_kernels
-
-    # TODO: Remove this method after mt_metadata pydantic upgrade   
-    # This is a workaround to ensure the setter logic runs when feature is a dict
-    # This is needed because the setter logic is not automatically triggered
-    # when the object is created from a dict.
-    def post_from_dict(self):
-        """
-            If feature is a dict, force the setter logic to run
-        """
-        if isinstance(self.feature, dict):
-            self.feature = self.feature
-        # Optionally, do the same for weight_kernels if needed
-
-    def from_dict(self, d):
-        # If 'feature' is a dict, convert it to the correct object before base from_dict
-        if "feature" in d and isinstance(d["feature"], dict):
-            self.feature = d["feature"]  # This will use your property setter
-            d["feature"] = self.feature  # Now it's the correct object
-        super().from_dict(d)
-        self.post_from_dict()
+weight_classes = {
+    "monotonic": MonotonicWeightKernel,
+    "taper": TaperMonotonicWeightKernel,
+    "activation": ActivationMonotonicWeightKernel,
+}
 
 
-    @property
-    def feature(self):
-        return self._feature
-
-    @feature.setter
-    def feature(self, value):
-        """
-        Set the feature for this weight spec.
-        If a dict is provided, it will be used to initialize the feature object.
-        If an object is provided, it will be used directly.
-        Unwraps nested 'feature' keys if present.
+# =====================================================
+class FeatureNameEnum(str, Enum):
+    coherence = "coherence"
+    multiple_coherence = "multiple coherence"
 
 
-        TODO: FIXME (circular import)
-        Should be able to use a model like:
-        SUPPORTED_FEATURE_CLASS_MAP = {
-        "coherence": Coherence,
-        # "multiple_coherence": MultipleCoherence,
-        # Add more as needed
-        }
-        but that will result in a circular import if Coherence import at the top of module.
+class FeatureWeightSpec(MetadataBase):
+    feature_name: Annotated[
+        FeatureNameEnum,
+        Field(
+            default="",
+            description="The name of the feature to evaluate (e.g., coherence, impedance_ratio).",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["coherence"],
+            },
+        ),
+    ]
 
-        """
-        # Unwrap if wrapped in 'feature' repeatedly
-        while isinstance(value, dict) and "feature" in value and isinstance(value["feature"], dict):
+    feature: Annotated[
+        dict | Feature | Coherence | FCCoherence,
+        Field(
+            default_factory=Feature,  # type: ignore
+            description="The feature specification.",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [{"type": "coherence"}],
+            },
+        ),
+    ]
+
+    weight_kernels: Annotated[
+        list[
+            MonotonicWeightKernel
+            | TaperMonotonicWeightKernel
+            | ActivationMonotonicWeightKernel
+        ],
+        Field(
+            default_factory=list,
+            description="List of weight kernel specification.",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [{"type": "monotonic"}],
+            },
+        ),
+    ]
+
+    @field_validator("feature", mode="before")
+    @classmethod
+    def validate_feature(
+        cls, value, info: ValidationInfo
+    ) -> Feature | Coherence | FCCoherence | None:
+        """Validate the feature field to ensure it matches the feature_name."""
+        while (
+            isinstance(value, dict)
+            and "feature" in value
+            and isinstance(value["feature"], dict)
+        ):
             value = value["feature"]
         if isinstance(value, dict):
             feature_name = value.get("name")
             # Import here to avoid circular import at module level
-            print(f"Feature setter: feature_name={feature_name}, value={value}")  # DEBUG
-            if feature_name == "coherence":
-                from mt_metadata.features.coherence import Coherence
-                feature_cls = Coherence
-            elif feature_name == "striding_window_coherence":
-                from mt_metadata.features.coherence import StridingWindowCoherence
-                feature_cls = StridingWindowCoherence
-            else:
-                msg = f"feature_name {feature_name} not recognized -- resorting to base class"
-                self.logger.warning(msg)
-                from mt_metadata.features.feature import Feature
+            logger.debug(
+                f"Feature setter: feature_name={feature_name}, value={value}"
+            )  # DEBUG
+            if not isinstance(feature_name, str) or feature_name not in feature_classes:
                 feature_cls = Feature
-            self._feature = feature_cls(**value)
-            print(f"Feature setter: instantiated {self._feature.__class__}")  # DEBUG
+            else:
+                feature_cls = feature_classes[feature_name]
+            logger.debug(
+                f"Feature setter: instantiated {feature_cls.__class__}"
+            )  # DEBUG
+            return feature_cls(**value)
+        elif isinstance(value, (Feature, Coherence, FCCoherence)):
+            logger.debug(f"Feature setter: set directly to {type(value)}")  # DEBUG
+            return value
         else:
-            self._feature = value
-            print(f"Feature setter: set directly to {type(value)}")  # DEBUG
+            return None
 
+    @field_validator("weight_kernels", mode="before")
+    @classmethod
+    def validate_weight_kernels(
+        cls, value, info: ValidationInfo
+    ) -> list[
+        MonotonicWeightKernel
+        | TaperMonotonicWeightKernel
+        | ActivationMonotonicWeightKernel
+    ]:
+        """Validate the weight_kernels field to ensure proper initialization."""
+        if not isinstance(value, list):
+            value = [value]
+        kernels = []
+        for item in value:
+            if isinstance(item, dict) and "weight_kernel" in item:
+                item = item["weight_kernel"]
+            if isinstance(item, dict):
+                # Use the 'style' field to determine which kernel class to use
+                style = str(item.get("style", ""))
+                if style in weight_classes:
+                    try:
+                        kernels.append(weight_classes[style](**item))
+                    except Exception as e:
+                        msg = (
+                            f"Failed to create weight kernel with style '{style}': {e}"
+                        )
+                        logger.warning(msg)
+                else:
+                    # Fallback to weight_type for backward compatibility
+                    weight_type = str(item.get("weight_type", ""))
+                    if weight_type in weight_classes:
+                        try:
+                            kernels.append(weight_classes[weight_type](**item))
+                        except Exception as e:
+                            msg = f"Failed to create weight kernel with weight_type '{weight_type}': {e}"
+                            logger.warning(msg)
+                    else:
+                        msg = f"Neither style '{style}' nor weight_type '{weight_type}' recognized -- skipping"
+                        logger.warning(msg)
 
-    @property
-    def weight_kernels(self):
-        return self._weight_kernels
-
-    @weight_kernels.setter
-    def weight_kernels(self, value):
-        """
-        Ensure weight_kernels are properly initialized.
-        """
-        self._weight_kernels = _unpack_weight_kernels(weight_kernels=value)
+            elif isinstance(
+                item,
+                (
+                    MonotonicWeightKernel,
+                    TaperMonotonicWeightKernel,
+                    ActivationMonotonicWeightKernel,
+                ),
+            ):
+                kernels.append(item)
+            else:
+                raise TypeError(f"Invalid type for weight_kernel: {type(item)}")
+        return kernels
 
     def evaluate(self, feature_values):
         """
@@ -141,54 +188,3 @@ class FeatureWeightSpec(Base):
 
         weights = [kernel.evaluate(feature_values) for kernel in self.weight_kernels]
         return np.prod(weights, axis=0) if weights else 1.0
-
-def _unpack_weight_kernels(weight_kernels):
-    """
-    Unpack weight kernels from a list of dictionaries or objects.
-    Determines the correct kernel class (Activation or Taper) based on keys.
-    """
-    result = []
-    for wk in weight_kernels:
-        # Unwrap if wrapped in "weight_kernel" (TODO: Delete, or revert after mt_metadata pydantic upgrade.)
-        if isinstance(wk, dict) and "weight_kernel" in wk:
-            wk = wk["weight_kernel"]
-        if isinstance(wk, dict):
-            if "activation_style" in wk or wk.get("style") == "activation":
-                result.append(ActivationMonotonicWeightKernel(**wk))
-            elif "half_window_style" in wk or wk.get("style") == "taper":
-                result.append(TaperMonotonicWeightKernel(**wk))
-            else:
-                result.append(MonotonicWeightKernel(**wk))
-        else:
-            result.append(wk)
-    return result
-
-def unwrap_known_wrappers(obj, known_keys=None):
-    """
-    Recursively unwraps dicts/lists for known single-key wrappers.
-    """
-    if known_keys is None:
-        known_keys = {"feature_weight_spec", "channel_weight_spec", "weight_kernel", "feature"}
-    if isinstance(obj, dict):
-        # If it's a single-key dict and the key is known, unwrap
-        while (
-            len(obj) == 1
-            and next(iter(obj)) in known_keys
-            and isinstance(obj[next(iter(obj))], (dict, list))
-        ):
-            obj = obj[next(iter(obj))]
-        # Recurse into dict values
-        return {k: unwrap_known_wrappers(v, known_keys) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [unwrap_known_wrappers(item, known_keys) for item in obj]
-    else:
-        return obj
-
-# Patch FeatureWeightSpec.from_dict to unwrap wrappers
-orig_from_dict = FeatureWeightSpec.from_dict
-
-def from_dict_unwrap(self, d):
-    d = unwrap_known_wrappers(d)
-    return orig_from_dict(self, d)
-
-FeatureWeightSpec.from_dict = from_dict_unwrap

@@ -1,0 +1,180 @@
+{
+    "title": "location",
+    "type": "object",
+    "properties": {
+        "latitude": {
+            "default": 0.0,
+            "description": "latitude of location in datum specified at survey level",
+            "title": "latitude",
+            "examples": "23.134",
+            "type": "number",
+            "alias": [
+                "lat"
+            ],
+            "units": "degrees"
+        },
+        "longitude": {
+            "default": 0.0,
+            "description": "longitude of location in datum specified at survey level",
+            "title": "longitude",
+            "examples": "14.23",
+            "type": "number",
+            "alias": [
+                "lon",
+                "long"
+            ],
+            "units": "degrees"
+        },
+        "elevation": {
+            "default": 0.0,
+            "description": "elevation of location in datum specified at survey level",
+            "title": "elevation",
+            "examples": "123.4",
+            "type": "number",
+            "alias": [
+                "elev"
+            ],
+            "units": "meters"
+        },
+        "latitude_uncertainty": {
+            "default": null,
+            "description": "uncertainty in latitude estimation in degrees",
+            "title": "latitude_uncertainty",
+            "examples": "0.01",
+            "type": "number",
+            "alias": null,
+            "units": "degrees"
+        },
+        "longitude_uncertainty": {
+            "default": null,
+            "description": "uncertainty in longitude estimation in degrees",
+            "title": "longitude_uncertainty",
+            "examples": "0.01",
+            "type": "number",
+            "alias": null,
+            "units": "degrees"
+        },
+        "elevation_uncertainty": {
+            "default": null,
+            "description": "uncertainty in elevation estimation",
+            "title": "elevation_uncertainty",
+            "examples": "0.01",
+            "type": "number",
+            "alias": null,
+            "units": "meters"
+        },
+        "datum": {
+            "default": null,
+            "description": "Datum of the location values.  Usually a well known datum like WGS84.",
+            "title": "datum",
+            "examples": "WGS84",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "WGS84",
+                "NAD83",
+                "other"
+            ]
+        },
+        "x": {
+            "default": null,
+            "description": "relative distance to the center of the station",
+            "title": "x",
+            "examples": "10.0",
+            "type": "number",
+            "alias": [
+                "east",
+                "easting"
+            ],
+            "units": "meters"
+        },
+        "x2": {
+            "default": null,
+            "description": "relative distance to the center of the station",
+            "title": "x2",
+            "examples": "10.0",
+            "type": "number",
+            "alias": [
+                "east",
+                "easting"
+            ],
+            "units": "meters"
+        },
+        "y": {
+            "default": null,
+            "description": "relative distance to the center of the station",
+            "title": "y",
+            "examples": "10.0",
+            "type": "number",
+            "alias": [
+                "north",
+                "northing"
+            ],
+            "units": "meters"
+        },
+        "y2": {
+            "default": null,
+            "description": "relative distance to the center of the station",
+            "title": "y2",
+            "examples": "10.0",
+            "type": "number",
+            "alias": [
+                "north",
+                "northing"
+            ],
+            "units": "meters"
+        },
+        "z": {
+            "default": null,
+            "description": "relative elevation to the center of the station",
+            "title": "z",
+            "examples": "10.0",
+            "type": "number",
+            "alias": null,
+            "units": "meters"
+        },
+        "z2": {
+            "default": null,
+            "description": "relative elevation to the center of the station",
+            "title": "z2",
+            "examples": "10.0",
+            "type": "number",
+            "alias": null,
+            "units": "meters"
+        },
+        "x_uncertainty": {
+            "default": null,
+            "description": "uncertainty in longitude estimation in x-direction",
+            "title": "x_uncertainty",
+            "examples": "0.01",
+            "type": "number",
+            "alias": null,
+            "units": "meters"
+        },
+        "y_uncertainty": {
+            "default": null,
+            "description": "uncertainty in longitude estimation in y-direction",
+            "title": "y_uncertainty",
+            "examples": "0.01",
+            "type": "number",
+            "alias": null,
+            "units": "meters"
+        },
+        "z_uncertainty": {
+            "default": null,
+            "description": "uncertainty in longitude estimation in z-direction",
+            "title": "z_uncertainty",
+            "examples": "0.01",
+            "type": "number",
+            "alias": null,
+            "units": "meters"
+        }
+    },
+    "required": [
+        "latitude",
+        "longitude",
+        "elevation"
+    ],
+    "description": "location"
+}

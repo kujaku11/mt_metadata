@@ -42,7 +42,7 @@
         </time_period>
         <filters>
             <pole_zero_filter>
-                <comments>butterworth filter</comments>
+                <comments>butterworth filtered</comments>
                 <gain type="float">1.0</gain>
                 <name>magnetic field 3 pole Butterworth low-pass</name>
                 <normalization_factor type="float">1984.31439386406</normalization_factor>
@@ -92,7 +92,7 @@
                 <units_out>count</units_out>
             </time_delay_filter>
             <pole_zero_filter>
-                <comments>butterworth filter</comments>
+                <comments>butterworth filtered</comments>
                 <gain type="float">1.0</gain>
                 <name>electric field 5 pole Butterworth low-pass</name>
                 <normalization_factor type="float">313383.601119193</normalization_factor>
@@ -109,7 +109,7 @@
                 <zeros/>
             </pole_zero_filter>
             <pole_zero_filter>
-                <comments>butterworth filter</comments>
+                <comments>butterworth filtered</comments>
                 <gain type="float">1.0</gain>
                 <name>electric field 1 pole Butterworth high-pass</name>
                 <normalization_factor type="float">1.00000351809047</normalization_factor>
@@ -267,7 +267,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -278,7 +278,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -309,7 +309,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -320,7 +320,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -351,7 +351,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -362,7 +362,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -394,7 +394,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -411,7 +411,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">11.8287420852694</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -450,7 +450,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -467,7 +467,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">101.828742085269</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -552,7 +552,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -563,7 +563,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -594,7 +594,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -605,7 +605,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -636,7 +636,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -647,7 +647,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -679,7 +679,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -696,7 +696,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">11.8287420852694</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -735,7 +735,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -752,7 +752,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">101.828742085269</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -837,7 +837,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -848,7 +848,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -879,7 +879,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -890,7 +890,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -921,7 +921,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -932,7 +932,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -964,7 +964,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -981,7 +981,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">11.8287420213278</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -1020,7 +1020,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">4.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -1037,7 +1037,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">101.828742021328</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -1122,7 +1122,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -1133,7 +1133,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -1164,7 +1164,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -1175,7 +1175,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -1206,7 +1206,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -1217,7 +1217,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -1249,7 +1249,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -1266,7 +1266,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">0.0</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -1305,7 +1305,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -1322,7 +1322,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">0.0</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -1407,7 +1407,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -1418,7 +1418,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -1449,7 +1449,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -1460,7 +1460,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -1491,7 +1491,7 @@
                             <value type="integer">0</value>
                         </rating>
                     </data_quality>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic field 3 pole butterworth low-pass</item>
                             <item>v to counts (magnetic)</item>
@@ -1502,7 +1502,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees" type="float">35.1469128125</latitude>
                         <longitude units="degrees" type="float">-117.160798541667</longitude>
@@ -1534,7 +1534,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -1551,7 +1551,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">0.0</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>
@@ -1590,7 +1590,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters" type="float">94.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric field 5 pole butterworth low-pass</item>
                             <item>electric field 1 pole butterworth high-pass</item>
@@ -1607,7 +1607,7 @@
                             <item type="boolean">False</item>
                             <item type="boolean">False</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees" type="float">0.0</measurement_azimuth>
                     <measurement_tilt units="degrees" type="float">0.0</measurement_tilt>
                     <negative>

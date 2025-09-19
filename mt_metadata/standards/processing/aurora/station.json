@@ -1,0 +1,52 @@
+{
+    "title": "station",
+    "type": "object",
+    "properties": {
+        "id": {
+            "default": "",
+            "description": "Station ID",
+            "title": "id",
+            "examples": "mt001",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "mth5_path": {
+            "default": "",
+            "description": "full path to MTH5 file where the station data is contained",
+            "title": "mth5_path",
+            "examples": "/home/mt/experiment_01.h5",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "remote": {
+            "default": false,
+            "description": "remote station (True) or local station (False)",
+            "title": "remote",
+            "examples": "False",
+            "type": "boolean",
+            "alias": null,
+            "units": null
+        },
+        "runs": {
+            "type": "string",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of runs to process",
+            "title": "runs",
+            "examples": "001",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "id",
+        "mth5_path",
+        "remote",
+        "runs"
+    ],
+    "description": "station"
+}

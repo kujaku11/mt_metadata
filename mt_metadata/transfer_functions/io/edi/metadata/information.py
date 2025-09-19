@@ -7,14 +7,17 @@ Created on Sat Dec  4 14:13:37 2021
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base import Base
-from mt_metadata.base.helpers import validate_name
+from collections import OrderedDict
+
+from pydantic import Field, PrivateAttr
+
+from mt_metadata.base import MetadataBase
 
 
 # ==============================================================================
 # Info object
 # ==============================================================================
-class Information(Base):
+class Information(MetadataBase):
     """
     Contain, read, and write info section of .edi file
 
@@ -24,15 +27,15 @@ class Information(Base):
 
     """
 
-    def __init__(self, fn=None, edi_lines=None):
-
-        self.info_list = []
-        self.info_dict = {}
-        self._phoenix_col_width = 38
-        self._phoenix_file = False
-        self._empower_file = False
-
-        self.phoenix_translation_dict = {
+    info_dict: dict[str, str | list | None] = Field(
+        default_factory=dict,
+        description="Dictionary of information lines from the info section",
+    )
+    _phoenix_col_width: int = PrivateAttr(default=38)
+    _phoenix_file: bool = PrivateAttr(default=False)
+    _empower_file: bool = PrivateAttr(default=False)
+    _phoenix_translation_dict: dict[str, str | list] = PrivateAttr(
+        default_factory=lambda: {
             "survey": "survey.id",
             "company": "station.acquired_by.organization",
             "job": "survey.project",
@@ -53,8 +56,10 @@ class Information(Base):
             "start-up": "station.time_period.start",
             "end-time": "station.time_period.end",
         }
+    )
 
-        self.translation_dict = {
+    _translation_dict: dict[str, str] = PrivateAttr(
+        default_factory=lambda: {
             "operator": "run.acquired_by.author",
             "adu_serial": "run.data_logger.id",
             "e_azimuth": "run.ex.measurement_azimuth",
@@ -88,8 +93,9 @@ class Information(Base):
             "remotesite": "transfer_function.remote_references",
             "remoteref": "transfer_function.processing_parameters",
         }
-
-        self.empower_translation_dict = {
+    )
+    _empower_translation_dict: dict[str, str] = PrivateAttr(
+        default_factory=lambda: {
             "processingsoftware": "transfer_function.software.name",
             "sitename": "station.geographic_name",
             "year": "survey.time_period.start_date",
@@ -99,17 +105,27 @@ class Information(Base):
             "length": "dipole_length",
             "ac": "ac.end",
             "dc": "dc.end",
+            "negative res": "contact_resistance.start",
             "negative_res": "contact_resistance.start",
+            "positive res": "contact_resistance.end",
             "positive_res": "contact_resistance.end",
+            "sensor type": "sensor.model",
             "sensor_type": "sensor.model",
+            "detected sensor type": "sensor.model",
             "azimuth": "measured_azimuth",
+            "sensor serial": "sensor.id",
             "sensor_serial": "sensor.id",
+            "cal name": "comments",
             "cal_name": "comments",
             "saturation": "comments",
-            "instrument_type": "model",
+            "instrument type": "data_logger.model",
+            "station name": "geographic_name",
+            "operator": "acquired_by.author",
+            "recording id": "id",
+            "min value": "comments",
+            "max value": "comments",
         }
-
-        super().__init__(attr_dict={})
+    )
 
     def __str__(self):
         return "".join(self.write_info())
@@ -117,216 +133,66 @@ class Information(Base):
     def __repr__(self):
         return self.__str__()
 
-    def get_info_list(self, edi_lines):
+    def read_info(self, edi_lines: list[str]) -> None:
         """
-        get a list of lines from the info section
+        Read information section and parse directly to info_dict.
 
-        :param edi_lines: DESCRIPTION
-        :type edi_lines: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        edi_lines : list[str]
+            List of lines from the EDI file.
         """
+        self.info_dict = OrderedDict()
+        self._phoenix_file = False
+        self._empower_file = False
 
-        info_list = []
-        info_find = False
-        phoenix_list_02 = []
+        # 1. Identify the info section and detect format in a single pass
+        info_section = []
+        info_started = False
 
         for line in edi_lines:
+            line = line.strip()
+
+            # Check for start/end markers
             if ">info" in line.lower():
-                info_find = True
-                if len(line.strip().split()) > 1:
-                    info_list.append(line.strip().split()[1])
+                info_started = True
+                continue
+            elif info_started and line and line[0] == ">":
+                break
 
-            elif ">" in line[0:2]:
-                # need to check for xml type formating
-                if "<" in line:
-                    pass
-                else:
-                    if info_find is True:
-                        break
-                    else:
-                        pass
-
-            elif info_find:
-                if "maxinfo" in line.lower():
-                    continue
-                if (
-                    line.lower().find("run information") >= 0
-                    and line.lower().find("station") >= 0
-                ):
+            # Collect info lines for processing
+            if info_started and line:
+                # Detect format while collecting
+                if "run information" in line.lower():
                     self._phoenix_file = True
-                elif "empower" in line.lower():
-                    self._empower_file = True
-                if self._phoenix_file and len(line) > self._phoenix_col_width:
-                    info_list.append(line[0 : self._phoenix_col_width].strip())
-                    phoenix_list_02.append(
-                        line[self._phoenix_col_width :].strip()
-                    )
-                else:
-                    line = line.strip()
-                    if len(line) > 1:
-                        if len(line) <= 3 and not line.isalnum():
-                            continue
-                        info_list.append(line)
-
-        info_list += phoenix_list_02
-        # validate the information list
-        # empower has a specific format that cannot be sorted.
-        if self._empower_file:
-            info_list = self._validate_info_list(info_list, sort=False)
-
-        else:
-            info_list = self._validate_info_list(info_list, sort=True)
-        return info_list
-
-    def read_info(self, edi_lines):
-        """
-        read information section of the .edi file
-        """
-
-        self.info_dict = {}
-        self.info_list = self.get_info_list(edi_lines)
-        if self._empower_file:
-            self.info_dict, self.info_list = self._read_empower_info(
-                self.info_list
-            )
-        else:
-            # make info items attributes of Information
-            for ll in self.info_list:
-                l_list = [None, ""]
-                # phoenix has lat an lon information in the notes but separated by
-                # a space instead of an = or :
-                if (
-                    "lat" in ll.lower()
-                    or "lon" in ll.lower()
-                    or "lng" in ll.lower()
+                elif (
+                    ("empower" in line.lower() and "v" in line.lower())
+                    or "electrics" in line.lower()
+                    or "magnetics" in line.lower()
                 ):
-                    l_list = ll.split()
-                    if len(l_list) == 2:
-                        self.info_dict[l_list[0]] = l_list[1]
-                        continue
-                    elif len(l_list) == 4:
-                        self.info_dict[l_list[0]] = l_list[1]
-                        self.info_dict[l_list[2]] = l_list[3]
-                        continue
-                    elif len(l_list) == 6:
-                        self.info_dict[l_list[0]] = l_list[1] + l_list[2]
-                        self.info_dict[l_list[3]] = l_list[4] + l_list[5]
-                        continue
+                    self._empower_file = True
 
-                # need to check if there is an = or : seperator, which ever
-                # comes first is assumed to be the delimiter
-                l_key, l_value = self._read_line(ll)
-                if l_key:
-                    self.info_dict[l_key] = l_value
+                info_section.append(line)
 
-        if not self._empower_file:
-            self.parse_info()
+        # 2. Parse lines based on detected format
+        if self._empower_file:
+            self._parse_empower_info(info_section)
+            self._comments_to_string()
+        elif self._phoenix_file:
+            self._parse_phoenix_info(info_section)
+            self._comments_to_string()
+        else:
+            self._parse_standard_info(info_section)
+            self._comments_to_string()
 
-        if self.info_list is None:
-            self.logger.info("Could not read information")
-            return
+    def _comments_to_string(self) -> None:
+        """Convert list comments to a single string."""
+        for key, value in self.info_dict.items():
+            if "comment" in key and isinstance(value, list):
+                self.info_dict[key] = ",".join(value)
 
-    def _read_empower_info(self, info_list):
-        """
-        read empower style information block.  Structured as
-
-        Stations
-         Electrics
-          EX
-          EY
-         Magnetics
-          HX
-          HY
-          HZ
-
-        :param info_list: DESCRIPTION
-        :type info_list: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-
-        ch_key = {
-            "e1": "ex",
-            "e2": "ey",
-            "h1": "hx",
-            "h2": "hy",
-            "h3": "hz",
-        }
-
-        info_dict = {}
-        comp = None
-        new_list = []
-        for line in info_list:
-            og_key, l_value = self._read_line(line)
-            l_key = validate_name(og_key.lower())
-            if l_value in [None]:
-                comp = l_key
-                if comp == "electrics":
-                    comp = "data_logger"
-                elif comp in ["ex", "ey", "hx", "hy", "hz"]:
-                    comp = f"run.{comp}"
-                continue
-            elif l_value in [""]:
-                continue
-            else:
-                if l_key in [
-                    "station_name",
-                    "min_value",
-                    "max_value",
-                    "detected_sensor_type",
-                    "coordinates",
-                    "gps_(min_-_max)",
-                    "temperature_(min_-_max)",
-                    "recording_id",
-                ]:
-                    continue
-                try:
-                    l_key = self.empower_translation_dict[l_key]
-                except KeyError:
-                    new_list.append(f"{l_key} = {l_value}")
-
-                l_value = l_value.encode("ascii", "ignore").decode().lower()
-                if l_value.count("[") >= 1 and l_value.count("]") >= 1:
-                    l_value = l_value.split("[")[0].strip()
-                if l_value.count("%") >= 0:
-                    l_value = l_value.replace("%", "")
-                if l_key in ["component"]:
-                    l_value = ch_key[l_value]
-
-                if comp:
-                    if comp in ["run.hx", "run.hy", "run.hz"]:
-                        if "ac" in l_key or "dc" in l_key:
-                            continue
-
-                    if "comments" in l_key:
-                        og_key = validate_name(og_key.lower())
-                        try:
-                            info_dict[
-                                f"{comp}.{l_key}"
-                            ] += f",{og_key}={l_value}"
-                        except KeyError:
-                            info_dict[f"{comp}.{l_key}"] = f"{og_key}={l_value}"
-
-                    else:
-                        info_dict[f"{comp}.{l_key}"] = l_value
-                else:
-                    info_dict[l_key.lower()] = l_value
-
-        return info_dict, new_list
-
-    def _get_separator(self, line):
-        """
-        get separator to split line
-
-        :param line: DESCRIPTION
-        :type line: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
+    def _get_separator(self, line: str) -> str | None:
+        """Find the key-value separator in a line."""
         sep = None
         if line.count(":") > 0 and line.count("=") > 0:
             if line.find(":") < line.find("="):
@@ -342,134 +208,420 @@ class Information(Base):
 
         return sep
 
-    def _read_line(self, line):
-        sep = self._get_separator(line)
-        if sep:
-            l_list = line.split(sep, 1)
-            if len(l_list) == 2:
-                l_key = l_list[0].strip()
-                l_value = l_list[1].strip().replace('"', "")
-                if l_value.find("[") > 0 and l_value.find("]") > 0:
-                    if l_value.count(",") >= 1:
-                        l_sep = ","
-                    elif l_value.count(";") >= 1:
-                        l_sep = ";"
-                    elif l_value.count(":") >= 1:
-                        l_sep = ":"
-                    else:
-                        l_sep = None
-                    if l_sep:
-                        l_value = (
-                            l_value.replace("[", "")
-                            .replace("[", "")
-                            .split(l_sep)
-                        )
-                return l_key, l_value
-            else:
-                return l_key, ""
-        else:
-            return line, None
+    def _parse_standard_info(self, info_lines: list[str]) -> None:
+        """Parse standard format EDI info lines directly to info_dict."""
+        for line in info_lines:
+            # Skip empty lines and section headers
+            if not line or "<" in line or ">" in line:
+                continue
 
-    def write_info(self, info_list=None):
+            # Get separator and parse key/value
+            sep = self._get_separator(line)
+            if not sep:
+                self.info_dict[line.strip()] = ""
+                continue
+
+            parts = line.split(sep, 1)
+            if len(parts) != 2:
+                continue
+
+            key = parts[0].strip().lower()
+            value = parts[1].strip()
+
+            # Handle list values
+            if value.startswith("[") and value.endswith("]"):
+                value = [
+                    v.strip()
+                    for v in value[1:-1]
+                    .replace(",", " ")
+                    .replace(";", " ")
+                    .replace(":", " ")
+                    .split()
+                ]
+
+            # Apply translation dictionary
+            std_key = self._translation_dict.get(key)
+
+            if std_key is not None:
+                # Handle special processing parameters
+                if std_key == "processing_parameter":
+                    tf_parameters = self.info_dict.get(
+                        "transfer_function.processing_parameters", []
+                    )
+                    if not isinstance(tf_parameters, list):
+                        tf_parameters = [tf_parameters]
+                    tf_parameters.append(f"{key}={value}")
+                    self.info_dict["transfer_function.processing_parameters"] = (
+                        tf_parameters
+                    )
+                else:
+                    self.info_dict[std_key] = value
+            else:
+                # Store unrecognized keys with original name
+                self.info_dict[key] = value
+
+    def _parse_phoenix_info(self, info_lines: list[str]) -> None:
+        """Parse Phoenix format EDI info lines efficiently."""
+        for line in info_lines:
+            # Process each line for potential multi-column content
+            is_multi_column, columns = self._split_phoenix_columns(line)
+
+            for column in columns:
+                sep = self._get_separator(column)
+                if not sep:
+                    continue
+
+                parts = column.split(sep, 1)
+                if len(parts) != 2:
+                    continue
+
+                key = parts[0].strip().lower()
+                value = parts[1].strip()
+                if value.count("  ") > 0:
+                    value = value.split(" ")[0].strip()  # Apply Phoenix translation
+                self._apply_phoenix_translation(key, value)
+
+    def _parse_empower_info(self, info_lines: list[str]) -> None:
+        """
+        Parse Empower format EDI info lines efficiently.
+
+        Empower format has a hierarchical structure with sections for
+        general info, electrics, magnetics, and reference stations.
+        """
+        section = "general"
+        component = None
+        sub_section = None
+
+        # Process all lines and handle hierarchical structure
+        for line in info_lines:
+            original_line = line
+            line = line.strip()
+
+            # Skip empty lines
+            if not line:
+                continue
+
+            # Get indentation level to understand hierarchy
+            indent_level = len(original_line) - len(original_line.lstrip())
+
+            # Check for main section headers (typically at low indentation)
+            line_lower = line.lower()
+            if indent_level <= 5:  # Main sections are usually at low indentation
+                if line_lower == "stations":
+                    section = "stations"
+                    continue
+                elif line_lower == "electrics":
+                    section = "electrics"
+                    sub_section = "electrics"
+                    continue
+                elif line_lower == "magnetics":
+                    section = "magnetics"
+                    sub_section = "magnetics"
+                    continue
+                elif line_lower == "reference":
+                    section = "reference"
+                    sub_section = "reference"
+                    continue
+
+            # Component-level headers (e.g., "EX", "EY", "HX", "HY", etc.)
+            if section in ["electrics", "magnetics", "reference"] or sub_section in [
+                "electrics",
+                "magnetics",
+                "reference",
+            ]:
+                # Check if this is a component header (no separator and matches component pattern)
+                if self._get_separator(line) is None and line_lower in [
+                    "ex",
+                    "ey",
+                    "hx",
+                    "hy",
+                    "hz",
+                    "rx",
+                    "ry",
+                    "e1",
+                    "e2",
+                    "h1",
+                    "h2",
+                    "h3",
+                ]:  # Components are typically more indented
+                    component = line_lower
+                    continue
+
+            # Regular key-value pairs
+            sep = self._get_separator(line)
+            if not sep:
+                # Handle special cases for lines without separators
+                if line_lower in ["editing workbench", "stations"]:
+                    section = line_lower.replace(" ", "_")
+                continue
+
+            parts = line.split(sep, 1)
+            if len(parts) != 2:
+                continue
+
+            key = parts[0].strip().lower()
+            value = parts[1].strip()
+
+            # Clean up value (remove units in brackets and degree symbol)
+            if value.find("[") > 2:  # need to avoid values that are lists
+                value = value.replace("[", "").replace("]", "").split(",")
+                if len(value) == 1:
+                    value = value[0].strip()
+                    value = value.split(" ")[0]  # remove units
+                else:
+                    value = ",".join(v.strip() for v in value)
+
+            value = value.replace("°", "").replace("Â", "").strip()
+
+            # Build the key based on section/component context
+            std_key = self._get_empower_std_key(section, component, key, sub_section)
+
+            # special case handling
+            if std_key:
+                if "remote_references." in std_key:
+                    # skip these for now
+                    if (
+                        "acquired_by" in std_key
+                        or "data_logger" in std_key
+                        or "author" in std_key
+                    ):
+                        continue
+                if "azimuth" in std_key:
+                    # Only skip azimuth if it's in a problematic context, not for measured_azimuth
+                    if "measured_azimuth" not in std_key:
+                        continue
+                if "component" in std_key:
+                    value = component
+                if "hx" in std_key or "hy" in std_key or "hz" in std_key:
+                    if "acquired_by" in std_key or "data_logger" in std_key:
+                        # Handle author information for Hx/Hy/Hz
+                        std_key = (
+                            std_key.replace(".hx.", ".")
+                            .replace(".hy.", ".")
+                            .replace(".hz.", ".")
+                        )
+                    elif "ac" in std_key or "dc" in std_key:
+                        # Handle AC/DC values for Hx/Hy/Hz
+                        std_key = std_key.replace("ac", "comments").replace(
+                            "dc", "comments"
+                        )
+
+                if "comments" in std_key:
+                    original_value = self.info_dict.get(std_key, [])
+                    if not isinstance(original_value, list):
+                        original_value = [] if not original_value else [original_value]
+                    original_value.append(f"{key}={value}")
+                    value = original_value
+                elif "data_logger.model" in std_key:
+                    std_key = "run.data_logger.model"
+                elif std_key.endswith(".id") and "sensor.id" not in std_key:
+                    # Only map recording IDs, not sensor IDs
+                    std_key = "run.id"
+                elif "geographic_name" in std_key:
+                    if "remote_references" in std_key:
+                        std_key = "transfer_function.remote_references.geographic_name"
+                    else:
+                        std_key = "station.geographic_name"
+                elif "author" in std_key:
+                    std_key = "run.acquired_by.author"
+                self.info_dict[std_key] = value
+
+            else:
+                # For unrecognized keys, store with section prefix
+                if component:
+                    context_key = f"{section}.{component}.{key}"
+                elif sub_section and sub_section != section:
+                    context_key = f"{sub_section}.{key}"
+                elif section != "general":
+                    context_key = f"{section}.{key}"
+                else:
+                    context_key = key
+                self.info_dict[context_key] = value
+
+    def _get_empower_std_key(
+        self,
+        section: str,
+        component: str | None,
+        key: str,
+        sub_section: str | None = None,
+    ) -> str | None:
+        """
+        Get standardized key for Empower format based on section and component context.
+
+        Parameters
+        ----------
+        section : str
+            Current section ("general", "electrics", "magnetics", "reference", etc.)
+        component : str
+            Current component (e.g., "ex", "ey", "hx", "hy", "hz", "rx", "ry", None)
+        key : str
+            Original key name
+        sub_section : str, optional
+            Sub-section for additional context
+
+        Returns
+        -------
+        str or None
+            Standardized key name or None if no mapping found
+        """
+        # Handle general section keys
+        if section == "general":
+            mapped_key = self._empower_translation_dict.get(key)
+            if mapped_key:
+                return mapped_key
+            return None
+
+        # Handle component-specific keys
+        if not component:
+            # Handle section-level keys without component context
+            mapped_key = self._empower_translation_dict.get(key)
+            if mapped_key:
+                if section == "reference":
+                    return f"transfer_function.remote_references.{mapped_key}"
+                elif sub_section:
+                    return f"run.{mapped_key}"
+                else:
+                    return mapped_key
+            return None
+
+        # Map component names to standard names
+        component_map = {
+            "ex": "ex",
+            "ey": "ey",
+            "hx": "hx",
+            "hy": "hy",
+            "hz": "hz",
+            "rx": "rrhx",  # Remote reference components
+            "ry": "rrhy",
+            "e1": "ex",  # Alternative naming
+            "e2": "ey",
+            "h1": "hx",
+            "h2": "hy",
+            "h3": "hz",
+        }
+
+        std_component = component_map.get(component, component)
+
+        # Create run-prefixed attribute key
+        attribute_key = self._empower_translation_dict.get(key)
+        if attribute_key:
+            if section == "reference":
+                return f"transfer_function.remote_references.{std_component}.{attribute_key}"
+            else:
+                return f"run.{std_component}.{attribute_key}"
+
+        # Handle special cases for comments field
+        if key in ["cal name", "cal_name", "saturation", "min value", "max value"]:
+            # Append to comments field
+            if section == "reference":
+                return f"transfer_function.remote_references.{std_component}.comments"
+            else:
+                return f"run.{std_component}.comments"
+
+        # Default case: use run.component.key format
+        if section == "reference":
+            return f"transfer_function.remote_references.{std_component}.{key}"
+        else:
+            return f"run.{std_component}.{key}"
+
+    def _split_phoenix_columns(self, line: str) -> tuple[bool, list[str]]:
+        """
+        Split Phoenix line into columns based on whitespace gaps and separators.
+        Returns (is_multi_column, list_of_columns)
+        """
+        import re
+
+        # Check for basic indicators first
+        if not line or len(line) < 10:
+            return False, [line]
+
+        # Look for patterns that indicate multi-column format
+        parts = [(m.group(), m.start()) for m in re.finditer(r"\S+", line)]
+
+        if len(parts) < 4:  # Need at least 4 words for two key-value pairs
+            return False, [line]
+
+        # Calculate word gaps
+        gaps = [
+            parts[i + 1][1] - (parts[i][1] + len(parts[i][0]))
+            for i in range(len(parts) - 1)
+        ]
+
+        # Find the largest gap
+        if not gaps:
+            return False, [line]
+
+        max_gap = max(gaps)
+        if max_gap <= 3:  # Too small to be a column separator
+            return False, [line]
+
+        max_gap_idx = gaps.index(max_gap)
+        split_pos = parts[max_gap_idx + 1][1]
+
+        # Check if we have key-value pairs on both sides
+        left_text = line[:split_pos].strip()
+        right_text = line[split_pos:].strip()
+
+        # Verify both columns have separators
+        left_has_sep = ":" in left_text or "=" in left_text
+        right_has_sep = ":" in right_text or "=" in right_text
+
+        if left_has_sep and right_has_sep:
+            return True, [left_text, right_text]
+
+        return False, [line]
+
+    def _apply_phoenix_translation(self, key: str, value: str) -> None:
+        """Apply Phoenix-specific translations and handle special cases."""
+
+        # Remove units for resistance values
+        if "Pot Resist".lower() in key.lower() and isinstance(value, str):
+            value = value.split()[0]
+
+        # Handle voltage with AC/DC
+        if "voltage" in key.lower() and isinstance(value, str):
+            comps = value.replace(" ", "").split(",")
+            for comp in comps:
+                if "=" in comp:
+                    typ, val = comp.split("=")
+                    typ = typ.lower()
+                    val = val.replace("mV", "")
+                    std_key = f"run.{key[0:2].lower()}.{typ}.start"
+                    self.info_dict[std_key] = val
+            return
+
+        std_key = self._phoenix_translation_dict.get(key.lower(), "phoenix_attribute")
+        if std_key:
+            if isinstance(std_key, list):
+                for kk in std_key:
+                    self.info_dict[kk] = value
+            else:
+                self.info_dict[std_key] = value
+            # Add Phoenix sensor metadata for Hx/Hy/Hz
+            if " sen" in key.lower():
+                comp = key.lower().split()[0]
+                self.info_dict[f"{comp}.sensor.manufacturer"] = "Phoenix Geophysics"
+                self.info_dict[f"{comp}.sensor.type"] = "Induction Coil"
+        else:
+            self.info_dict[key] = value
+
+    def write_info(self) -> list[str]:
         """
         write out information
         """
 
-        if info_list is not None:
-            self.info_list = self._validate_info_list(info_list)
-
         info_lines = [">INFO\n"]
-        for line in sorted(list(set(self.info_list))):
-            info_lines.append(f"{' '*4}{line}\n")
 
-        return info_lines
-
-    def _validate_info_list(self, info_list, sort=True):
-        """
-        check to make sure the info list input is valid, really just checking
-        for Phoenix format where they put two columns in the file and remove
-        any blank lines and the >info line
-        """
-
-        new_info_list = []
-        # try to remove repeating lines
-        if sort:
-            info_list = sorted(list(set(info_list)))
-        else:
-            info_list = info_list
-        for line in info_list:
-            # get rid of empty lines
-            lt = str(line).strip()
-            if len(lt) > 1:
-                if ">" in line:
-                    pass
-                else:
-                    new_info_list.append(line.strip())
-
-        return new_info_list
-
-    def parse_info(self):
-        """
-        Try to parse the info section into useful information.
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        new_dict = {}
-        processing_parameters = []
         for key, value in self.info_dict.items():
             if key is None:
                 continue
-            try:
-                if self._phoenix_file:
-                    new_key = self.phoenix_translation_dict[key.lower()]
-                else:
-                    new_key = self.translation_dict[key.lower()]
+            if value in ["", None]:
+                info_lines.append(f"{' '*4}{key}\n")
+                continue
+            if isinstance(value, list):
+                value = f"[{', '.join(value)}]"
+            elif isinstance(value, str):
+                value = value.strip()
+            info_lines.append(f"{' '*4}{key}={value}\n")
 
-                if isinstance(new_key, list):
-                    values = value.split(",")
-                    if len(values) == len(new_key):
-                        for vkey, item in zip(new_key, values):
-                            item_value = (
-                                item.lower().split("=")[1].replace("mv", "")
-                            )
-                            new_dict[vkey] = item_value
-                    else:
-                        self.logger.warning(f"Could not parse line {value}")
-                        raise KeyError
-                else:
-                    if new_key == "processing_parameter":
-                        processing_parameters.append(f"{key}={value}")
-                    else:
-                        if "pot resist" in key.lower():
-                            new_dict[new_key] = value.split()[0]
-                        elif key.lower().endswith("sen"):
-                            comp = key.lower().split()[0]
-                            new_dict[f"{comp}.sensor.manufacturer"] = (
-                                "Phoenix Geophysics"
-                            )
-                            new_dict[f"{comp}.sensor.type"] = "Induction Coil"
-                            new_dict[new_key] = value
-                        elif new_key in [
-                            "survey.time_period.start_date",
-                            "survey.time_period.end_date",
-                        ]:
-                            if value.count("-") == 1:
-                                new_dict[new_key] = value.split("-")[0]
-                        else:
-                            new_dict[new_key] = value
-
-                for item in self.info_list:
-                    if key.lower() in item.lower():
-                        self.info_list.remove(item)
-                        break
-
-            except KeyError:
-                new_dict[key] = value
-
-        if processing_parameters != []:
-            new_dict["transfer_function.processing_parameters"] = (
-                processing_parameters
-            )
-
-        self.info_dict = new_dict
+        return info_lines
