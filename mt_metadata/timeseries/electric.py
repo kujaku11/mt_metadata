@@ -16,7 +16,7 @@ class Electric(ChannelBase):
     component: Annotated[
         str,
         Field(
-            default="",
+            default="e1",
             description="Component of the electric field.",
             alias=None,
             pattern=r"^[eE][a-zA-Z1-9]*$",

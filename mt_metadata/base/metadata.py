@@ -154,10 +154,9 @@ class MetadataBase(DotNotationBaseModel):
         coerce_numbers_to_str=True,
     )
 
-    _default_keys: List[str] = PrivateAttr(
-        ["annotation", "default", "examples", "description"]
-    )
-    _json_extras: List[str] = PrivateAttr(["units", "required"])
+    _default_keys: List[str] = PrivateAttr(["annotation", "default", "description"])
+    _json_extras: List[str] = PrivateAttr(["units", "required", "examples", "alias"])
+    _skip_equals: List[str] = PrivateAttr([])
 
     @computed_field
     @property
@@ -271,6 +270,8 @@ class MetadataBase(DotNotationBaseModel):
 
         equals = True
         for key, value in home_dict.items():
+            if key in self._skip_equals:
+                continue
             try:
                 other_value = other_dict[key]
                 if isinstance(value, np.ndarray):

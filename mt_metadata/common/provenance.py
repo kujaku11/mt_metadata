@@ -5,7 +5,7 @@ from typing import Annotated
 
 import numpy as np
 import pandas as pd
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import AuthorPerson, Comment, Person, Software
@@ -14,6 +14,7 @@ from mt_metadata.common.mttime import MTime
 
 # =====================================================
 class Provenance(MetadataBase):
+    _skip_equals: list[str] = PrivateAttr(["creation_time"])
     creation_time: Annotated[
         MTime | str | float | int | np.datetime64 | pd.Timestamp,
         Field(
