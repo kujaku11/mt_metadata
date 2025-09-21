@@ -491,6 +491,29 @@ class Run(MetadataBase):
         else:
             logger.warning(f"Could not find {channel_id} to remove.")
 
+    def update_channel_keys(self):
+        """
+        Update the keys in the channels ListDict to match current channel components.
+
+        This is useful when channel components have been modified after channels were
+        added to the run, ensuring that channels can be accessed by their
+        current component values.
+
+        :returns: mapping of old keys to new keys
+        :rtype: dict
+
+        Example:
+            >>> run = Run()
+            >>> channel = Electric()
+            >>> channel.component = ""  # empty component initially
+            >>> run.add_channel(channel)
+            >>> channel.component = "ex"  # update the component
+            >>> key_mapping = run.update_channel_keys()
+            >>> print(key_mapping)  # {'': 'ex'}
+            >>> # Now channel can be accessed as run.channels['ex']
+        """
+        return self.channels.update_keys()
+
     @property
     def n_channels(self):
         return len(self.channels)

@@ -39,6 +39,7 @@ from .enumerations import (
     SignConventionEnum,
     SymmetryEnum,
 )
+from .mttime import MTime
 from .comment import Comment
 from .list_dict import ListDict
 from .range import MinMaxRange, StartEndRange
@@ -72,6 +73,7 @@ __all__ = [
     "SymmetryEnum",
     "SignConventionEnum",
     "LicenseEnum",
+    "MTime",
     "Comment",
     "ListDict",
     "MinMaxRange",

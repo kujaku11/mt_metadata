@@ -517,6 +517,29 @@ class Station(MetadataBase):
         else:
             logger.warning(f"Could not find {run_id} to remove.")
 
+    def update_run_keys(self):
+        """
+        Update the keys in the runs ListDict to match current run IDs.
+
+        This is useful when run IDs have been modified after runs were
+        added to the station, ensuring that runs can be accessed by their
+        current ID values.
+
+        :returns: mapping of old keys to new keys
+        :rtype: dict
+
+        Example:
+            >>> station = Station()
+            >>> run = Run()
+            >>> run.id = ""  # empty ID initially
+            >>> station.add_run(run)
+            >>> run.id = "001"  # update the ID
+            >>> key_mapping = station.update_run_keys()
+            >>> print(key_mapping)  # {'': '001'}
+            >>> # Now run can be accessed as station.runs['001']
+        """
+        return self.runs.update_keys()
+
     def sort_runs_by_time(self, inplace=True, ascending=True):
         """
         return a list of runs sorted by start time in the order of ascending or

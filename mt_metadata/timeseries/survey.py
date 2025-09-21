@@ -637,6 +637,7 @@ class Survey(MetadataBase):
         if update:
             self.update_bounding_box()
             self.update_time_period()
+            self.update_station_keys()
 
     def get_station(self, station_id):
         """
@@ -671,6 +672,29 @@ class Survey(MetadataBase):
                 self.update_time_period()
         else:
             logger.warning(f"Could not find {station_id} to remove.")
+
+    def update_station_keys(self):
+        """
+        Update the keys in the stations ListDict to match current station IDs.
+
+        This is useful when station IDs have been modified after stations were
+        added to the survey, ensuring that stations can be accessed by their
+        current ID values.
+
+        :returns: mapping of old keys to new keys
+        :rtype: dict
+
+        Example:
+            >>> survey = Survey()
+            >>> station = Station()
+            >>> station.id = ""  # empty ID initially
+            >>> survey.add_station(station)
+            >>> station.id = "MT001"  # update the ID
+            >>> key_mapping = survey.update_station_keys()
+            >>> print(key_mapping)  # {'': 'MT001'}
+            >>> # Now station can be accessed as survey.stations['MT001']
+        """
+        return self.stations.update_keys()
 
     def update_bounding_box(self):
         """

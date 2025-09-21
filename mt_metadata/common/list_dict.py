@@ -301,6 +301,36 @@ class ListDict:
         else:
             raise KeyError(f"{key} is not in ListDict keys.")
 
+    def update_keys(self):
+        """
+        Update all keys in the ListDict based on the current state of the objects.
+
+        This is useful when object IDs have been changed after being added to the ListDict.
+        The method will re-key all objects using their current ID values.
+
+        Returns
+        -------
+        dict
+            A dictionary mapping old keys to new keys for objects that were re-keyed.
+        """
+        updates = {}
+        new_home = OrderedDict()
+
+        for old_key, obj in self._home.items():
+            try:
+                new_key = self._get_key_from_object(obj)
+            except TypeError:
+                # If we can't get a key from the object, keep the old key
+                new_key = old_key
+
+            if old_key != new_key:
+                updates[old_key] = new_key
+
+            new_home[new_key] = obj
+
+        self._home = new_home
+        return updates
+
     def to_dict(self, single=False, nested=False, required=False) -> None:
         """ """
         return None

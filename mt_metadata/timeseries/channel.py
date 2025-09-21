@@ -7,7 +7,14 @@ from typing import Annotated
 
 import numpy as np
 from loguru import logger
-from pydantic import AliasChoices, Field, field_validator, PrivateAttr, ValidationInfo
+from pydantic import (
+    AliasChoices,
+    computed_field,
+    Field,
+    field_validator,
+    PrivateAttr,
+    ValidationInfo,
+)
 
 from mt_metadata import NULL_VALUES
 from mt_metadata.base import helpers, MetadataBase
@@ -374,6 +381,19 @@ class ChannelBase(MetadataBase):
             # Sort filters and validate for duplicates
             self._sort_filters()
             self._validate_no_duplicates()
+
+    @computed_field
+    @property
+    def filter_names(self) -> list[str]:
+        """
+        List of filter names applied to the channel.
+
+        Returns
+        -------
+        list[str]
+            List of filter names.
+        """
+        return [f.name for f in self.filters]
 
     def remove_filter(self, name: str, reset_stages: bool = True) -> None:
         """
