@@ -178,7 +178,7 @@ def test_channel_default_values(default_channel, subtests):
     scalar_attrs = {
         "channel_number": 0,
         "channel_id": None,
-        "component": "",
+        "component": "auxiliary_default",
         "measurement_azimuth": 0.0,
         "measurement_tilt": 0.0,
         "sample_rate": 0.0,
@@ -279,7 +279,7 @@ def test_channel_base_default_values(default_channel_base, subtests):
     scalar_attrs = {
         "channel_number": 0,
         "channel_id": None,
-        "component": "",
+        "component": "auxiliary_default",
         "measurement_azimuth": 0.0,
         "measurement_tilt": 0.0,
         "sample_rate": 0.0,

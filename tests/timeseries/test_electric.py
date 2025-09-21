@@ -144,7 +144,7 @@ class TestElectricStructure:
     def test_default_attributes(self, empty_electric, subtests):
         """Test the default values of Electric attributes."""
         attribute_tests = [
-            ("component", ""),
+            ("component", "e_default"),
             ("dipole_length", 0.0),
             ("positive", Electrode),
             ("negative", Electrode),
