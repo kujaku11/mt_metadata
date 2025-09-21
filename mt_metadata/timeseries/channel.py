@@ -85,7 +85,7 @@ class ChannelBase(MetadataBase):
     component: Annotated[
         str,
         Field(
-            default="auxiliary",
+            default="auxiliary_default",
             description="Name of the component measured, can be uppercase and/or lowercase.  For now electric channels should start with an 'e' and magnetic channels start with an 'h', followed by the component. If there are multiples of the same channel the name could include an integer.  {type}{component}{number} --> Ex01.",
             alias=None,
             pattern=r"\w+",  # At least one word character
