@@ -114,6 +114,9 @@ class XMLChannelMTChannel(BaseTranslator):
         else:
             mt_channel = Auxiliary(type=ch_dict["measurement"])
 
+        # Always set component from XML channel code, overriding any defaults
+        mt_channel.component = create_mt_component(xml_channel.code)
+
         mt_channel = self._get_mt_position(xml_channel, mt_channel)
         mt_channel = self._parse_xml_comments(xml_channel.comments, mt_channel)
         mt_channel = self._sensor_to_mt(xml_channel.sensor, mt_channel)
@@ -125,9 +128,6 @@ class XMLChannelMTChannel(BaseTranslator):
                 value = getattr(xml_channel, xml_key)
                 if value:
                     mt_channel.update_attribute(mt_key, value)
-
-        if mt_channel.component in [None, ""]:
-            mt_channel.component = create_mt_component(xml_channel.code)
 
         # fill channel filters
         for filter_name, mt_filter in mt_filters.items():

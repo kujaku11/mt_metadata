@@ -50,7 +50,7 @@ def test_auxiliary_default_values(auxiliary_instance, subtests):
     """Test that default values are correctly set."""
     default_values = {
         "type": "auxiliary",
-        "component": "",
+        "component": "auxiliary_default",
         "measurement_azimuth": 0.0,
         "measurement_tilt": 0.0,
     }
