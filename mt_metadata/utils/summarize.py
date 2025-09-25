@@ -27,7 +27,8 @@ Example usage:
     # Get BaseDict-compatible summary
     >>> summary = summarize_pydantic_standards()
 """
-from typing import get_args, get_origin, Union
+from pathlib import Path
+from typing import Any, get_args, get_origin, Union
 
 # =============================================================================
 # Imports
@@ -310,7 +311,23 @@ def summarize_pydantic_standards(module: str = "timeseries") -> BaseDict:
     return summary_dict
 
 
-def summary_to_array(summary_dict):
+def summary_to_array(
+    summary_dict: dict[str, dict[str, Any]],
+    dtype: np.dtype = np.dtype(
+        [
+            ("attribute", "U72"),
+            ("type", "U15"),
+            ("required", np.bool_),
+            ("style", "U72"),
+            ("units", "U32"),
+            ("description", "U300"),
+            ("options", "U150"),
+            ("alias", "U72"),
+            ("example", "U72"),
+            ("default", "U72"),
+        ]
+    ),
+) -> np.ndarray:
     """
     Summarize all metadata from a summarized dictionary of standards
 
@@ -324,20 +341,6 @@ def summary_to_array(summary_dict):
     np.array
         numpy structured array
     """
-    dtype = np.dtype(
-        [
-            ("attribute", "U72"),
-            ("type", "U15"),
-            ("required", np.bool_),
-            ("style", "U72"),
-            ("units", "U32"),
-            ("description", "U300"),
-            ("options", "U150"),
-            ("alias", "U72"),
-            ("example", "U72"),
-            ("default", "U72"),
-        ]
-    )
 
     entries = np.zeros(len(summary_dict.keys()) + 1, dtype=dtype)
     entries[0]["attribute"] = "mt_metadata.standards.version"
@@ -365,7 +368,9 @@ def summary_to_array(summary_dict):
     return entries
 
 
-def summarize_standards(module="timeseries", csv_fn=None):
+def summarize_standards(
+    module: str = "timeseries", csv_fn: str | Path | None = None
+) -> pd.DataFrame:
     """
     Summarize standards into a numpy array and write a csv if specified
 
