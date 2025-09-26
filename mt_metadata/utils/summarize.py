@@ -365,7 +365,27 @@ def summary_to_array(summary_dict):
     return entries
 
 
-def summarize_standards(module="timeseries", csv_fn=None):
+def summary_to_dataframe(summary_dict):
+    """
+    Convert a summary dictionary to a pandas DataFrame.
+
+    Parameters
+    ----------
+    summary_dict : dict
+        Dictionary of summarized standards
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the summarized standards
+    """
+    entries = summary_to_array(summary_dict)
+    return pd.DataFrame(entries)
+
+
+def summarize_standards(
+    module="timeseries", csv_fn=None, output_type="dataframe"
+) -> Union[pd.DataFrame, np.ndarray]:
     """
     Summarize standards into a numpy array and write a csv if specified
 
@@ -378,14 +398,18 @@ def summarize_standards(module="timeseries", csv_fn=None):
 
     Returns
     -------
-    numpy.ndarray
-        structured numpy array
+    numpy.ndarray | pd.DataFrame
+        If output_type is "array", returns a numpy structured array.
+        If output_type is "dataframe", returns a pandas DataFrame.
     """
 
     summary_dict = summarize_pydantic_standards(module)
-    summary_df = pd.DataFrame(summary_to_array(summary_dict))
+    if output_type == "array":
+        return summary_to_array(summary_dict)
+    elif output_type == "dataframe" and csv_fn is None:
+        return summary_to_dataframe(summary_dict)
 
-    if csv_fn:
+    elif csv_fn:
+        summary_df = summary_to_dataframe(summary_dict)
         summary_df.to_csv(csv_fn, index=False)
-
     return summary_df
