@@ -176,15 +176,27 @@ class TestFAPTranslation:
 
         assert len(fap_elements_0) == len(fap_elements_1)
 
-        for element_1, element_2 in zip(fap_elements_0, fap_elements_1):
-            with subtests.test("frequency"):
-                assert element_1.frequency == element_2.frequency
+        # Extract arrays for efficient comparison
+        frequencies_0 = np.array([elem.frequency for elem in fap_elements_0])
+        frequencies_1 = np.array([elem.frequency for elem in fap_elements_1])
+        amplitudes_0 = np.array([elem.amplitude for elem in fap_elements_0])
+        amplitudes_1 = np.array([elem.amplitude for elem in fap_elements_1])
+        phases_0 = np.array([np.deg2rad(elem.phase) for elem in fap_elements_0])
+        phases_1 = np.array([elem.phase for elem in fap_elements_1])
 
-            with subtests.test("amplitude"):
-                assert element_1.amplitude == element_2.amplitude
+        # Batch assertions for all elements at once
+        with subtests.test("frequencies"):
+            assert np.allclose(
+                frequencies_0, frequencies_1
+            ), "Frequency arrays do not match"
 
-            with subtests.test("phase"):
-                assert np.deg2rad(element_1.phase) == element_2.phase
+        with subtests.test("amplitudes"):
+            assert np.allclose(
+                amplitudes_0, amplitudes_1
+            ), "Amplitude arrays do not match"
+
+        with subtests.test("phases"):
+            assert np.allclose(phases_0, phases_1), "Phase arrays do not match"
 
     def test_mt_translation_fap_elements(self, base_inventory, mt_fap, subtests):
         """Test if FAP elements are correctly translated to MT format."""

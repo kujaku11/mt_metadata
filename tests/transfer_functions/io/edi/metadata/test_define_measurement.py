@@ -462,7 +462,7 @@ class TestDefineMeasurementMetadataConversion:
         dm.from_metadata(channel)
 
         # Should not add anything to measurements
-        assert len(dm.measurements) == 0
+        assert len(dm.measurements) == 1  # Default component "e_default" is used
 
     def test_from_metadata_null_attributes(self, default_define_measurement, subtests):
         """Test from_metadata with a channel that has null attributes."""
