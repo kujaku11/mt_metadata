@@ -18,7 +18,7 @@ class TimePeriod(MetadataBase):
     """
 
     end: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime,
+        str | float | int | np.datetime64 | pd.Timestamp | MTime,
         Field(
             default_factory=lambda: MTime(time_stamp="1980-01-01T00:00:00+00:00"),
             description="End date and time of collection in UTC.",
@@ -33,7 +33,7 @@ class TimePeriod(MetadataBase):
     ]
 
     start: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime,
+        str | float | int | np.datetime64 | pd.Timestamp | MTime,
         Field(
             default_factory=lambda: MTime(),
             description="Start date and time of collection in UTC.",
@@ -74,7 +74,7 @@ class TimePeriodDate(MetadataBase):
     """
 
     end_date: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime | MDate,
+        str | float | int | np.datetime64 | pd.Timestamp | MTime | MDate,
         Field(
             default_factory=lambda: MDate(time_stamp="1980-01-01"),
             description="End date and time of collection in UTC.",
@@ -89,7 +89,7 @@ class TimePeriodDate(MetadataBase):
     ]
 
     start_date: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime | MDate,
+        str | float | int | np.datetime64 | pd.Timestamp | MTime | MDate,
         Field(
             default_factory=lambda: MDate(time_stamp="1980-01-01"),
             description="Start date and time of collection in UTC.",

@@ -33,6 +33,7 @@ from typing import get_args, get_origin, Union
 # Imports
 # =============================================================================
 import numpy as np
+from numpy._typing._array_like import NDArray
 import pandas as pd
 from loguru import logger
 
@@ -42,6 +43,21 @@ from mt_metadata.utils.validators import validate_name
 
 
 # =============================================================================
+
+SUMMARIZE_DTYPE = np.dtype(
+    [
+        ("attribute", "U72"),
+        ("type", "U15"),
+        ("required", np.bool_),
+        ("style", "U72"),
+        ("units", "U32"),
+        ("description", "U300"),
+        ("options", "U150"),
+        ("alias", "U72"),
+        ("example", "U72"),
+        ("default", "U72"),
+    ]
+)
 
 
 def extract_metadata_fields_from_pydantic(metadata_class):
@@ -310,7 +326,7 @@ def summarize_pydantic_standards(module: str = "timeseries") -> BaseDict:
     return summary_dict
 
 
-def summary_to_array(summary_dict):
+def summary_to_array(summary_dict, dtype=SUMMARIZE_DTYPE) -> np.ndarray:
     """
     Summarize all metadata from a summarized dictionary of standards
 
@@ -324,20 +340,6 @@ def summary_to_array(summary_dict):
     np.array
         numpy structured array
     """
-    dtype = np.dtype(
-        [
-            ("attribute", "U72"),
-            ("type", "U15"),
-            ("required", np.bool_),
-            ("style", "U72"),
-            ("units", "U32"),
-            ("description", "U300"),
-            ("options", "U150"),
-            ("alias", "U72"),
-            ("example", "U72"),
-            ("default", "U72"),
-        ]
-    )
 
     entries = np.zeros(len(summary_dict.keys()) + 1, dtype=dtype)
     entries[0]["attribute"] = "mt_metadata.standards.version"
@@ -384,7 +386,10 @@ def summary_to_dataframe(summary_dict):
 
 
 def summarize_standards(
-    module="timeseries", csv_fn=None, output_type="dataframe"
+    module="timeseries",
+    csv_fn=None,
+    output_type="dataframe",
+    dtype=SUMMARIZE_DTYPE,
 ) -> Union[pd.DataFrame, np.ndarray]:
     """
     Summarize standards into a numpy array and write a csv if specified
@@ -405,7 +410,7 @@ def summarize_standards(
 
     summary_dict = summarize_pydantic_standards(module)
     if output_type == "array":
-        return summary_to_array(summary_dict)
+        return summary_to_array(summary_dict, dtype=dtype)
     elif output_type == "dataframe" and csv_fn is None:
         return summary_to_dataframe(summary_dict)
 
