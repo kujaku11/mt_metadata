@@ -3,8 +3,9 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator, ValidationInfo
 
+from mt_metadata import NULL_VALUES
 from mt_metadata.base import MetadataBase
 
 
@@ -39,7 +40,7 @@ class Rating(MetadataBase):
     ]
 
     value: Annotated[
-        int | None,
+        int | None | str,
         Field(
             default=None,
             description="A rating from 1-5 where 1 is bad and 5 is good and 0 if unrated.",
@@ -53,3 +54,26 @@ class Rating(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def validate_value(
+        cls, value: int | None | str, info: ValidationInfo
+    ) -> int | None | str:
+        if isinstance(value, str):
+            try:
+                value = int(value)
+                if value < 0 or value > 5:
+                    raise ValueError("Invalid rating value must be between 0 and 5.")
+
+            except ValueError:
+                if value in NULL_VALUES:
+                    value = None
+                else:
+                    raise ValueError(f"Invalid rating value: {value}")
+        elif isinstance(value, int):
+            if value < 0 or value > 5:
+                raise ValueError("Invalid rating value must be between 0 and 5.")
+        elif value is not None:
+            raise ValueError(f"Invalid rating value: {value}")
+        return value
