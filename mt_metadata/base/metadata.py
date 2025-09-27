@@ -427,8 +427,10 @@ class MetadataBase(DotNotationBaseModel):
 
         # Also check for any other MTH5-specific fields that might not be copyable
         if hasattr(self, "mth5_type"):
-            # Preserve mth5_type in the copy
-            update["mth5_type"] = getattr(self, "mth5_type", None)
+            mth5_type_value = getattr(self, "mth5_type", None)
+            # Only preserve mth5_type if it has a valid non-None value
+            if mth5_type_value is not None:
+                update["mth5_type"] = mth5_type_value
 
         try:
             copied_obj = self.model_copy(update=update, deep=deep)
