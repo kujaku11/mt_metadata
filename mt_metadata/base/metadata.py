@@ -406,7 +406,45 @@ class MetadataBase(DotNotationBaseModel):
             A copy of the current object.
         """
 
-        return self.model_copy(update=update, deep=deep)
+        # Handle HDF5 references and other non-copyable objects
+        if update is None:
+            update = {}
+        else:
+            update = dict(update)  # Convert to mutable dict
+
+        # Check for HDF5 references that cannot be deep copied
+        if deep and hasattr(self, "hdf5_reference"):
+            hdf5_ref = getattr(self, "hdf5_reference", None)
+            if hdf5_ref is not None:
+                # Set to None to avoid deepcopy issues
+                update["hdf5_reference"] = None
+
+        # Also check for any other MTH5-specific fields that might not be copyable
+        if hasattr(self, "mth5_type"):
+            # Preserve mth5_type in the copy
+            update["mth5_type"] = getattr(self, "mth5_type", None)
+
+        try:
+            copied_obj = self.model_copy(update=update, deep=deep)
+        except (TypeError, AttributeError) as e:
+            if "no default __reduce__" in str(e) or "__cinit__" in str(e):
+                # Fallback: create a new instance from dictionary representation
+                # This avoids any non-copyable objects entirely
+                self_dict = self.to_dict()
+                new_instance = type(self)()
+                new_instance.from_dict(self_dict)
+
+                # Apply any updates
+                for key, value in update.items():
+                    if hasattr(new_instance, key):
+                        setattr(new_instance, key, value)
+
+                return new_instance
+            else:
+                # Re-raise if it's a different error
+                raise
+
+        return copied_obj
 
     def get_all_fields(self) -> dict:
         """
