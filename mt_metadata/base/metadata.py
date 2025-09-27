@@ -388,7 +388,13 @@ class MetadataBase(DotNotationBaseModel):
     ) -> "MetadataBase":
         """
         Create a copy of the current object.  This is a wrapper around the
-        pydantic copy method.
+        pydantic copy method. If the object contains non-copyable objects
+        this will remove them from the copy.  If you want to preserve
+        these objects, you will need to implement a custom copy method.
+
+        The main attribute that causes issues is the HDF5 reference.
+        This attribute cannot be deep copied and will be set to None in
+        the copied object.
 
         Parameters
         ----------
