@@ -661,7 +661,7 @@ class MetadataBase(DotNotationBaseModel):
         all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
 
         return create_model(  # type: ignore
-            name,
+            self._class_name,  # Preserve the original class name
             __base__=MetadataBase,
             **all_fields,
         )
