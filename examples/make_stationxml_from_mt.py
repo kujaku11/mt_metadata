@@ -53,7 +53,7 @@ for station in ["KSP33"]:
     xml_fn = "_".join(
         [
             f"{mtex.surveys[0].fdsn.network}",
-            f"{mtex.surveys[0].time_period._start_dt.year}",
+            f"{mtex.surveys[0].time_period.start.year}",
             f"{station}",
             f"{today}.xml",
         ]

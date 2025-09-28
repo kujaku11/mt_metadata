@@ -2145,7 +2145,7 @@ class TF:
             emtf.product_id = (
                 f"{emtf.survey_metadata.project}."
                 f"{emtf.station_metadata.id}."
-                f"{emtf.station_metadata.time_period._start_dt.year}"
+                f"{emtf.station_metadata.time_period.start.year}"
             )
         tags = []
 
