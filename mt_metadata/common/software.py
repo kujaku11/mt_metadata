@@ -44,7 +44,7 @@ class Software(MetadataBase):
     last_updated: Annotated[
         MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
         Field(
-            default_factory=MTime,
+            default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date the software was updated.  Prefer to use version, but this works for non-versioned software.",
             alias=None,
             json_schema_extra={
@@ -53,7 +53,7 @@ class Software(MetadataBase):
                 "examples": ["2020-01-01"],
             },
         ),
-    ] = None
+    ]
 
     name: Annotated[
         str,
