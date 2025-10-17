@@ -42,7 +42,7 @@ dependencies = [
 
 [project.optional-dependencies]
 obspy = ["obspy"]
-test = ["pytest>=3"]
+test = ["pytest>=3", "pytest-subtests", "pytest-cov"]
 
 [project.urls]
 Homepage = "https://github.com/kujaku11/mt_metadata"
