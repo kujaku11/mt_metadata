@@ -20,7 +20,7 @@ Test organization:
 
 import pytest
 
-from mt_metadata.processing.aurora.processing_basemodel import (
+from mt_metadata.processing.aurora.processing import (
     BandSpecificationStyleEnum,
     Processing,
 )
