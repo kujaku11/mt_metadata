@@ -1,82 +1,89 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
 from xml.etree import cElementTree as et
 
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from loguru import logger
+from pydantic import Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+
 from . import DataType
 
-# =============================================================================
-attr_dict = get_schema("data_types", SCHEMA_FN_PATHS)
-# =============================================================================
 
+# =====================================================
+class DataTypes(MetadataBase):
+    data_types_list: Annotated[
+        list[DataType | dict],
+        Field(
+            default_factory=list,
+            description="list of data types",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["[Z T]"],
+            },
+        ),
+    ]
 
-class DataTypes(Base):
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-
-        self._data_types_list = []
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
-    @property
-    def data_types_list(self):
-        return self._data_types_list
-
-    @data_types_list.setter
-    def data_types_list(self, value):
+    @field_validator("data_types_list", mode="before")
+    @classmethod
+    def validate_data_types_list(
+        cls, value: list[DataType | dict], info: ValidationInfo
+    ) -> list[DataType]:
         if not isinstance(value, list):
             value = [value]
-        self._data_types_list = []
+        dt_list = []
         for item in value:
-            dt = DataType()
-            dt.from_dict(item)
-            self._data_types_list.append(dt)
+            if isinstance(item, dict):
+                dt = DataType()  # type: ignore
+                dt.from_dict(item)
+                dt_list.append(dt)
+            elif isinstance(item, DataType):
+                dt_list.append(item)
+            else:
+                raise TypeError(
+                    f"data_types_list must be a list of DataType instances or dictionaries, got {type(item)}"
+                )
+        return dt_list
 
-    def read_dict(self, input_dict):
+    def read_dict(self, input_dict: dict) -> None:
         """
         Read in statistical estimate descriptions
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param input_dict: input dictionary containing data types
+        :type input_dict: dict
+        :return: None
+        :rtype: None
 
         """
         try:
             self.data_types_list = input_dict["data_types"]["data_type"]
         except KeyError:
-            self.logger.warning("Could not read Data Types")
+            logger.warning("Could not read Data Types")
 
-    def to_xml(self, string=False, required=True):
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param string: return XML string, defaults to False
+        :type string: bool, optional
+        :param required: include required fields, defaults to True
+        :type required: bool, optional
+        :return: XML representation of the object
+        :rtype: str | et.Element
+        :raises TypeError: if data_types_list is not a list of DataType instances or dictionaries
+        :raises ValueError: if data_types_list is empty
 
         """
 
         root = et.Element(self.__class__.__name__)
 
         for dtype in self.data_types_list:
-            root.append(dtype.to_xml(required=required))
+            root.append(dtype.to_xml(required=required))  # type: ignore return-value
 
         if string:
-            return element_to_string(root)
+            return helpers.element_to_string(root)
         return root

@@ -1,28 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 11:00:57 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("line", SCHEMA_FN_PATHS)
-# =============================================================================
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 
-class Line(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Line(MetadataBase):
+    name: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Name of the line data collected on",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["0"],
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    number: Annotated[
+        int | None,
+        Field(
+            default=None,
+            description="Line number",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": [0],
+            },
+        ),
+    ]

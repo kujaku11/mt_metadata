@@ -1,13 +1,21 @@
 """
-    Module with a compound kernel, mixing multiple monotonic kernels.
+Module with a compound kernel, mixing multiple monotonic kernels.
 """
 
-import numpy as np
-from .monotonic_weight_kernel import TaperMonotonicWeightKernel
-from .base import BaseWeightKernel
-from typing import Tuple
+from typing import Annotated, Tuple
 
-class TaperWeightKernel(BaseWeightKernel):
+import numpy as np
+from pydantic import computed_field, Field
+
+from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
+    TaperMonotonicWeightKernel,
+)
+from mt_metadata.processing.window import TypeEnum
+
+from .base import Base
+
+
+class TaperWeightKernel(Base):
     """
     A composite weight kernel that multiplies a low-cut and a high-cut monotonic taper kernel.
 
@@ -22,25 +30,62 @@ class TaperWeightKernel(BaseWeightKernel):
     **kwargs
         Additional keyword arguments passed to BaseWeightKernel.
     """
-    def __init__(
-            self, 
-            low_cut: Tuple[float, float], 
-            high_cut: Tuple[float, float], 
-            style: str = "hann", 
-            **kwargs
-            ):
-        super().__init__(**kwargs)
-        self._low_kernel = TaperMonotonicWeightKernel(
+
+    low_cut: Annotated[
+        Tuple[float, float],
+        Field(
+            description="Low cut transition bounds",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [[0.1, 0.5]],
+            },
+        ),
+    ]
+    high_cut: Annotated[
+        Tuple[float, float],
+        Field(
+            description="High cut transition bounds",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [[0.5, 1.0]],
+            },
+        ),
+    ]
+
+    style: Annotated[
+        TypeEnum,
+        Field(
+            description="Taper style",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["hann", "hamming", "blackman"],
+            },
+        ),
+    ]
+
+    @computed_field
+    @property
+    def low_kernel(self) -> TaperMonotonicWeightKernel:
+        """The low-cut taper kernel."""
+        return TaperMonotonicWeightKernel(  # type: ignore
             threshold="low cut",
-            transition_lower_bound=low_cut[0],
-            transition_upper_bound=low_cut[1],
-            half_window_style=style
+            transition_lower_bound=self.low_cut[0],
+            transition_upper_bound=self.low_cut[1],
+            half_window_style=self.style,
         )
-        self._high_kernel = TaperMonotonicWeightKernel(
+
+    @computed_field
+    @property
+    def high_kernel(self) -> TaperMonotonicWeightKernel:
+        """The high-cut taper kernel."""
+        return TaperMonotonicWeightKernel(  # type: ignore
             threshold="high cut",
-            transition_lower_bound=high_cut[0],
-            transition_upper_bound=high_cut[1],
-            half_window_style=style
+            transition_lower_bound=self.high_cut[0],
+            transition_upper_bound=self.high_cut[1],
+            half_window_style=self.style,
         )
 
     def evaluate(self, values: np.ndarray) -> np.ndarray:
@@ -57,4 +102,4 @@ class TaperWeightKernel(BaseWeightKernel):
         np.ndarray
             The product of the low-cut and high-cut kernel evaluations.
         """
-        return self._low_kernel.evaluate(values) * self._high_kernel.evaluate(values)
+        return self.low_kernel.evaluate(values) * self.high_kernel.evaluate(values)

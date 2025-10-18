@@ -1,25 +1,53 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("birrp_angles", SCHEMA_FN_PATHS)
-# =============================================================================
-class BirrpAngles(Base):
-    __doc__ = write_lines(attr_dict)
+from pydantic import Field
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+from mt_metadata.base import MetadataBase
+
+
+# =====================================================
+class BirrpAngles(MetadataBase):
+    theta1: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation angle for block x",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+                "examples": ["0"],
+            },
+        ),
+    ]
+
+    theta2: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation angle for block y",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+                "examples": ["90"],
+            },
+        ),
+    ]
+
+    phi: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation angle for block",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+                "examples": ["0"],
+            },
+        ),
+    ]

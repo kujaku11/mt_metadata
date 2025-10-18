@@ -4,13 +4,15 @@ Created on Sat Dec  4 17:44:51 2021
 
 @author: jpeacock
 """
+import json
+
 # =============================================================================
 # imports
 # =============================================================================
 import urllib.request as url_request
-import json
 
 from loguru import logger
+
 
 # =============================================================================
 
@@ -135,7 +137,7 @@ class index_locator(object):
         return len(self.output_channels)
 
 
-def _validate_edi_lines(edi_lines):
+def _validate_edi_lines(edi_lines) -> list[str]:
     """
     check for carriage returns or hard returns
 

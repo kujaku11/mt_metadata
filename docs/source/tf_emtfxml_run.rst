@@ -22,9 +22,12 @@ Run
        |                                              |                                               | cables         |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -47,11 +50,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -72,9 +78,12 @@ Run
        |                                              |                                               |                |
        | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -93,15 +102,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **start**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date time when the data collection started    | 2020-01-01T12:0|
-       |                                              |                                               | 0:00           |
+       | **Required**: :red:`True`                    | Date time when the data collection started    | 2020-01-       |
+       |                                              |                                               | 01T12:00:00    |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date time                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00             |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -118,15 +130,102 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **end**                                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date time when the data collection ended      | 2020-05-01T12:0|
-       |                                              |                                               | 0:00           |
+       | **Required**: :red:`True`                    | Date time when the data collection ended      | 2020-05-       |
+       |                                              |                                               | 01T12:00:00    |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date time                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00             |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.author**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.time_stamp**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.value`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.value**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -143,15 +242,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **instrument.id**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | instrument ID number can be serial number or  | mt01           |
-       |                                              | a designated ID                               |                |
+       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       |                                              | a designated ID.                              |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -168,15 +270,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **instrument.manufacturer**                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | who manufactured the instrument               | mt gurus       |
+       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -193,15 +298,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **instrument.type**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | instrument type                               | broadband      |
+       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
        |                                              |                                               | 32-bit         |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -218,13 +326,16 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **instrument.model**                         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | model version of the instrument               | falcon5        |
+       | **Required**: :red:`True`                    | Model version of the instrument.              | falcon5        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -243,13 +354,16 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **instrument.name**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Name of the model of the instrument           | falcon5        |
+       | **Required**: :red:`True`                    | Standard marketing name of the instrument.    | falcon5        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -268,21 +382,24 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **instrument.settings**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any settings for the instrument               | notch filter   |
-       |                                              |                                               | applied        |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :red:`True`                    | Settings for the instrument, such as          | calibration    |
+       |                                              | configuration or calibration details.         | settings       |
+       | **Units**: None                              |                                               | configuration  |
+       |                                              |                                               | details        |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`comments.author`
-~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`magnetometer`
+~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -291,23 +408,26 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments.author**                          | **Description**                               | **Example**    |
+       | **magnetometer**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Author who made the comment                   | M. Tee         |
+       | **Required**: :blue:`False`                  | List of magnetometers used in the run         | Magnetometer(na|
+       |                                              |                                               | me='Magnetomete|
+       | **Units**: None                              |                                               | r 1', type='flu|
+       |                                              |                                               | xgate')        |
+       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | .io.emtfxml.metadata.magnetometer.M          |                                               |                |
+       | agnetometer]                                 |                                               |                |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`comments.date`
-~~~~~~~~~~~~~~~~~~~~~
+:navy:`dipole`
+~~~~~~~~~~~~~~
 
 .. container::
 
@@ -316,42 +436,20 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments.date**                            | **Description**                               | **Example**    |
+       | **dipole**                                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Date the comment was made                     | 2020-01-21     |
+       | **Required**: :blue:`False`                  | List of dipoles used in the run               | Dipole(name='Di|
+       |                                              |                                               | pole 1', type='|
+       | **Units**: None                              |                                               | fluxgate')     |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | .io.emtfxml.metadata.dipole.Dipole]          |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`comments.value`
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments.value**                           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Comment string                                | This is a      |
-       |                                              |                                               | comment        |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

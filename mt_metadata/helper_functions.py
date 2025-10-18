@@ -1,11 +1,12 @@
 """
-    This module has some general helper functions that it isn't yet clear where they should live.
+This module has some general helper functions that it isn't yet clear where they should live.
 
-    These may not be needed at all after the pydantic upgrade is fully integrated.
+These may not be needed at all after the pydantic upgrade is fully integrated.
 """
 
 from typing import Dict, List, Union
-from mt_metadata.base import Base
+
+from mt_metadata.base import MetadataBase
 
 
 """
@@ -15,41 +16,47 @@ from mt_metadata.base import Base
 
 """
 
-def validate_setter_input(value: Union[Dict, Base], expected_class: Base) -> List:
+
+def validate_setter_input(
+    value: Union[Dict, MetadataBase], expected_class: MetadataBase
+) -> List:
     """
-        Takes a setter's input and makes it a list if it not.
-        Then asserts that every list element is of permissible type (dict or expected class)
+    Takes a setter's input and makes it a list if it not.
+    Then asserts that every list element is of permissible type (dict or expected class)
 
-        Parameters
-        ----------
-        value: Union[Dict, Base]
-            The input to the setter.
+    Parameters
+    ----------
+    value: Union[Dict, Base]
+        The input to the setter.
 
-        expected_class: Base
-            Some mt_metadata class that we want the setter work with
+    expected_class: Base
+        Some mt_metadata class that we want the setter work with
 
-        Returns
-        -------
-        value: list
-            List of elements for the setter all of type expected_class or dict.
+    Returns
+    -------
+    value: list
+        List of elements for the setter all of type expected_class or dict.
     """
     # Handle singleton cases
     if isinstance(value, (expected_class, dict)):
-        value = [value, ]
+        value = [value]
 
     if not isinstance(value, list):
         raise TypeError(f"Not sure what to do with {type(value)}")
 
     return value
 
-def cast_to_class_if_dict(obj: Union[Dict, Base], cls: Base ) -> Base:
+
+def cast_to_class_if_dict(
+    obj: Union[Dict, MetadataBase], cls: MetadataBase
+) -> MetadataBase:
     """
 
     Parameters
     ----------
-    obj: Union[Dict, Base]
+    obj: Union[Dict, MetadataBase]
         Either an mt_metadata object or its dict representaiton
-    cls: Base
+    cls: MetadataBase
         Some mt_metadata object that we want to get back
 
     Returns

@@ -1,0 +1,53 @@
+{
+    "title": "unit",
+    "type": "object",
+    "properties": {
+        "length": {
+            "default": "m",
+            "description": "Type of smoothing for phase slope algorithm",
+            "title": "length",
+            "examples": "m",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "m",
+                "ft",
+                "km"
+            ]
+        },
+        "e": {
+            "default": null,
+            "description": "Units for the electric field",
+            "title": "e",
+            "examples": "mV/km",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "mV/km",
+                "uV/m",
+                "other"
+            ]
+        },
+        "b": {
+            "default": "nT",
+            "description": "Units for the magnetic field",
+            "title": "b",
+            "examples": "nT",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "nT",
+                "uT",
+                "other"
+            ]
+        }
+    },
+    "required": [
+        "length",
+        "b"
+    ],
+    "description": "unit"
+}

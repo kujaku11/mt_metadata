@@ -1,62 +1,101 @@
-"""
-==========================
-Channel Response Filter
-==========================
-
-Combines all filters for a given channel into a total response that can be used in
-the frequency domain.
-
-.. note:: Time Delay filters should be applied in the time domain
-    otherwise bad things can happen.
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
 from copy import deepcopy
-import numpy as np
+from typing import Annotated
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import requires
-from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
-from mt_metadata.timeseries.filters import (
-    PoleZeroFilter,
-    CoefficientFilter,
-    TimeDelayFilter,
-    FrequencyResponseTableFilter,
-    FIRFilter,
+import numpy as np
+from loguru import logger
+from pydantic import (
+    computed_field,
+    Field,
+    field_validator,
+    model_validator,
+    PrivateAttr,
+    ValidationInfo,
 )
 
-from mt_metadata.utils.units import get_unit_object
+from mt_metadata.base.helpers import object_to_array, requires
+from mt_metadata.common.units import get_unit_object
+from mt_metadata.timeseries.filters import (
+    CoefficientFilter,
+    FilterBase,
+    FIRFilter,
+    FrequencyResponseTableFilter,
+    PoleZeroFilter,
+    TimeDelayFilter,
+)
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
+
 
 try:
     from obspy.core import inventory
 except ImportError:
     inventory = None
 
-# =============================================================================
-attr_dict = get_schema("channel_response", SCHEMA_FN_PATHS)
-# =============================================================================
+
+# =====================================================
 
 
-class ChannelResponse(Base):
-    """
-    This class holds a list of all the filters associated with a channel.
-    The list should be ordered to match the order in which the filters are applied to the signal.
+class ChannelResponse(FilterBase):
+    _supported_filters: list = PrivateAttr(
+        [
+            PoleZeroFilter,
+            CoefficientFilter,
+            TimeDelayFilter,
+            FrequencyResponseTableFilter,
+            FIRFilter,
+        ]
+    )
 
-    It has methods for combining the responses of all the filters into a total
-    response that we will apply to a data segment.
-    """
+    normalization_frequency: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="Pass band frequency",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": "100",
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        self.filters_list = []
-        self.frequencies = np.logspace(-4, 4, 100)
-        self.normalization_frequency = None
+    filters_list: Annotated[
+        list[
+            PoleZeroFilter
+            | CoefficientFilter
+            | TimeDelayFilter
+            | FrequencyResponseTableFilter
+            | FIRFilter
+        ],
+        Field(
+            default_factory=list,
+            description="List of filters applied to the channel.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": "[PoleZeroFilter, CoefficientFilter]",
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict)
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+    frequencies: Annotated[
+        np.ndarray | list[float],
+        Field(
+            default_factory=lambda: np.empty(0, dtype=float),
+            description="The frequencies at which a calibration of the filter were performed.",
+            alias=None,
+            json_schema_extra={
+                "units": "hertz",
+                "required": True,
+                "items": {"type": "number"},
+                "examples": '"[-0.0001., 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.001, ... 1, 2, 5, 10]"',
+            },
+        ),
+    ]
 
     def __str__(self):
         lines = ["Filters Included:\n", "=" * 25, "\n"]
@@ -69,53 +108,72 @@ class ChannelResponse(Base):
     def __repr__(self):
         return self.__str__()
 
-    @property
-    def filters_list(self):
-        """filters list"""
-        return self._filters_list
-
-    @filters_list.setter
-    def filters_list(self, filters_list):
-        """set the filters list and validate the list"""
-        self._filters_list = self._validate_filters_list(filters_list)
-        self._check_consistency_of_units()
-
-    @property
-    def frequencies(self):
-        """frequencies to estimate filters"""
-        return self._frequencies
-
-    @frequencies.setter
-    def frequencies(self, value):
+    @field_validator("normalization_frequency", mode="after")
+    @classmethod
+    def validate_normalization_frequency(
+        cls, value: float, info: ValidationInfo
+    ) -> float:
         """
-        Set the frequencies, make sure the input is validated
-
-        Linear frequencies
-        :param value: Linear Frequencies
-        :type value: iterable
-
+        Validate that the normalization frequency is a positive float.
+        If value is 0 or None, derive it from the pass_band.
         """
-        if value is None:
-            self._frequencies = None
+        if value in [0.0, None]:
+            # Create a temporary instance to access pass_band property
+            instance = cls.model_construct(**info.data)
 
-        elif isinstance(value, (list, tuple, np.ndarray)):
-            self._frequencies = np.array(value, dtype=float)
-        else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
-            self.logger.error(msg)
-            raise TypeError(msg)
+            if hasattr(instance, "pass_band") and instance.pass_band is not None:
+                pass_band = instance.pass_band
+                # Calculate geometric mean of pass band
+                norm_freq = np.round(10 ** np.mean(np.log10(pass_band)), 3)
+                logger.info(
+                    f"Setting normalization frequency to {norm_freq} Hz based on pass band"
+                )
+                return norm_freq
 
-    @property
-    def names(self):
-        """names of the filters"""
-        names = []
+        return value
+
+    @field_validator("frequencies", mode="before")
+    @classmethod
+    def validate_frequencies(cls, value: np.ndarray | list[float]) -> np.ndarray:
+        """
+        Validate that the frequencies are a numpy array or list of floats.
+        """
+        return object_to_array(value, dtype=float)
+
+    @field_validator("filters_list", mode="before")
+    @classmethod
+    def validate_filters_list(cls, value: list) -> list:
+        """
+        Validate that the filters_list is a list of filter objects.
+        """
+        if not isinstance(value, list):
+            raise ValueError("filters_list must be a list of filter objects.")
+
+        value = cls._validate_filters_list(value)
+        value = cls._check_consistency_of_units(value)
+        return value
+
+    @model_validator(mode="after")
+    def update_units_and_normalization_frequency_from_filters_list(
+        self,
+    ) -> "ChannelResponse":
+        """Update units_in and units_out based on filters_list."""
         if self.filters_list:
-            names = [f.name for f in self.filters_list]
-        return names
+            object.__setattr__(self, "units_in", self.filters_list[0].units_in)
+            object.__setattr__(self, "units_out", self.filters_list[-1].units_out)
+            if self.normalization_frequency == 0.0:
+                if self.pass_band is not None:
+                    # Calculate geometric mean of pass band
+                    norm_freq = np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
+                    logger.info(
+                        f"Setting normalization frequency to {norm_freq} Hz based on pass band"
+                    )
+                    # Set normalization frequency to the gain of the first filter
+                    object.__setattr__(self, "normalization_frequency", norm_freq)
+        return self
 
-    def _validate_filters_list(self, filters_list):
+    @classmethod
+    def _validate_filters_list(cls, filters_list):
         """
         make sure the filters list is valid.
 
@@ -125,26 +183,19 @@ class ChannelResponse(Base):
         :rtype: TYPE
 
         """
-        supported_filters = [
-            PoleZeroFilter,
-            CoefficientFilter,
-            TimeDelayFilter,
-            FrequencyResponseTableFilter,
-            FIRFilter,
-        ]
 
         def is_supported_filter(item):
-            if isinstance(item, tuple(supported_filters)):
-                return True
-            else:
-                return False
+            # Convert the list to a tuple of filter classes
+            supported_filter_types = tuple(cls._supported_filters.default)
+            # Check if item is an instance of any of the supported filter types
+            return isinstance(item, supported_filter_types)
 
         if filters_list in [[], None]:
             return []
 
         if not isinstance(filters_list, list):
             msg = f"Input filters list must be a list not {type(filters_list)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
         fails = []
@@ -160,13 +211,47 @@ class ChannelResponse(Base):
 
         return return_list
 
+    @classmethod
+    def _check_consistency_of_units(cls, filters_list):
+        """
+        confirms that the input and output units of each filter state are consistent
+        """
+        if len(filters_list) > 1:
+            previous_units = filters_list[0].units_out
+            for mt_filter in filters_list[1:]:
+                if mt_filter.units_in != previous_units:
+                    msg = (
+                        "Unit consistency is incorrect. "
+                        f"The input units for {mt_filter.name} should be "
+                        f"{previous_units} not {mt_filter.units_in}"
+                    )
+                    logger.error(msg)
+                    raise ValueError(msg)
+                previous_units = mt_filter.units_out
+
+        return filters_list
+
+    @computed_field
     @property
-    def pass_band(self):
+    def names(self) -> list[str]:
+        """names of the filters"""
+        names = []
+        if self.filters_list:
+            names = [f.name for f in self.filters_list]
+        return names
+
+    @computed_field
+    @property
+    def pass_band(self) -> list[float]:
         """estimate pass band for all filters in frequency"""
         if self.frequencies is None:
-            raise ValueError(
-                "frequencies are None, must be input to calculate pass band"
-            )
+            logger.warning("No frequencies provided, cannot calculate pass band")
+            return None
+
+        if len(self.frequencies) == 0:
+            logger.warning("No frequencies provided, cannot calculate pass band")
+            return None
+
         pb = []
         for f in self.filters_list:
             if hasattr(f, "pass_band"):
@@ -180,24 +265,9 @@ class ChannelResponse(Base):
             return np.array([pb[:, 0].max(), pb[:, 1].min()])
         return None
 
+    @computed_field
     @property
-    def normalization_frequency(self):
-        """get normalization frequency from ZPK or FAP filter"""
-
-        if self._normalization_frequency in [0.0, None]:
-            if self.pass_band is not None:
-                return np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
-
-        return self._normalization_frequency
-
-    @normalization_frequency.setter
-    def normalization_frequency(self, value):
-        """Set normalization frequency if input"""
-
-        self._normalization_frequency = value
-
-    @property
-    def non_delay_filters(self):
+    def non_delay_filters(self) -> list:
         """
 
         :return: all the non-time_delay filters as a list
@@ -206,8 +276,9 @@ class ChannelResponse(Base):
         non_delay_filters = [x for x in self.filters_list if x.type != "time delay"]
         return non_delay_filters
 
+    @computed_field
     @property
-    def delay_filters(self):
+    def delay_filters(self) -> list[TimeDelayFilter]:
         """
 
         :return: all the time delay filters as a list
@@ -216,8 +287,9 @@ class ChannelResponse(Base):
         delay_filters = [x for x in self.filters_list if x.type == "time delay"]
         return delay_filters
 
+    @computed_field
     @property
-    def total_delay(self):
+    def total_delay(self) -> float:
         """
 
         :return: the total delay of all filters
@@ -235,14 +307,10 @@ class ChannelResponse(Base):
         indices = list(np.arange(len(self.filters_list)))
 
         if not include_delay:
-            indices = [
-                i for i in indices if self.filters_list[i].type != "time delay"
-            ]
+            indices = [i for i in indices if self.filters_list[i].type != "time delay"]
 
         if not include_decimation:
-            indices = [
-                i for i in indices if not self.filters_list[i].decimation_active
-            ]
+            indices = [i for i in indices if not self.filters_list[i].decimation_active]
 
         return indices
 
@@ -299,17 +367,16 @@ class ChannelResponse(Base):
 
         # make filters list if not supplied
         if filters_list is None:
-            self.logger.warning(
+            logger.warning(
                 "Filters list not provided, building list assuming all are applied"
             )
             filters_list = self.get_list_of_filters_to_remove(
-                include_decimation=include_decimation, include_delay=include_delay
+                include_decimation=include_decimation,
+                include_delay=include_delay,
             )
 
         if len(filters_list) == 0:
-            self.logger.warning(
-                f"No filters associated with {self.__class__}, returning 1"
-            )
+            logger.warning(f"No filters associated with {self.__class__}, returning 1")
             return np.ones(len(self.frequencies), dtype=complex)
 
         # define the product of all filters as the total response function
@@ -321,7 +388,7 @@ class ChannelResponse(Base):
             result /= np.max(np.abs(result))
         return result
 
-    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=16):
+    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=6):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
 
@@ -342,6 +409,15 @@ class ChannelResponse(Base):
         except (IndexError, TypeError):
             sensitivity = np.abs(sensitivity)
 
+        if sensitivity == 0.0:
+            logger.warning(
+                "Sensitivity is zero, cannot compute instrument sensitivity. "
+                "Returning 1.0"
+            )
+            return 1.0
+        if np.isnan(sensitivity):
+            logger.warning("Sensitivity is NaN, setting to 1.0")
+            sensitivity = 1.0
         return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
 
     def compute_total_gain(self, sig_figs=16):
@@ -371,45 +447,6 @@ class ChannelResponse(Base):
 
         return round(total_gain, sig_figs - int(np.floor(np.log10(abs(total_gain)))))
 
-    @property
-    def units_in(self):
-        """
-        :return: the units of the channel
-        """
-        if self.filters_list is [] or len(self.filters_list) == 0:
-            return None
-        else:
-            return self.filters_list[0].units_in
-
-    @property
-    def units_out(self):
-        """
-        :return: the units of the channel
-        """
-        if self.filters_list is [] or len(self.filters_list) == 0:
-            return None
-        else:
-            return self.filters_list[-1].units_out
-
-    def _check_consistency_of_units(self):
-        """
-        confirms that the input and output units of each filter state are consistent
-        """
-        if len(self._filters_list) > 1:
-            previous_units = self._filters_list[0].units_out
-            for mt_filter in self._filters_list[1:]:
-                if mt_filter.units_in != previous_units:
-                    msg = (
-                        "Unit consistency is incorrect. "
-                        f"The input units for {mt_filter.name} should be "
-                        f"{previous_units} not {mt_filter.units_in}"
-                    )
-                    self.logger.error(msg)
-                    raise ValueError(msg)
-                previous_units = mt_filter.units_out
-
-        return True
-
     @requires(obspy=inventory)
     def to_obspy(self, sample_rate=1):
         """
@@ -426,7 +463,7 @@ class ChannelResponse(Base):
         total_gain = self.compute_total_gain()
 
         if total_sensitivity != total_gain:
-            self.logger.info(
+            logger.info(
                 f"total sensitivity {total_sensitivity} != total gain {total_gain}. Using total_gain."
             )
             total_sensitivity = total_gain
@@ -438,16 +475,16 @@ class ChannelResponse(Base):
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
             total_sensitivity,
             self.normalization_frequency,
-            units_in_obj.abbreviation,
-            units_out_obj.abbreviation,
+            units_in_obj.symbol,
+            units_out_obj.symbol,
             input_units_description=units_in_obj.name,
             output_units_description=units_out_obj.name,
         )
 
         for ii, f in enumerate(self.filters_list, 1):
             if f.type in ["coefficient"]:
-                if f.units_out not in ["count"]:
-                    self.logger.debug(f"converting CoefficientFilter {f.name} to PZ")
+                if f.units_out not in ["count", "digital counts"]:
+                    logger.debug(f"converting CoefficientFilter {f.name} to PZ")
                     pz = PoleZeroFilter()
                     pz.gain = f.gain
                     pz.units_in = f.units_in

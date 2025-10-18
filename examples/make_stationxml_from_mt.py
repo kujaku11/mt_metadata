@@ -5,14 +5,16 @@ Created on Thu Oct  7 16:31:55 2021
 @author: jpeacock
 """
 
+from copy import deepcopy
+
 # =============================================================================
 # Imports
 # =============================================================================
 from pathlib import Path
-from copy import deepcopy
 
+from mt_metadata.common.mttime import get_now_utc, MTime
 from mt_metadata.timeseries.tools import MT2StationXML
-from mt_metadata.utils.mttime import get_now_utc, MTime
+
 
 # =============================================================================
 
@@ -30,12 +32,8 @@ ns_dict = {
 xml_path = Path(r"path\to\mt\xml\files")
 output_path = Path(r"path\to\output\folder")
 
-xml_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\bug_02\mth5"
-)
-output_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\bug_02\mtml"
-)
+xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\bug_02\mth5")
+output_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\bug_02\mtml")
 
 # make an instance of MTML2StationXML where the input is the path to the folder
 # containing the MTML.xml files
@@ -55,7 +53,7 @@ for station in ["KSP33"]:
     xml_fn = "_".join(
         [
             f"{mtex.surveys[0].fdsn.network}",
-            f"{mtex.surveys[0].time_period._start_dt.year}",
+            f"{mtex.surveys[0].time_period.start.year}",
             f"{station}",
             f"{today}.xml",
         ]

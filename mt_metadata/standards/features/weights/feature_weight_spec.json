@@ -1,0 +1,23 @@
+{
+    "title": "feature_weight_spec",
+    "type": "object",
+    "properties": {
+        "feature_name": {
+            "default": "''",
+            "description": "The name of the feature to evaluate (e.g., coherence, impedance_ratio).",
+            "title": "feature_name",
+            "examples": "coherence",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "coherence",
+                "multiple coherence"
+            ]
+        }
+    },
+    "required": [
+        "feature_name"
+    ],
+    "description": "feature_weight_spec"
+}

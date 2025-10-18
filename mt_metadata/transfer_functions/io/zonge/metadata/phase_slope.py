@@ -1,29 +1,48 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 10:29:50 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from enum import Enum
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("phase_slope", SCHEMA_FN_PATHS)
-# =============================================================================
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import YesNoEnum
 
 
-class PhaseSlope(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class SmoothEnum(str, Enum):
+    robust = "robust"
+    normal = "normal"
+    null = "None"
+    minimal = "minimal"
 
-    def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+class PhaseSlope(MetadataBase):
+    smooth: Annotated[
+        SmoothEnum,
+        Field(
+            default=SmoothEnum.null,
+            description="Type of smoothing for phase slope algorithm",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["robust"],
+            },
+        ),
+    ]
+
+    to_z_mag: Annotated[
+        YesNoEnum,
+        Field(
+            default=YesNoEnum.no,
+            description="Was hz used for smoothing for phase slope algorithm",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["no"],
+            },
+        ),
+    ]
