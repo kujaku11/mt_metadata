@@ -438,7 +438,7 @@
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
                 <electric>
                     <channel_number type="integer">None</channel_number>
@@ -494,7 +494,7 @@
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
             </run>
             <run>
@@ -723,7 +723,7 @@
                         <start>2020-06-09T00:08:03+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
                 <electric>
                     <channel_number type="integer">None</channel_number>
@@ -779,7 +779,7 @@
                         <start>2020-06-09T00:08:03+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
             </run>
             <run>
@@ -1008,7 +1008,7 @@
                         <start>2020-06-25T19:57:57+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
                 <electric>
                     <channel_number type="integer">None</channel_number>
@@ -1064,7 +1064,7 @@
                         <start>2020-06-25T19:57:57+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
             </run>
             <run>
@@ -1293,7 +1293,7 @@
                         <start>2020-07-04T02:59:02+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
                 <electric>
                     <channel_number type="integer">None</channel_number>
@@ -1349,7 +1349,7 @@
                         <start>2020-07-04T02:59:02+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
             </run>
             <run>
@@ -1578,7 +1578,7 @@
                         <start>2020-07-04T03:28:45+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
                 <electric>
                     <channel_number type="integer">None</channel_number>
@@ -1634,7 +1634,7 @@
                         <start>2020-07-04T03:28:45+00:00</start>
                     </time_period>
                     <type>electric</type>
-                    <units>millivolts per kilometer</units>
+                    <units>millivolt per kilometer</units>
                 </electric>
             </run>
         </station>

@@ -564,46 +564,46 @@ class Experiment(MetadataBase):
                 if isinstance(value, list):
                     for v in value:
                         mt_filter = PoleZeroFilter(**v)
-                        return_dict[mt_filter.name] = mt_filter
+                        return_dict[mt_filter.name.lower()] = mt_filter
                 else:
                     mt_filter = PoleZeroFilter(value)
-                    return_dict[mt_filter.name] = mt_filter
+                    return_dict[mt_filter.name.lower()] = mt_filter
 
             elif key in ["coefficient_filter"]:
                 if isinstance(value, list):
                     for v in value:
                         mt_filter = CoefficientFilter(**v)
-                        return_dict[mt_filter.name] = mt_filter
+                        return_dict[mt_filter.name.lower()] = mt_filter
                 else:
                     mt_filter = CoefficientFilter(value)
-                    return_dict[mt_filter.name] = mt_filter
+                    return_dict[mt_filter.name.lower()] = mt_filter
 
             elif key in ["time_delay_filter"]:
                 if isinstance(value, list):
                     for v in value:
                         mt_filter = TimeDelayFilter(**v)
-                        return_dict[mt_filter.name] = mt_filter
+                        return_dict[mt_filter.name.lower()] = mt_filter
                 else:
                     mt_filter = TimeDelayFilter(value)
-                    return_dict[mt_filter.name] = mt_filter
+                    return_dict[mt_filter.name.lower()] = mt_filter
 
             elif key in ["frequency_response_table_filter"]:
                 if isinstance(value, list):
                     for v in value:
                         mt_filter = FrequencyResponseTableFilter(**v)
-                        return_dict[mt_filter.name] = mt_filter
+                        return_dict[mt_filter.name.lower()] = mt_filter
                 else:
                     mt_filter = FrequencyResponseTableFilter(value)
-                    return_dict[mt_filter.name] = mt_filter
+                    return_dict[mt_filter.name.lower()] = mt_filter
 
             elif key in ["fir_filter"]:
                 if isinstance(value, list):
                     for v in value:
                         mt_filter = FIRFilter(**v)
-                        return_dict[mt_filter.name] = mt_filter
+                        return_dict[mt_filter.name.lower()] = mt_filter
                 else:
                     mt_filter = FIRFilter(value)
-                    return_dict[mt_filter.name] = mt_filter
+                    return_dict[mt_filter.name.lower()] = mt_filter
 
         return return_dict
 
