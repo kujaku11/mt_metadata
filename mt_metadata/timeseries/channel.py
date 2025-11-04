@@ -318,6 +318,62 @@ class ChannelBase(MetadataBase):
             )
         return expected_type
 
+    @field_validator("filters", mode="before")
+    @classmethod
+    def parse_filters_string(cls, v):
+        """Parse string representation of filters into list of AppliedFilter objects"""
+        if isinstance(v, str):
+            import ast
+            import re
+            from collections import OrderedDict
+
+            # Handle string representation of list of dicts
+            if v.strip().startswith("[") and v.strip().endswith("]"):
+                try:
+                    # First try ast.literal_eval
+                    parsed_data = ast.literal_eval(v)
+                except (ValueError, SyntaxError):
+                    try:
+                        # Handle OrderedDict function calls with eval and safe namespace
+                        # Clean up newlines between dictionary items by adding commas
+                        cleaned = re.sub(r"}\s+\{", "}, {", v)
+
+                        # Use eval with a restricted namespace
+                        safe_namespace = {
+                            "__builtins__": {},
+                            "OrderedDict": OrderedDict,
+                            "True": True,
+                            "False": False,
+                            "None": None,
+                        }
+
+                        parsed_data = eval(cleaned, safe_namespace)
+                    except Exception as e:
+                        logger.warning(f"Failed to parse filters string: {e}")
+                        return []
+
+                # Convert to AppliedFilter objects
+                filters = []
+                for item in parsed_data:
+                    if isinstance(item, dict) and "applied_filter" in item:
+                        filter_data = item["applied_filter"]
+                        # Convert OrderedDict to regular dict if needed
+                        if hasattr(filter_data, "items"):
+                            filter_data = dict(filter_data)
+                        filters.append(AppliedFilter(**filter_data))
+                    elif isinstance(item, dict):
+                        # Direct dict representation
+                        filters.append(AppliedFilter(**item))
+
+                return filters
+
+            # Handle single filter string representations
+            elif v.strip():
+                logger.warning(f"Unknown filter string format: {v}")
+                return []
+
+        return v
+
     @field_validator("filters", mode="after")
     @classmethod
     def validate_filters(cls, v, info):
@@ -660,6 +716,10 @@ class ChannelBase(MetadataBase):
                     self.add_filter(applied_filter=applied_filter)
                 elif isinstance(filter_dict, AppliedFilter):
                     self.add_filter(applied_filter=filter_dict)
+                elif isinstance(filter_dict, str):
+                    logger.warning(
+                        f"String filter format not supported in add_filters: {filter_dict}"
+                    )
                 else:
                     logger.warning(f"Unknown filter format: {type(filter_dict)}")
 
