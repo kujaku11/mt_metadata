@@ -146,6 +146,19 @@ class FC(MetadataBase):
     @field_validator("levels", mode="before")
     @classmethod
     def validate_levels(cls, value, info: ValidationInfo):
+        # Handle None values first
+        if value is None:
+            return ListDict()
+
+        # Handle string representations that might come from HDF5 storage
+        if isinstance(value, str):
+            # If it's a string representation, try to parse it or return empty ListDict
+            if value in ["", "none", "None", "ListDict()", "{}"]:
+                return ListDict()
+            # For other string values, try to maintain backward compatibility
+            logger.warning(f"Converting string representation of levels: {value}")
+            return ListDict()
+
         if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
                 "input dl_list must be an iterable, should be a list or dict "
