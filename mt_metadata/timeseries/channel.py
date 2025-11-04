@@ -472,6 +472,26 @@ class ChannelBase(MetadataBase):
             new_list.append(f)
         self.filters = new_list
 
+    def get_filter(self, name: str) -> AppliedFilter | None:
+        """
+        Get a filter from the filter list by name.
+
+        Parameters
+        ----------
+        name : str
+            Name of the filter to get.
+
+        Returns
+        -------
+        AppliedFilter | None
+            The filter with the given name, or None if not found.
+        """
+        for f in self.filters:
+            if f.name == name:
+                return f
+        logger.warning(f"Could not find filter {name} in channel filters")
+        return None
+
     def _sort_filters(self) -> None:
         """
         Sort the list of filters applied to the channel by stage number.
