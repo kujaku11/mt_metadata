@@ -334,7 +334,7 @@ class TestXMLChannelTwoChannels:
                                     {
                                         "applied": True,
                                         "comments": "unit conversion",
-                                        "name": "mv/km to v/m",
+                                        "name": "mv per km to v per m",
                                         "stage": 3,
                                     }
                                 ),
@@ -347,7 +347,7 @@ class TestXMLChannelTwoChannels:
                                             "comments",
                                             "electric dipole",
                                         ),
-                                        ("name", "v/m to v"),
+                                        ("name", "v per m to v"),
                                         ("stage", 4),
                                     ]
                                 )

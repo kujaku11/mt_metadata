@@ -540,7 +540,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 logger.info(f"Found an unnamed filter, named it: '{mt_filter.name}'")
                 existing_filters[filter_name] = mt_filter
 
-            ch_filter_dict[mt_filter.name.lower()] = mt_filter
+            ch_filter_dict[mt_filter.name.replace("/", " per ").lower()] = mt_filter
 
         return ch_filter_dict
 
