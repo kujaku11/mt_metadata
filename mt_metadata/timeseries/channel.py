@@ -708,20 +708,23 @@ class ChannelBase(MetadataBase):
 
         # Process new format filters after other attributes, adding to existing filters
         if new_format_filters is not None:
-            for filter_dict in new_format_filters:
-                if isinstance(filter_dict, dict):
-                    # Create AppliedFilter from dict using from_dict method to handle nested attributes
-                    applied_filter = AppliedFilter()
-                    applied_filter.from_dict(filter_dict)
-                    self.add_filter(applied_filter=applied_filter)
-                elif isinstance(filter_dict, AppliedFilter):
-                    self.add_filter(applied_filter=filter_dict)
-                elif isinstance(filter_dict, str):
-                    logger.warning(
-                        f"String filter format not supported in add_filters: {filter_dict}"
-                    )
-                else:
-                    logger.warning(f"Unknown filter format: {type(filter_dict)}")
+            if isinstance(new_format_filters, str):
+                self.filters = new_format_filters
+            else:
+                for filter_dict in new_format_filters:
+                    if isinstance(filter_dict, dict):
+                        # Create AppliedFilter from dict using from_dict method to handle nested attributes
+                        applied_filter = AppliedFilter()
+                        applied_filter.from_dict(filter_dict)
+                        self.add_filter(applied_filter=applied_filter)
+                    elif isinstance(filter_dict, AppliedFilter):
+                        self.add_filter(applied_filter=filter_dict)
+                    elif isinstance(filter_dict, str):
+                        logger.warning(
+                            f"String filter format not supported in add_filters: {filter_dict}"
+                        )
+                    else:
+                        logger.warning(f"Unknown filter format: {type(filter_dict)}")
 
 
 # this would be a normal channel that has a single sensor and location.
