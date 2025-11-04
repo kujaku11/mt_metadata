@@ -85,11 +85,13 @@ class AppliedFilter(MetadataBase):
     @classmethod
     def validate_name(cls, value, info: ValidationInfo) -> str:
         """
-        Validate that the name is not empty or whitespace only.
+        Validate that the name is not empty or whitespace only. Also, replace
+        '/' with ' per ' and convert to lower case for consistency.
         """
         if isinstance(value, str):
             if not value or value.isspace():
                 raise ValueError("Filter name cannot be empty or whitespace only")
+            value = value.replace("/", " per ").lower()
         return value
 
 
