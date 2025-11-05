@@ -702,7 +702,7 @@ class MetadataBase(DotNotationBaseModel):
         new_basemodel_object = new_basemodel()
 
         """
-        existing_model_fields = self.__pydantic_fields__
+        existing_model_fields = self.__pydantic_fields__.copy()
         existing_model_fields[name] = new_field_info
         all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
 

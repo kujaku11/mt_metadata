@@ -66,8 +66,19 @@ class DataTypeEnum(StrEnumerationBase):
 
 
 class ArrayDTypeEnum(str, Enum):
-    real = "real"
-    complex = "complex"
+    real_type = "real"
+    complex_type = "complex"
+    float_type = "float"
+    int_type = "int"
+    complex_128_type = "complex128"
+    complex_64_type = "complex64"
+    float_64_type = "float64"
+    float_32_type = "float32"
+    float_16_type = "float16"
+    int_64_type = "int64"
+    int_32_type = "int32"
+    int_16_type = "int16"
+    int_8_type = "int8"
 
 
 class EstimateIntentionEnum(str, Enum):

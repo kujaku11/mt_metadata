@@ -58,9 +58,11 @@ class Rating(MetadataBase):
     @field_validator("value", mode="before")
     @classmethod
     def validate_value(
-        cls, value: int | None | str, info: ValidationInfo
-    ) -> int | None | str:
-        if isinstance(value, str):
+        cls, value: int | None | str | float, info: ValidationInfo
+    ) -> int | None:
+        if value in NULL_VALUES:
+            value = None
+        else:
             try:
                 value = int(value)
                 if value < 0 or value > 5:
@@ -71,9 +73,4 @@ class Rating(MetadataBase):
                     value = None
                 else:
                     raise ValueError(f"Invalid rating value: {value}")
-        elif isinstance(value, int):
-            if value < 0 or value > 5:
-                raise ValueError("Invalid rating value must be between 0 and 5.")
-        elif value is not None:
-            raise ValueError(f"Invalid rating value: {value}")
         return value
