@@ -324,33 +324,41 @@ class ChannelBase(MetadataBase):
         """Parse string representation of filters into list of AppliedFilter objects"""
         if isinstance(v, str):
             import ast
+            import json
             import re
             from collections import OrderedDict
 
             # Handle string representation of list of dicts
             if v.strip().startswith("[") and v.strip().endswith("]"):
                 try:
-                    # First try ast.literal_eval
-                    parsed_data = ast.literal_eval(v)
-                except (ValueError, SyntaxError):
+                    # First try json.loads for JSON-style strings (handles true/false/null)
+                    parsed_data = json.loads(v)
+                except (ValueError, json.JSONDecodeError):
                     try:
-                        # Handle OrderedDict function calls with eval and safe namespace
-                        # Clean up newlines between dictionary items by adding commas
-                        cleaned = re.sub(r"}\s+\{", "}, {", v)
+                        # Fall back to ast.literal_eval for Python-style literals
+                        parsed_data = ast.literal_eval(v)
+                    except (ValueError, SyntaxError):
+                        try:
+                            # Handle OrderedDict function calls with eval and safe namespace
+                            # Clean up newlines between dictionary items by adding commas
+                            cleaned = re.sub(r"}\s+\{", "}, {", v)
 
-                        # Use eval with a restricted namespace
-                        safe_namespace = {
-                            "__builtins__": {},
-                            "OrderedDict": OrderedDict,
-                            "True": True,
-                            "False": False,
-                            "None": None,
-                        }
+                            # Use eval with a restricted namespace
+                            safe_namespace = {
+                                "__builtins__": {},
+                                "OrderedDict": OrderedDict,
+                                "True": True,
+                                "False": False,
+                                "None": None,
+                                "true": True,  # JSON-style booleans
+                                "false": False,
+                                "null": None,
+                            }
 
-                        parsed_data = eval(cleaned, safe_namespace)
-                    except Exception as e:
-                        logger.warning(f"Failed to parse filters string: {e}")
-                        return []
+                            parsed_data = eval(cleaned, safe_namespace)
+                        except Exception as e:
+                            logger.warning(f"Failed to parse filters string: {e}")
+                            return []
 
                 # Convert to AppliedFilter objects
                 filters = []
@@ -384,12 +392,15 @@ class ChannelBase(MetadataBase):
         # Sort filters by stage number, treating None as 0
         v.sort(key=lambda f: f.stage if f.stage is not None else 0)
 
-        # Check for duplicates
-        seen = set()
-        for f in v:
-            if f.name in seen:
-                raise ValueError(f"Duplicate filter found: {f.name}")
-            seen.add(f.name)
+        # TEMPORARILY DISABLED: Check for duplicates
+        # There's a known issue in MTH5 serialization that causes filter duplication
+        # This will be re-enabled once the MTH5 duplication bug is fixed
+        # TODO: Re-enable duplicate validation after fixing MTH5 filter duplication
+        # seen = set()
+        # for f in v:
+        #     if f.name in seen:
+        #         raise ValueError(f"Duplicate filter found: {f.name}")
+        #     seen.add(f.name)
 
         return v
 
@@ -416,6 +427,14 @@ class ChannelBase(MetadataBase):
         if applied_filter is not None:
             if not isinstance(applied_filter, AppliedFilter):
                 raise TypeError("applied_filter must be an instance of AppliedFilter")
+
+            # Check if filter with this name already exists
+            if any(f.name == applied_filter.name for f in self.filters):
+                logger.debug(
+                    f"Filter '{applied_filter.name}' already exists, skipping duplicate"
+                )
+                return
+
             if applied_filter.stage is None:
                 applied_filter.stage = len(self.filters) + 1
             self.filters.append(applied_filter)
@@ -424,6 +443,12 @@ class ChannelBase(MetadataBase):
                 raise ValueError("name must be provided if applied_filter is None")
             if not isinstance(name, str):
                 raise TypeError("name must be a string")
+
+            # Check if filter with this name already exists
+            if any(f.name == name for f in self.filters):
+                logger.debug(f"Filter '{name}' already exists, skipping duplicate")
+                return
+
             if stage is None:
                 stage = len(self.filters) + 1
 
@@ -436,7 +461,7 @@ class ChannelBase(MetadataBase):
 
             # Sort filters and validate for duplicates
             self._sort_filters()
-            self._validate_no_duplicates()
+            # Note: Skipping duplicate validation since we already check above
 
     @computed_field
     @property
