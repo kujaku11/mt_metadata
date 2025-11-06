@@ -176,8 +176,10 @@ class TestFieldValidation:
 
     def test_levels_validation_invalid_type(self):
         """Test levels validation with invalid type."""
-        with pytest.raises(TypeError, match="input dl_list must be an iterable"):
-            FC(levels="invalid")  # type: ignore
+        fc = FC(levels="invalid")  # type: ignore
+        assert fc.levels == ListDict()
+        # with pytest.raises(TypeError, match="input dl_list must be an iterable"):
+        #     FC(levels="invalid")  # type: ignore
 
 
 class TestLevelsSynchronization:

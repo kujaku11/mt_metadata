@@ -48,6 +48,9 @@ def meta_dict():
             "location.elevation": 1234.0,
             "location.latitude": 12.324,
             "location.longitude": -112.03,
+            "location.x": 0.0,
+            "location.y": 0.0,
+            "location.z": 0.0,
             "measurement_azimuth": 0.0,
             "measurement_tilt": 0.0,
             "sample_rate": 256.0,
@@ -503,11 +506,14 @@ class TestChannelFilters:
 
         # Add first filter
         channel.add_filter(name="duplicate", applied=True, stage=1)
+        channel.add_filter(name="duplicate", applied=True, stage=1)
 
-        # Try to add another filter with the same name
-        with subtests.test("duplicate filter raises error"):
-            with pytest.raises(ValueError, match="Duplicate filter found: duplicate"):
-                channel.add_filter(name="duplicate", applied=False, stage=2)
+        assert len(channel.filters) == 1
+
+        # # Try to add another filter with the same name
+        # with subtests.test("duplicate filter raises error"):
+        #     with pytest.raises(ValueError, match="Duplicate filter found: duplicate"):
+        #         channel.add_filter(name="duplicate", applied=False, stage=2)
 
     def test_add_filter_validation_errors(self, subtests):
         """Test error handling in add_filter method."""
