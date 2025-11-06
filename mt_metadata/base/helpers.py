@@ -1312,3 +1312,37 @@ def object_to_array(value, dtype=float):
     else:
         msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
         raise TypeError(msg)
+
+
+def _should_include_coordinate_field(field_name: str) -> bool:
+    """
+    Helper function to determine if a coordinate field should be included
+    in to_dict output even when it has None/default values.
+
+    This ensures backward compatibility for coordinate fields that tests expect.
+    """
+    coordinate_fields = {
+        "negative.x",
+        "negative.y",
+        "negative.z",
+        "positive.x2",
+        "positive.y2",
+        "positive.z2",
+        "location.x",
+        "location.y",
+        "location.z",
+    }
+    return field_name in coordinate_fields
+
+
+def _should_convert_none_to_empty_string(field_name: str) -> bool:
+    """
+    Helper function to determine if a field should convert None to empty string
+    for backward compatibility.
+    """
+    string_fields = {
+        "data_logger.firmware.author",
+        "provenance.software.author",
+        "provenance.software.version",
+    }
+    return field_name in string_fields

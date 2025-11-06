@@ -28,42 +28,6 @@ from pydantic.fields import FieldInfo, PrivateAttr
 from typing_extensions import deprecated
 
 from mt_metadata import NULL_VALUES
-
-
-def _should_include_coordinate_field(field_name: str) -> bool:
-    """
-    Helper function to determine if a coordinate field should be included
-    in to_dict output even when it has None/default values.
-
-    This ensures backward compatibility for coordinate fields that tests expect.
-    """
-    coordinate_fields = {
-        "negative.x",
-        "negative.y",
-        "negative.z",
-        "positive.x2",
-        "positive.y2",
-        "positive.z2",
-        "location.x",
-        "location.y",
-        "location.z",
-    }
-    return field_name in coordinate_fields
-
-
-def _should_convert_none_to_empty_string(field_name: str) -> bool:
-    """
-    Helper function to determine if a field should convert None to empty string
-    for backward compatibility.
-    """
-    string_fields = {
-        "data_logger.firmware.author",
-        "provenance.software.author",
-        "provenance.software.version",
-    }
-    return field_name in string_fields
-
-
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import validate_attribute, validate_name
 
@@ -936,14 +900,17 @@ class MetadataBase(DotNotationBaseModel):
                 elif (
                     value not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]
                     or name in self._required_fields
-                    or _should_include_coordinate_field(name)
-                    or _should_convert_none_to_empty_string(name)
+                    or helpers._should_include_coordinate_field(name)
+                    or helpers._should_convert_none_to_empty_string(name)
                 ):
                     # Convert None coordinate fields to 0.0 for backward compatibility
-                    if _should_include_coordinate_field(name) and value is None:
+                    if helpers._should_include_coordinate_field(name) and value is None:
                         value = 0.0
                     # Convert None string fields to empty string for backward compatibility
-                    elif _should_convert_none_to_empty_string(name) and value is None:
+                    elif (
+                        helpers._should_convert_none_to_empty_string(name)
+                        and value is None
+                    ):
                         value = ""
                     meta_dict[name] = value
             else:
