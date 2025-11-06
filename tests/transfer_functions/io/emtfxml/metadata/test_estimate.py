@@ -19,7 +19,7 @@ def basic_estimate_data():
     """Basic estimate data for testing."""
     return {
         "name": "variance",
-        "type": ArrayDTypeEnum.real,
+        "type": ArrayDTypeEnum.real_type,
         "description": "Error variance estimate",
         "external_url": "http://www.iris.edu/dms/products/emtf/variance.html",
         "intention": EstimateIntentionEnum.error_estimate,
@@ -32,7 +32,7 @@ def minimal_estimate_data():
     """Minimal estimate data for testing."""
     return {
         "name": "test_estimate",
-        "type": ArrayDTypeEnum.complex,
+        "type": ArrayDTypeEnum.complex_type,
         "description": "Test description",
         "external_url": "https://example.com",
         "intention": EstimateIntentionEnum.signal_coherence,
@@ -101,8 +101,8 @@ class TestEstimateInstantiation:
     @pytest.mark.parametrize(
         "type_value",
         [
-            ArrayDTypeEnum.real,
-            ArrayDTypeEnum.complex,
+            ArrayDTypeEnum.real_type,
+            ArrayDTypeEnum.complex_type,
             "real",
             "complex",
         ],
@@ -207,7 +207,7 @@ class TestXMLSerialization:
     def test_to_xml_name_uppercase(self, empty_estimate):
         """Test that name is converted to uppercase in XML."""
         empty_estimate.name = "test_name"
-        empty_estimate.type = ArrayDTypeEnum.real
+        empty_estimate.type = ArrayDTypeEnum.real_type
 
         xml_element = empty_estimate.to_xml()
         assert xml_element.attrib["name"] == "TEST_NAME"
@@ -244,7 +244,7 @@ class TestXMLSerialization:
         """Test XML field value serialization."""
         setattr(empty_estimate, field, value)
         empty_estimate.name = "test"
-        empty_estimate.type = ArrayDTypeEnum.real
+        empty_estimate.type = ArrayDTypeEnum.real_type
         empty_estimate.external_url = "http://example.com"
         empty_estimate.intention = EstimateIntentionEnum.error_estimate
 
@@ -386,7 +386,7 @@ class TestEdgeCases:
     def test_special_characters_in_name_xml(self, empty_estimate):
         """Test XML generation with special characters in name."""
         empty_estimate.name = "test-name_with.special&chars"
-        empty_estimate.type = ArrayDTypeEnum.real
+        empty_estimate.type = ArrayDTypeEnum.real_type
         empty_estimate.external_url = "http://example.com"
         empty_estimate.intention = EstimateIntentionEnum.error_estimate
 
@@ -430,9 +430,11 @@ class TestEnums:
 
     def test_type_enum_values(self):
         """Test ArrayDTypeEnum values."""
-        assert ArrayDTypeEnum.real == "real"
-        assert ArrayDTypeEnum.complex == "complex"
-        assert list(ArrayDTypeEnum) == [ArrayDTypeEnum.real, ArrayDTypeEnum.complex]
+        assert ArrayDTypeEnum.real_type == "real"
+        assert ArrayDTypeEnum.complex_type == "complex"
+        # Test that these types are in the enum
+        assert ArrayDTypeEnum.real_type in list(ArrayDTypeEnum)
+        assert ArrayDTypeEnum.complex_type in list(ArrayDTypeEnum)
 
     def test_intention_enum_values(self):
         """Test EstimateIntentionEnum values."""
@@ -444,7 +446,7 @@ class TestEnums:
     def test_enum_string_conversion(self):
         """Test that enums can be converted to strings."""
         # Note: These enums use their full class name in string representation
-        assert str(ArrayDTypeEnum.real) == "ArrayDTypeEnum.real"
+        assert str(ArrayDTypeEnum.real_type) == "ArrayDTypeEnum.real_type"
         assert (
             str(EstimateIntentionEnum.error_estimate)
             == "EstimateIntentionEnum.error_estimate"
@@ -452,7 +454,7 @@ class TestEnums:
 
     def test_enum_equality_with_strings(self):
         """Test that enums are equal to their string values."""
-        assert ArrayDTypeEnum.real == "real"
+        assert ArrayDTypeEnum.real_type == "real"
         assert EstimateIntentionEnum.signal_coherence == "signal coherence"
 
 
@@ -467,7 +469,7 @@ class TestIntegration:
         # Create estimate with all fields
         estimate = Estimate(
             name="coherence_estimate",
-            type=ArrayDTypeEnum.complex,
+            type=ArrayDTypeEnum.complex_type,
             description="Signal coherence between components",
             external_url="https://earthscope.org/mt/coherence",
             intention=EstimateIntentionEnum.signal_coherence,
@@ -509,7 +511,7 @@ class TestIntegration:
         estimates.append(
             Estimate(
                 name="variance",
-                type=ArrayDTypeEnum.real,
+                type=ArrayDTypeEnum.real_type,
                 description="Error variance",
                 external_url="http://example.com/variance",
                 intention=EstimateIntentionEnum.error_estimate,
@@ -521,7 +523,7 @@ class TestIntegration:
         estimates.append(
             Estimate(
                 name="coherence",
-                type=ArrayDTypeEnum.complex,
+                type=ArrayDTypeEnum.complex_type,
                 description="Signal coherence",
                 external_url="http://example.com/coherence",
                 intention=EstimateIntentionEnum.signal_coherence,
@@ -614,6 +616,6 @@ class TestBoundaryValues:
 
         for input_name, expected_xml_name in test_cases:
             empty_estimate.name = input_name
-            empty_estimate.type = ArrayDTypeEnum.real
+            empty_estimate.type = ArrayDTypeEnum.real_type
             xml_element = empty_estimate.to_xml()
             assert xml_element.attrib["name"] == expected_xml_name

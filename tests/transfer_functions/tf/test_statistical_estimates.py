@@ -105,7 +105,7 @@ class TestStatisticalEstimateCreation:
         """Test creating a StatisticalEstimate with no parameters"""
         instance = StatisticalEstimate()
         assert instance.name == ""
-        assert instance.data_type == ArrayDTypeEnum.complex
+        assert instance.data_type == ArrayDTypeEnum.complex_type
         assert instance.description == ""
         assert instance.input_channels == []
         assert isinstance(
@@ -238,8 +238,8 @@ class TestStatisticalEstimateEnums:
         [
             "complex",
             "real",
-            ArrayDTypeEnum.complex,
-            ArrayDTypeEnum.real,
+            ArrayDTypeEnum.complex_type,
+            ArrayDTypeEnum.real_type,
         ],
     )
     def test_valid_data_types(self, dtype, valid_params):

@@ -26,7 +26,7 @@ def sample_data_type():
     """Return a sample DataType instance for testing."""
     return DataType(
         name="impedance",
-        type=ArrayDTypeEnum.complex,
+        type=ArrayDTypeEnum.complex_type,
         description="Impedance tensor estimate",
         external_url="http://example.com",
         intention=EstimateIntentionEnum.primary_data_type,
@@ -42,7 +42,7 @@ def sample_data_type_2():
     """Return a second sample DataType instance for testing."""
     return DataType(
         name="variance",
-        type=ArrayDTypeEnum.real,
+        type=ArrayDTypeEnum.real_type,
         description="Variance estimate",
         external_url="http://test.com",
         intention=EstimateIntentionEnum.error_estimate,
@@ -58,7 +58,7 @@ def sample_data_type_3():
     """Return a third sample DataType instance for testing."""
     return DataType(
         name="coherence",
-        type=ArrayDTypeEnum.real,
+        type=ArrayDTypeEnum.real_type,
         description="Signal coherence estimate",
         external_url="http://coherence.com",
         intention=EstimateIntentionEnum.signal_coherence,

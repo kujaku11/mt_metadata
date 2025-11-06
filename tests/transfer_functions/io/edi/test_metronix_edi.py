@@ -327,6 +327,17 @@ class TestFromTF:
                 assert (
                     edi_value != tf_st[edi_key]
                 ), f"Comments should be different for {edi_key}"
+            elif edi_key in ["location.x", "location.y", "location.z"]:
+                # Location coordinates: None in TF becomes 0.0 in EDI
+                tf_value = tf_st[edi_key]
+                if tf_value is None:
+                    assert (
+                        edi_value == 0.0
+                    ), f"Location coordinate {edi_key}: expected 0.0 for None TF value, got {edi_value}"
+                else:
+                    assert (
+                        edi_value == tf_value
+                    ), f"Location coordinate {edi_key} mismatch: EDI={edi_value} vs TF={tf_value}"
             else:
                 assert (
                     edi_value == tf_st[edi_key]

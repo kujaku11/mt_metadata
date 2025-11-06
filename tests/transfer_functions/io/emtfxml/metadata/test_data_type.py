@@ -32,7 +32,7 @@ def basic_data_type():
     """Return a DataType instance with basic data."""
     return DataType(
         name="variance",
-        type=ArrayDTypeEnum.real,
+        type=ArrayDTypeEnum.real_type,
         description="Variance estimate",
         external_url="http://example.com",
         intention=EstimateIntentionEnum.error_estimate,
@@ -48,7 +48,7 @@ def complete_data_type():
     """Return a DataType instance with comprehensive data."""
     return DataType(
         name="impedance_tensor",
-        type=ArrayDTypeEnum.complex,
+        type=ArrayDTypeEnum.complex_type,
         description="Complete magnetotelluric impedance tensor estimate",
         external_url="https://www.iris.edu/dms/products/emtf/impedance.html",
         intention=EstimateIntentionEnum.primary_data_type,
@@ -59,7 +59,9 @@ def complete_data_type():
     )
 
 
-@pytest.fixture(params=[ArrayDTypeEnum.real, ArrayDTypeEnum.complex, "real", "complex"])
+@pytest.fixture(
+    params=[ArrayDTypeEnum.real_type, ArrayDTypeEnum.complex_type, "real", "complex"]
+)
 def type_values(request):
     """Return various type enum values for testing."""
     return request.param
@@ -130,7 +132,7 @@ class TestDataTypeBasicFunctionality:
     def test_default_initialization(self, minimal_data_type):
         """Test default DataType initialization."""
         assert minimal_data_type.name == ""
-        assert minimal_data_type.type == ArrayDTypeEnum.real
+        assert minimal_data_type.type == ArrayDTypeEnum.real_type
         assert minimal_data_type.description == ""
         assert minimal_data_type.external_url == ""
         assert minimal_data_type.intention == ""
@@ -142,7 +144,7 @@ class TestDataTypeBasicFunctionality:
     def test_basic_initialization(self, basic_data_type):
         """Test DataType initialization with basic data."""
         assert basic_data_type.name == "variance"
-        assert basic_data_type.type == ArrayDTypeEnum.real
+        assert basic_data_type.type == ArrayDTypeEnum.real_type
         assert basic_data_type.description == "Variance estimate"
         assert str(basic_data_type.external_url) == "http://example.com/"
         assert basic_data_type.intention == EstimateIntentionEnum.error_estimate
@@ -154,7 +156,7 @@ class TestDataTypeBasicFunctionality:
     def test_complete_initialization(self, complete_data_type):
         """Test DataType initialization with complete data."""
         assert complete_data_type.name == "impedance_tensor"
-        assert complete_data_type.type == ArrayDTypeEnum.complex
+        assert complete_data_type.type == ArrayDTypeEnum.complex_type
         assert "magnetotelluric impedance" in complete_data_type.description
         assert "iris.edu" in str(complete_data_type.external_url)
         assert complete_data_type.intention == EstimateIntentionEnum.primary_data_type
@@ -163,11 +165,11 @@ class TestDataTypeBasicFunctionality:
         """Test field assignment after DataType creation."""
         dt = DataType()
         dt.name = "test_name"
-        dt.type = ArrayDTypeEnum.complex
+        dt.type = ArrayDTypeEnum.complex_type
         dt.description = "Test description"
 
         assert dt.name == "test_name"
-        assert dt.type == ArrayDTypeEnum.complex
+        assert dt.type == ArrayDTypeEnum.complex_type
         assert dt.description == "Test description"
 
 
@@ -361,7 +363,7 @@ class TestDataTypeXMLGeneration:
 
     def test_xml_generation_parameters(self):
         """Test XML generation with different parameters."""
-        dt = DataType(name="test", type=ArrayDTypeEnum.complex)
+        dt = DataType(name="test", type=ArrayDTypeEnum.complex_type)
 
         # Test with string=False
         with patch(
@@ -408,7 +410,7 @@ class TestDataTypeXMLGeneration:
         """Test that XML attributes are set correctly."""
         dt = DataType(
             name="test_name",
-            type=ArrayDTypeEnum.real,
+            type=ArrayDTypeEnum.real_type,
             output=OutputEnum.E,
             input=InputEnum.H,
             units="mV/km",
@@ -477,15 +479,15 @@ class TestDataTypeEdgeCases:
 
     def test_field_reassignment(self):
         """Test reassignment of DataType fields."""
-        dt = DataType(name="original", type=ArrayDTypeEnum.real)
+        dt = DataType(name="original", type=ArrayDTypeEnum.real_type)
 
         # Reassign fields
         dt.name = "modified"
-        dt.type = ArrayDTypeEnum.complex
+        dt.type = ArrayDTypeEnum.complex_type
         dt.intention = EstimateIntentionEnum.error_estimate
 
         assert dt.name == "modified"
-        assert dt.type == ArrayDTypeEnum.complex
+        assert dt.type == ArrayDTypeEnum.complex_type
         assert dt.intention == EstimateIntentionEnum.error_estimate
 
     def test_none_values_handling(self):
@@ -495,7 +497,7 @@ class TestDataTypeEdgeCases:
 
         # Check that None values are handled appropriately
         assert dt.name == ""  # Default empty string
-        assert dt.type == ArrayDTypeEnum.real  # Default value
+        assert dt.type == ArrayDTypeEnum.real_type  # Default value
         assert dt.description == ""
 
 
@@ -512,7 +514,11 @@ class TestDataTypePerformance:
         for i in range(100):
             dt = DataType(
                 name=f"test_{i}",
-                type=ArrayDTypeEnum.real if i % 2 == 0 else ArrayDTypeEnum.complex,
+                type=(
+                    ArrayDTypeEnum.real_type
+                    if i % 2 == 0
+                    else ArrayDTypeEnum.complex_type
+                ),
                 description=f"Test description {i}",
                 external_url="http://example.com",
                 intention=EstimateIntentionEnum.error_estimate,
@@ -535,7 +541,7 @@ class TestDataTypePerformance:
 
         dt = DataType(
             name="performance_test",
-            type=ArrayDTypeEnum.complex,
+            type=ArrayDTypeEnum.complex_type,
             description="Performance test data type",
             external_url="http://example.com",
             intention=EstimateIntentionEnum.primary_data_type,
@@ -582,13 +588,13 @@ class TestDataTypeIntegration:
         """Test integration with enum classes."""
         # Test that enums work correctly
         dt = DataType(
-            type=ArrayDTypeEnum.complex,
+            type=ArrayDTypeEnum.complex_type,
             intention=EstimateIntentionEnum.signal_coherence,
             output=OutputEnum.E,
             input=InputEnum.H,
         )
 
-        assert dt.type == ArrayDTypeEnum.complex
+        assert dt.type == ArrayDTypeEnum.complex_type
         assert dt.intention == EstimateIntentionEnum.signal_coherence
         assert dt.output == OutputEnum.E
         assert dt.input == InputEnum.H
@@ -669,7 +675,7 @@ class TestDataTypeIntegration:
 
         # Check default values match expected behavior
         assert dt.name == ""
-        assert dt.type == ArrayDTypeEnum.real
+        assert dt.type == ArrayDTypeEnum.real_type
         assert dt.description == ""
         assert dt.external_url == ""
         assert dt.intention == ""
