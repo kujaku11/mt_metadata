@@ -265,8 +265,12 @@ class MetadataBase(DotNotationBaseModel):
                 f"Cannot compare {self.__class__.__name__} with {type(other)}"
             )
         home_dict = self.to_dict(single=True, required=False)
-        if home_dict == other_dict:
-            return True
+        try:
+            if home_dict == other_dict:
+                return True
+        except ValueError:
+            # Handle numpy arrays in dictionaries which cannot be directly compared
+            pass
 
         equals = True
         for key, value in home_dict.items():
