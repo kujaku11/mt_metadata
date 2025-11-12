@@ -2,27 +2,30 @@
 """
 Created on Thu Dec 24 12:02:12 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+import json
+from collections import OrderedDict
+from collections.abc import MutableMapping
+from copy import deepcopy
+from operator import itemgetter
+
 # =============================================================================
 # Imports
 # =============================================================================
 from pathlib import Path
-from copy import deepcopy
-from collections import OrderedDict
-from collections.abc import MutableMapping
-from operator import itemgetter
-import json
 
-from mt_metadata.utils import validators
-from mt_metadata.utils.exceptions import MTSchemaError
+from loguru import logger
+
 from mt_metadata import REQUIRED_KEYS
 from mt_metadata.base.helpers import NumpyEncoder
-from loguru import logger
+from mt_metadata.utils import validators
+from mt_metadata.utils.exceptions import MTSchemaError
+
 
 # =============================================================================
 # base dictionary
@@ -127,22 +130,21 @@ class BaseDict(MutableMapping):
         Add a dictionary to.  If name is input it is added to the keys of
         the input dictionary
 
-        :param add_dict: dictionary to add
-        :type add_dict: dictionary, or MutableMapping
-        :param name: name to add to keys
-        :type name: string or None
+        Parameters
+        ----------
+        add_dict : dict or MutableMapping
+            dictionary to add
+        name : str, optional
+            name to add to keys, by default None
 
-        :Example: ::
-
-            >>> s_obj = Standards()
-            >>> run_dict = s_obj.run_dict
-            >>> run_dict.add_dict(s_obj.declination_dict, 'declination')
-
+        Examples
+        --------
+        >>> s_obj = Standards()
+        >>> run_dict = s_obj.run_dict
+        >>> run_dict.add_dict(s_obj.declination_dict, 'declination')
         """
         if not isinstance(add_dict, (dict, MutableMapping)):
-            msg = "add_dict takes only a dictionary not type {0}".format(
-                type(add_dict)
-            )
+            msg = "add_dict takes only a dictionary not type {0}".format(type(add_dict))
             logger.error(msg)
             raise TypeError(msg)
 
@@ -168,12 +170,19 @@ class BaseDict(MutableMapping):
 
     def to_latex(self, max_entries=7, first_table_len=7):
         """
+        Convert to LaTeX format
 
-        :param level_dict: DESCRIPTION
-        :type level_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        max_entries : int, optional
+            Maximum number of entries, by default 7
+        first_table_len : int, optional
+            Length of first table, by default 7
 
+        Returns
+        -------
+        TYPE
+            DESCRIPTION
         """
         beginning = [
             r"\clearpage",
@@ -214,18 +223,14 @@ class BaseDict(MutableMapping):
         lines = []
         for name, v_dict in level_dict.items():
             if not v_dict["options"] in [None, "none", "None", []]:
-                v_dict["description"] += ".  Options: {0}".format(
-                    v_dict["options"]
-                )
+                v_dict["description"] += ".  Options: {0}".format(v_dict["options"])
             line = [
                 r"\entry{{{0}}}".format(name)
                 + "".join(["{{{0}}}".format(v_dict[ii]) for ii in order[1:]])
             ]
             lines.append(line[0])
 
-        all_lines = (
-            beginning + header + ["\n".join(lines[0:first_table_len])] + end
-        )
+        all_lines = beginning + header + ["\n".join(lines[0:first_table_len])] + end
         for ii in range(ntables - 1):
             stable = beginning + header
             for kk in range(max_entries):
@@ -243,13 +248,18 @@ class BaseDict(MutableMapping):
         """
         Read in CSV file as a dictionary
 
-        :param csv_fn: csv file to read metadata standards from
-        :type csv_fn: pathlib.Path or string
+        Parameters
+        ----------
+        csv_fn : pathlib.Path or str
+            csv file to read metadata standards from
 
-        :return: dictionary of the contents of the file
-        :rtype: Dictionary
+        Returns
+        -------
+        dict
+            dictionary of the contents of the file
 
-        :Example: ::
+        Examples
+        --------
 
             >>> run_dict = BaseDict()
             >>> run_dict.from_csv(get_level_fn('run'))
@@ -276,9 +286,7 @@ class BaseDict(MutableMapping):
             line_dict = dict(
                 [
                     (key, ss.strip())
-                    for key, ss in zip(
-                        header, line.strip().split(",", len(header) - 1)
-                    )
+                    for key, ss in zip(header, line.strip().split(",", len(header) - 1))
                 ]
             )
 
@@ -293,13 +301,15 @@ class BaseDict(MutableMapping):
         """
         write dictionary to csv file
 
-        :param level_dict: DESCRIPTION
-        :type level_dict: TYPE
-        :param csv_fn: DESCRIPTION
-        :type csv_fn: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        csv_fn : TYPE
+            DESCRIPTION
 
+        Returns
+        -------
+        TYPE
+            DESCRIPTION
         """
 
         if not isinstance(csv_fn, Path):
@@ -316,9 +326,7 @@ class BaseDict(MutableMapping):
                         line.append("None")
                     else:
                         line.append(
-                            '"{0}"'.format(value)
-                            .replace(",", "|")
-                            .replace("'", "")
+                            '"{0}"'.format(value).replace(",", "|").replace("'", "")
                         )
                 else:
                     line.append("{0}".format(self[key][rkey]))
@@ -333,18 +341,22 @@ class BaseDict(MutableMapping):
         """
         Write schema standards to json
 
-        :param json_fn: full path to json file
-        :type json_fn: string or Path
-        :return: full path to json file
-        :rtype: Path
+        Parameters
+        ----------
+        json_fn : str or Path
+            full path to json file
+        indent : str, optional
+            indentation string, by default " " * 4
 
+        Returns
+        -------
+        Path
+            full path to json file
         """
 
         json_fn = Path(json_fn)
 
-        json_dict = dict(
-            [(k, v) for k, v in self.items() if k not in ["logger"]]
-        )
+        json_dict = dict([(k, v) for k, v in self.items() if k not in ["logger"]])
         with open(json_fn, "w") as fid:
             json.dump(json_dict, fid, cls=NumpyEncoder, indent=indent)
 
@@ -352,14 +364,17 @@ class BaseDict(MutableMapping):
 
     def from_json(self, json_fn):
         """
-
         Read schema standards from json
 
-        :param json_fn: full path to json file
-        :type json_fn: string or Path
-        :return: full path to json file
-        :rtype: Path
+        Parameters
+        ----------
+        json_fn : str or Path
+            full path to json file
 
+        Returns
+        -------
+        Path
+            full path to json file
         """
 
         json_fn = Path(json_fn)
@@ -382,11 +397,17 @@ def get_schema_fn(schema_element, paths):
     Get the correct file name for the given schema element from the provided
     list of valid file names
 
-    :param schema_element: name of the schema element to get filename for
-    :type schema_element: string
-    :return: correct file name for given element
-    :rtype: :class:`pathlib.Path`
+    Parameters
+    ----------
+    schema_element : str
+        name of the schema element to get filename for
+    paths : list
+        list of valid file paths
 
+    Returns
+    -------
+    pathlib.Path
+        correct file name for given element
     """
     for fn in paths:
         if schema_element == fn.stem:
@@ -399,11 +420,17 @@ def get_schema(schema_element, paths):
     """
     Get a :class:`mt_metadata.schema_base.BaseDict` object of the element
 
-    :param schema_element: name of the schema element to get filename for
-    :type schema_element: string
-    :return: return a dictionary that describes the standards for the element
-    :rtype: :class:`mt_metadata.schema_base.BaseDict`
+    Parameters
+    ----------
+    schema_element : str
+        name of the schema element to get filename for
+    paths : list
+        list of valid file paths
 
+    Returns
+    -------
+    mt_metadata.schema_base.BaseDict
+        return a dictionary that describes the standards for the element
     """
 
     schema_fn = get_schema_fn(schema_element, paths)

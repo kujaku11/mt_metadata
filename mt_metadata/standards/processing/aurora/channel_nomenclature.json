@@ -1,0 +1,94 @@
+{
+    "title": "channel_nomenclature",
+    "type": "object",
+    "properties": {
+        "ex": {
+            "default": "'ex'",
+            "description": "label for the X electric field channel, X is assumed to be North",
+            "title": "ex",
+            "examples": "ex",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "ex",
+                "e1",
+                "e2",
+                "e3",
+                "e4"
+            ]
+        },
+        "ey": {
+            "default": "'ey'",
+            "description": "label for the Y electric field channel, Y is assumed to be East",
+            "title": "ey",
+            "examples": "ey",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "ey",
+                "e1",
+                "e2",
+                "e3",
+                "e4"
+            ]
+        },
+        "hx": {
+            "default": "'hx'",
+            "description": "label for the X magnetic field channel, X is assumed to be North",
+            "title": "hx",
+            "examples": "hx",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "bx",
+                "hx",
+                "h1",
+                "h2",
+                "h3"
+            ]
+        },
+        "hy": {
+            "default": "'hy'",
+            "description": "label for the Y magnetic field channel, Y is assumed to be East",
+            "title": "hy",
+            "examples": "hy",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "by",
+                "hy",
+                "h1",
+                "h2",
+                "h3"
+            ]
+        },
+        "hz": {
+            "default": "'hz'",
+            "description": "label for the Z magnetic field channel, Z is assumed to be vertical Down",
+            "title": "hz",
+            "examples": "hz",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "bz",
+                "hz",
+                "h1",
+                "h2",
+                "h3"
+            ]
+        }
+    },
+    "required": [
+        "ex",
+        "ey",
+        "hx",
+        "hy",
+        "hz"
+    ],
+    "description": "channel_nomenclature"
+}

@@ -2,93 +2,344 @@
 """
 Created on Tue Feb 23 11:52:35 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
+This module provides functionality to summarize metadata standards from both
+legacy BaseDict-based objects and modern Pydantic v2 MetadataBase objects.
+
+The main functions are:
+- summarize_timeseries_standards(): Legacy function for BaseDict objects
+- summarize_pydantic_standards(): New function for Pydantic v2 MetadataBase objects
+- extract_metadata_fields_from_pydantic(): Extract fields from individual Pydantic classes
+- summarize_standards(): Unified interface supporting both legacy and Pydantic systems
+
+Example usage:
+    # For Pydantic v2 objects (recommended)
+    >>> df = summarize_standards(metadata_type="pydantic")
+
+    # Extract fields from individual class
+    >>> from mt_metadata.timeseries import Survey
+    >>> fields = extract_metadata_fields_from_pydantic(Survey)
+
+    # Get BaseDict-compatible summary
+    >>> summary = summarize_pydantic_standards()
 """
+from typing import get_args, get_origin, Union
+
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
+from numpy._typing._array_like import NDArray
 import pandas as pd
+from loguru import logger
 
 from mt_metadata import __version__
+from mt_metadata.base import BaseDict, MetadataBase
+from mt_metadata.utils.validators import validate_name
 
-from mt_metadata.base import BaseDict
-from mt_metadata.timeseries import (
-    Survey,
-    Station,
-    Run,
-    Auxiliary,
-    Electric,
-    Magnetic,
-)
-from mt_metadata.timeseries.filters import (
-    PoleZeroFilter,
-    FrequencyResponseTableFilter,
-    CoefficientFilter,
-    FIRFilter,
-    TimeDelayFilter,
-)
 
 # =============================================================================
 
+SUMMARIZE_DTYPE = np.dtype(
+    [
+        ("attribute", "U72"),
+        ("type", "U15"),
+        ("required", np.bool_),
+        ("style", "U72"),
+        ("units", "U32"),
+        ("description", "U300"),
+        ("options", "U150"),
+        ("alias", "U72"),
+        ("example", "U72"),
+        ("default", "U72"),
+    ]
+)
 
-def summarize_timeseries_standards():
+
+def extract_metadata_fields_from_pydantic(metadata_class):
     """
-    Summarize the standards for time series metadata.
+    Extract field information from a Pydantic v2 MetadataBase class definition
+    and convert it to a format compatible with BaseDict.
+
+    Parameters
+    ----------
+    metadata_class : type
+        A MetadataBase class (not instance)
+
+    Returns
+    -------
+    dict
+        Dictionary with field information compatible with BaseDict
     """
+    if not (
+        isinstance(metadata_class, type) and issubclass(metadata_class, MetadataBase)
+    ):
+        raise TypeError(
+            f"Object must be a MetadataBase class, got {type(metadata_class)}"
+        )
+
+    field_dict = {}
+    model_fields = metadata_class.model_fields
+
+    for field_name, field_info in model_fields.items():
+        # Extract basic field information
+        field_data = {
+            "type": _get_field_type(field_info),
+            "required": _get_field_required(field_info),
+            "style": _get_field_style(field_info),
+            "units": _get_field_units(field_info),
+            "description": _get_field_description(field_info),
+            "options": _get_field_options(field_info),
+            "alias": _get_field_alias(field_info),
+            "example": _get_field_example(field_info),
+            "default": _get_field_default(field_info),
+        }
+
+        field_dict[field_name] = field_data
+
+    return field_dict
+
+
+def _get_field_type(field_info):
+    """Extract type information from Pydantic field"""
+    annotation = field_info.annotation
+
+    # Handle Union types (e.g., str | int)
+    origin = get_origin(annotation)
+    if origin is not None:
+        args = get_args(annotation)
+        if origin is Union or (
+            hasattr(origin, "__name__") and origin.__name__ == "UnionType"
+        ):
+            # For Union types, get the first non-None type
+            for arg in args:
+                if arg is not type(None):
+                    annotation = arg
+                    break
+
+    # Map Python types to string representations that BaseDict now accepts
+    type_mapping = {
+        str: "string",
+        int: "integer",
+        float: "float",
+        bool: "boolean",
+        list: "list",  # Now supported by BaseDict
+        dict: "dict",  # Now supported by BaseDict
+    }
+
+    if annotation in type_mapping:
+        return type_mapping[annotation]
+    elif hasattr(annotation, "__name__"):
+        # For custom classes, map to appropriate types that BaseDict accepts
+        name = annotation.__name__.lower()
+        if name.endswith("enum"):
+            return "string"  # Enums are essentially strings with options
+        elif "list" in name or "array" in name:
+            return "list"  # Use list type
+        elif "dict" in name:
+            return "dict"  # Use dict type
+        elif (
+            "comment" in name
+            or "citation" in name
+            or any(x in name for x in ["person", "location", "fdsn"])
+        ):
+            return "object"  # Complex objects as object type
+        else:
+            return "object"  # Default to object for complex types
+    else:
+        return "string"  # Default fallback
+
+
+def _get_field_required(field_info):
+    """Extract required status from Pydantic field"""
+    # Check json_schema_extra first
+    if hasattr(field_info, "json_schema_extra") and field_info.json_schema_extra:
+        if "required" in field_info.json_schema_extra:
+            return field_info.json_schema_extra["required"]
+
+    # Check if field has a default value - if no default, it's required
+    from pydantic_core import PydanticUndefined
+
+    return field_info.default is PydanticUndefined and (
+        field_info.default_factory is None
+        or field_info.default_factory is PydanticUndefined
+    )
+
+
+def _get_field_style(field_info):
+    """Extract style information from Pydantic field"""
+    # Check for pattern in field constraints
+    if hasattr(field_info, "pattern") and field_info.pattern:
+        return f"pattern: {field_info.pattern}"
+
+    # Check json_schema_extra for style
+    if hasattr(field_info, "json_schema_extra") and field_info.json_schema_extra:
+        if "style" in field_info.json_schema_extra:
+            return field_info.json_schema_extra["style"]
+
+    return "free form"
+
+
+def _get_field_units(field_info):
+    """Extract units information from Pydantic field"""
+    if hasattr(field_info, "json_schema_extra") and field_info.json_schema_extra:
+        if "units" in field_info.json_schema_extra:
+            return field_info.json_schema_extra["units"]
+    return None
+
+
+def _get_field_description(field_info):
+    """Extract description from Pydantic field"""
+    return getattr(field_info, "description", "No description available")
+
+
+def _get_field_options(field_info):
+    """Extract options/choices from Pydantic field"""
+    # Check for enum or choices in constraints
+    options = []
+
+    # Check for enum type
+    annotation = field_info.annotation
+    if hasattr(annotation, "__members__"):  # Enum type
+        options = list(annotation.__members__.keys())
+
+    # Check json_schema_extra for options
+    if hasattr(field_info, "json_schema_extra") and field_info.json_schema_extra:
+        if "options" in field_info.json_schema_extra:
+            schema_options = field_info.json_schema_extra["options"]
+            if isinstance(schema_options, (list, tuple)):
+                options.extend(schema_options)
+
+    return options  # Return empty list instead of None to avoid validation errors
+
+
+def _get_field_alias(field_info):
+    """Extract alias from Pydantic field"""
+    alias = getattr(field_info, "alias", None)
+    return alias if alias is not None else ""
+
+
+def _get_field_example(field_info):
+    """Extract example from Pydantic field"""
+    # First check the direct examples attribute (deprecated but still used)
+    examples = getattr(field_info, "examples", None)
+
+    # If not found, check json_schema_extra for examples
+    if (
+        examples is None
+        and hasattr(field_info, "json_schema_extra")
+        and field_info.json_schema_extra
+    ):
+        examples = field_info.json_schema_extra.get("examples", None)
+
+    if hasattr(examples, "__iter__") and not isinstance(examples, str):
+        if examples and len(examples) > 0:
+            return str(examples[0])
+    else:
+        return str(examples) if examples is not None else ""
+
+
+def _get_field_default(field_info):
+    """Extract default value from Pydantic field"""
+    from pydantic_core import PydanticUndefined
+
+    if field_info.default is not PydanticUndefined:
+        # Convert to string for storage
+        default_val = field_info.default
+        if isinstance(default_val, (str, int, float, bool)):
+            return str(default_val)
+        elif default_val is None:
+            return ""
+        else:
+            return str(default_val)
+    elif (
+        field_info.default_factory is not None
+        and field_info.default_factory is not PydanticUndefined
+    ):
+        try:
+            default_val = field_info.default_factory()
+            if isinstance(default_val, (str, int, float, bool)):
+                return str(default_val)
+            else:
+                return str(type(default_val).__name__)
+        except:
+            return ""
+    return ""
+
+
+def collect_basemodel_objects(module: str) -> dict[type[MetadataBase], str]:
+    """
+    Collect all MetadataBase subclasses from a given module.
+
+    Parameters
+    ----------
+    module : str
+        The module to inspect (e.g., 'mt_metadata.timeseries')
+
+    Returns
+    -------
+    dict[type[MetadataBase], str]
+        Dictionary mapping class objects to their names
+    """
+    import importlib
+    import inspect
+
+    mod = importlib.import_module(f"mt_metadata.{module}")
+    basemodel_classes = {}
+    for name, obj in inspect.getmembers(mod, inspect.isclass):
+        if issubclass(obj, MetadataBase) and obj is not MetadataBase:
+            basemodel_classes[obj] = validate_name(name)
+    return basemodel_classes
+
+
+def summarize_pydantic_standards(module: str = "timeseries") -> BaseDict:
+    """
+    Summarize the standards for metadata using Pydantic v2 MetadataBase classes.
+    Similar to summarize_timeseries_standards but works with the new Pydantic structure.
+
+    Parameters
+    ----------
+    module : str, optional
+        The module to inspect, by default "timeseries"
+
+    Returns
+    -------
+    BaseDict
+        BaseDict object containing summarized field information
+    """
+    metadata_classes = collect_basemodel_objects(module)
 
     summary_dict = BaseDict()
-    summary_dict.add_dict(Survey()._attr_dict.copy(), "survey")
-    summary_dict.add_dict(Station()._attr_dict.copy(), "station")
-    summary_dict.add_dict(Run()._attr_dict.copy(), "run")
-    summary_dict.add_dict(Electric()._attr_dict.copy(), "electric")
-    summary_dict.add_dict(Magnetic()._attr_dict.copy(), "magnetic")
-    summary_dict.add_dict(Auxiliary()._attr_dict.copy(), "auxiliary")
-    summary_dict.add_dict(
-        PoleZeroFilter()._attr_dict.copy(), "pole_zero_filter"
-    )
-    summary_dict.add_dict(
-        FrequencyResponseTableFilter()._attr_dict.copy(),
-        "frequency_amplitude_phase_filter",
-    ),
-    summary_dict.add_dict(
-        CoefficientFilter()._attr_dict.copy(), "coefficient_filter"
-    ),
-    summary_dict.add_dict(FIRFilter()._attr_dict.copy(), "fir_filter"),
-    summary_dict.add_dict(
-        TimeDelayFilter()._attr_dict.copy(), "time_delay_filter"
-    )
+
+    for metadata_class, class_name in metadata_classes.items():
+        try:
+            class_fields = extract_metadata_fields_from_pydantic(metadata_class)
+            summary_dict.add_dict(class_fields, class_name)
+        except Exception as e:
+            logger.exception(e)
+            logger.warning(f"Could not process {class_name} fields: {e}")
 
     return summary_dict
 
 
-def summary_to_array(summary_dict):
+def summary_to_array(summary_dict, dtype=SUMMARIZE_DTYPE) -> np.ndarray:
     """
     Summarize all metadata from a summarized dictionary of standards
 
-    :param summary_dict: Dictionary of summarized standards
-    :type summary_dict: dict
-    :return: numpy structured array
-    :rtype: np.array
+    Parameters
+    ----------
+    summary_dict : dict
+        Dictionary of summarized standards
 
+    Returns
+    -------
+    np.array
+        numpy structured array
     """
-    dtype = np.dtype(
-        [
-            ("attribute", "U72"),
-            ("type", "U15"),
-            ("required", np.bool_),
-            ("style", "U72"),
-            ("units", "U32"),
-            ("description", "U300"),
-            ("options", "U150"),
-            ("alias", "U72"),
-            ("example", "U72"),
-        ]
-    )
 
     entries = np.zeros(len(summary_dict.keys()) + 1, dtype=dtype)
     entries[0]["attribute"] = "mt_metadata.standards.version"
@@ -116,25 +367,54 @@ def summary_to_array(summary_dict):
     return entries
 
 
-def summarize_standards(metadata_type="timeseries", csv_fn=None):
+def summary_to_dataframe(summary_dict):
     """
+    Convert a summary dictionary to a pandas DataFrame.
 
+    Parameters
+    ----------
+    summary_dict : dict
+        Dictionary of summarized standards
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the summarized standards
+    """
+    entries = summary_to_array(summary_dict)
+    return pd.DataFrame(entries)
+
+
+def summarize_standards(
+    module="timeseries",
+    csv_fn=None,
+    output_type="dataframe",
+    dtype=SUMMARIZE_DTYPE,
+) -> Union[pd.DataFrame, np.ndarray]:
+    """
     Summarize standards into a numpy array and write a csv if specified
 
-    :param metadata_type: [ timeseries | transfer function | edi | emtf | j | zmm ], defaults to "timeseries"
-    :type metadata_type: string, optional
-    :param csv_fn: full path to write a csv file, defaults to None
-    :type csv_fn: string or Path, optional
-    :return: structured numpy array
-    :rtype: :class:`numpy.ndarray`
+    Parameters
+    ----------
+    module : str, optional
+        Module to summarize, by default "timeseries"
+    csv_fn : str or Path, optional
+        Full path to write a csv file, by default None
 
+    Returns
+    -------
+    numpy.ndarray | pd.DataFrame
+        If output_type is "array", returns a numpy structured array.
+        If output_type is "dataframe", returns a pandas DataFrame.
     """
 
-    function_dict = {"timeseries": summarize_timeseries_standards}
+    summary_dict = summarize_pydantic_standards(module)
+    if output_type == "array":
+        return summary_to_array(summary_dict, dtype=dtype)
+    elif output_type == "dataframe" and csv_fn is None:
+        return summary_to_dataframe(summary_dict)
 
-    summary_df = pd.DataFrame(summary_to_array(function_dict[metadata_type]()))
-
-    if csv_fn:
+    elif csv_fn:
+        summary_df = summary_to_dataframe(summary_dict)
         summary_df.to_csv(csv_fn, index=False)
-
     return summary_df

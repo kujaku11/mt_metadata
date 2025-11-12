@@ -1,0 +1,68 @@
+{
+    "title": "magnetometer",
+    "type": "object",
+    "properties": {
+        "id": {
+            "default": "",
+            "description": "instrument ID number can be serial number or a designated ID",
+            "title": "id",
+            "examples": "mt01",
+            "type": "string",
+            "alias": [
+                "serial"
+            ],
+            "units": null
+        },
+        "manufacturer": {
+            "default": "",
+            "description": "who manufactured the instrument",
+            "title": "manufacturer",
+            "examples": "mt gurus",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "type": {
+            "default": "",
+            "description": "instrument type",
+            "title": "type",
+            "examples": "broadband 32-bit",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "model": {
+            "default": null,
+            "description": "model version of the instrument",
+            "title": "model",
+            "examples": "falcon5",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "name": {
+            "default": null,
+            "description": "Name of the model of the instrument",
+            "title": "name",
+            "examples": "falcon5",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "settings": {
+            "default": null,
+            "description": "Any settings for the instrument",
+            "title": "settings",
+            "examples": "notch filter applied",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "id",
+        "manufacturer",
+        "type"
+    ],
+    "description": "magnetometer"
+}

@@ -8,22 +8,24 @@ Created on Mon Feb 22 09:27:10 2021
 :license: MIT
 
 """
+from copy import deepcopy
+
 # =============================================================================
 # Imports
 # =============================================================================
 from pathlib import Path
-from copy import deepcopy
+
 from loguru import logger
+from obspy import read_inventory
+from obspy.core import inventory
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml import (
+    XMLChannelMTChannel,
     XMLNetworkMTSurvey,
     XMLStationMTStation,
-    XMLChannelMTChannel,
 )
 
-from obspy.core import inventory
-from obspy import read_inventory
 
 # =============================================================================
 

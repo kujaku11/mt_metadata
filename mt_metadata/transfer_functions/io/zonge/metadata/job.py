@@ -1,28 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 11:00:57 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("job", SCHEMA_FN_PATHS)
-# =============================================================================
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 
-class Job(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Job(MetadataBase):
+    name: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="name of the job",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["yellowstone"],
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    job_for: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="who the job is for",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["NSF"],
+            },
+        ),
+    ]

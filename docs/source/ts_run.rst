@@ -22,11 +22,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -43,15 +46,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channels_recorded_electric**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | List of electric channels recorded            | "[Ex , Ey]"    |
+       | **Required**: :red:`True`                    | List of electric channels recorded            | [Ex , Ey]      |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -68,21 +74,24 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channels_recorded_magnetic**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | List of magnetic channels recorded            | "[Hx , Hy ,    |
-       |                                              |                                               | Hz]"           |
+       | **Required**: :red:`True`                    | List of magnetic channels recorded            | [Hx , Hy , Hz] |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -91,15 +100,74 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments on the run.                      | cows chewed    |
-       |                                              |                                               | cables         |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.time_stamp**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.value`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.value**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -122,11 +190,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <enum 'DataTypeEnum'>              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: BBMT                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: DataTypeEnum.BBMT               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -147,11 +218,14 @@ Run
        |                                              | number or character.  Characters should only  |                |
        | **Units**: None                              | be used if the run number is small, if the    |                |
        |                                              | run number is high consider using digits with |                |
-       | **Type**: string                             | zeros.  For example if you have 100 runs the  |                |
+       | **Type**: <class 'str'>                      | zeros.  For example if you have 100 runs the  |                |
        |                                              | run ID could be 001 or {station}001.          |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -172,17 +246,20 @@ Run
        |                                              |                                               |                |
        | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`fdsn.id`
-~~~~~~~~~~~~~~~
+:navy:`acquired_by.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -191,47 +268,25 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **fdsn.id**                                  | **Description**                               | **Example**    |
+       | **acquired_by.organization**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`fdsn.network`
-~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **fdsn.network**                             | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
-       |                                              | code.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`fdsn.channel_code`
+:navy:`acquired_by.email`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -241,48 +296,26 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **fdsn.channel_code**                        | **Description**                               | **Example**    |
+       | **acquired_by.email**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
-       |                                              | http://docs.fdsn.org/projects/source-         |                |
-       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`fdsn.new_epoch`
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
-       |                                              | created or not.                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: boolean                            |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`fdsn.alternate_code`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`acquired_by.url`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -291,22 +324,25 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
+       | **acquired_by.url**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN,.|
-       |                                              |                                               | UNRESTRICTED,_U|
-       | **Units**: None                              |                                               | S-ALL,_US-     |
-       |                                              |                                               | MT,_US-MT-TA   |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`fdsn.alternate_network_code`
+:navy:`acquired_by.comments.author`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -316,17 +352,1196 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
+       | **acquired_by.comments.author**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN,.|
-       |                                              |                                               | UNRESTRICTED,_U|
-       | **Units**: None                              |                                               | S-ALL,_US-     |
-       |                                              |                                               | MT,_US-MT-TA   |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.time_stamp**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.value**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.organization**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.email**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.url`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.url**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.comments.author**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.comments.time_stamp**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.comments.value**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creation_time`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creation_time**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time the file was created.           | 2020-02-       |
+       |                                              |                                               | 08T12:23:40.324|
+       | **Units**: None                              |                                               | 600+00:00      |
+       |                                              |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments.author**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments.time_stamp**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments.value**                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.log`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.log**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | A history of changes made to the data.        | 2020-02-       |
+       |                                              |                                               | 10T14:24:45+00:|
+       | **Units**: None                              |                                               | 00 updated     |
+       |                                              |                                               | metadata       |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.organization**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.email**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.url`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.url**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.comments.author**       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.comments.time_stamp**   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.comments.value**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.author**                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.organization**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.email**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.url`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.url**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.comments.author**     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.comments.time_stamp** | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.comments.value**      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.author**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.organization**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.email**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.url`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.url**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.comments.author**       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.comments.time_stamp**   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.comments.value**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.name**                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.software.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.author**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author of the software                        | Neo            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.software.version`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.version**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software version                              | 12.01a         |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.software.last_updated`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.last_updated**         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Most recent date the software was updated.    | 2020-01-01     |
+       |                                              | Prefer to use version, but this works for     |                |
+       | **Units**: None                              | non-versioned software.                       |                |
+       |                                              |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp | None              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.software.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.name**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software name                                 | mtrules        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`time_period.end`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.end**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
+       |                                              |                                               | 04T16:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`time_period.start`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.start**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
+       |                                              |                                               | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -347,11 +1562,14 @@ Run
        |                                              | a designated ID.                              |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -372,11 +1590,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -397,11 +1618,14 @@ Run
        |                                              |                                               | 32-bit         |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -418,13 +1642,16 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.model**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Model version of the instrument.              | falcon5        |
+       | **Required**: :red:`True`                    | Model version of the instrument.              | falcon5        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -443,21 +1670,24 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.name**                         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Standard marketing name of the instrument.    | falcon5        |
+       | **Required**: :red:`True`                    | Standard marketing name of the instrument.    | falcon5        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`data_logger.timing_system.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`data_logger.timing_system.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -466,15 +1696,74 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **data_logger.timing_system.comments**       | **Description**                               | **Example**    |
+       | **data_logger.timing_system.comments.author**| **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comment on the timing system.             | GPS locked with|
-       |                                              |                                               | internal quartz|
-       | **Units**: None                              |                                               | clock          |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.timing_system.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 51 45 15
+
+       +----------------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.timing_system.comments.time_stamp**  | **Description**                               | **Example**    |
+       +====================================================+===============================================+================+
+       | **Required**: :red:`True`                          | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                                    | made.                                         | 01T09:23:45.453|
+       | **Units**: None                                    |                                               | 670+00:00      |
+       |                                                    |                                               |                |
+       | **Type**: float | int | numpy.datetime64 |         |                                               |                |
+       | pandas._libs.tslibs.timestamps.Timestamp           |                                               |                |
+       | | str | mt_metadata.common.mttime.MTime |          |                                               |                |
+       | None                                               |                                               |                |
+       |                                                    |                                               |                |
+       |                                                    |                                               |                |
+       |                                                    |                                               |                |
+       | **Default**: MTime                                 |                                               |                |
+       |                                                    |                                               |                |
+       |                                                    |                                               |                |
+       +----------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.timing_system.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.timing_system.comments.value** | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -497,9 +1786,12 @@ Run
        |                                              |                                               |                |
        | **Units**: seconds                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -522,9 +1814,12 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: GPS                             |                                               |                |
        |                                              |                                               |                |
@@ -547,9 +1842,12 @@ Run
        |                                              |                                               |                |
        | **Units**: seconds                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -568,13 +1866,16 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.timing_system.n_satellites**   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Number of satellites used for timing.         | 6              |
+       | **Required**: :red:`True`                    | Number of satellites used for timing.         | 6              |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
+       | **Type**: int | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -597,11 +1898,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -622,11 +1926,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -643,15 +1950,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.firmware.last_updated**        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Most recent date the software was updated.    | 2020-01-01     |
+       | **Required**: :red:`True`                    | Most recent date the software was updated.    | 2020-01-01     |
        |                                              | Prefer to use version, but this works for     |                |
        | **Units**: None                              | non-versioned software.                       |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp | None              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -672,11 +1982,14 @@ Run
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -693,13 +2006,16 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.power_source.type**            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Description of battery type.                  | pb-acid gel    |
+       | **Required**: :red:`True`                    | Description of battery type.                  | pb-acid gel    |
        |                                              |                                               | cell           |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -718,13 +2034,16 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.power_source.id**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | battery id                                    | battery01      |
+       | **Required**: :red:`True`                    | battery id                                    | battery01      |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -743,15 +2062,18 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.power_source.voltage.start**   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Starting voltage                              | 14.3           |
+       | **Required**: :red:`True`                    | Starting value.                               | 1.0            |
        |                                              |                                               |                |
-       | **Units**: volts                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -768,46 +2090,24 @@ Run
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_logger.power_source.voltage.end**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Ending voltage                                | 12.1           |
+       | **Required**: :red:`True`                    | Ending value of the range.                    | 1.0            |
        |                                              |                                               |                |
-       | **Units**: volts                             |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`data_logger.power_source.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **data_logger.power_source.comments**        | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the battery.               | discharged too |
-       |                                              |                                               | quickly        |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`time_period.end`
-~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`data_logger.power_source.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -816,22 +2116,277 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **time_period.end**                          | **Description**                               | **Example**    |
+       | **data_logger.power_source.comments.author** | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04T16:2|
-       |                                              |                                               | 3:45.453670+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: time                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`time_period.start`
+:navy:`data_logger.power_source.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 50 45 15
+
+       +---------------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.comments.time_stamp**  | **Description**                               | **Example**    |
+       +===================================================+===============================================+================+
+       | **Required**: :red:`True`                         | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                                   | made.                                         | 01T09:23:45.453|
+       | **Units**: None                                   |                                               | 670+00:00      |
+       |                                                   |                                               |                |
+       | **Type**: float | int | numpy.datetime64 |        |                                               |                |
+       | pandas._libs.tslibs.timestamps.Timestamp          |                                               |                |
+       | | str | mt_metadata.common.mttime.MTime           |                                               |                |
+       | | None                                            |                                               |                |
+       |                                                   |                                               |                |
+       |                                                   |                                               |                |
+       |                                                   |                                               |                |
+       | **Default**: MTime                                |                                               |                |
+       |                                                   |                                               |                |
+       |                                                   |                                               |                |
+       +---------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.power_source.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.comments.value**  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.data_storage.id`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.data_storage.id**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       |                                              | a designated ID.                              |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.data_storage.manufacturer`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.data_storage.manufacturer**    | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.data_storage.type`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.data_storage.type**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
+       |                                              |                                               | 32-bit         |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.data_storage.model`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.data_storage.model**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Model version of the instrument.              | falcon5        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.data_storage.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.data_storage.name**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Standard marketing name of the instrument.    | falcon5        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.id`
+~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.id**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Given FDSN archive ID name.                   | MT001          |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.network`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.network**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Given two character FDSN archive network      | EM             |
+       |                                              | code. Needs to be 2 alpha numeric characters. |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.channel_code`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -841,197 +2396,25 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **time_period.start**                        | **Description**                               | **Example**    |
+       | **fdsn.channel_code**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01T09:2|
-       |                                              |                                               | 3:45.453670+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: time                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`acquired_by.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.author**                       | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`acquired_by.organization`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.organization**                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`acquired_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.comments**                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`metadata_by.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **metadata_by.author**                       | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`metadata_by.organization`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **metadata_by.organization**                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`metadata_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **metadata_by.comments**                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`provenance.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.comments**                      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments on provenance of the data.       | all good       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`provenance.log`
+:navy:`fdsn.new_epoch`
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -1041,17 +2424,104 @@ Run
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.log**                           | **Description**                               | **Example**    |
+       | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | A history of changes made to the data.        | 2020-02-10T14:2|
-       |                                              |                                               | 4:45+00:00     |
-       | **Units**: None                              |                                               | updated        |
-       |                                              |                                               | metadata       |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :red:`True`                    | Boolean telling if a new epoch needs to be    | False          |
+       |                                              | created or not.                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Type**: bool | None                        |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.alternate_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Alternate Code                                | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Units**: None                              |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.alternate_network_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Alternate Network Code                        | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Units**: None                              |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`channels`
+~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channels**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | ListDict of channel objects collected in this | ListDict(Electr|
+       |                                              | run.                                          | ic(),          |
+       | **Units**: None                              |                                               | Magnetic(),    |
+       |                                              |                                               | Auxiliary())   |
+       | **Type**: mt_metadata.common.list_dict.ListDi|                                               |                |
+       | ct | list | dict |                           |                                               |                |
+       | collections.OrderedDict                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ListDict                        |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

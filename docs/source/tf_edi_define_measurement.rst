@@ -22,9 +22,12 @@ DefineMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
+       | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 999                             |                                               |                |
        |                                              |                                               |                |
@@ -47,9 +50,12 @@ DefineMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
+       | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 999                             |                                               |                |
        |                                              |                                               |                |
@@ -72,11 +78,14 @@ DefineMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
+       | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 999                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 7                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -93,15 +102,18 @@ DefineMeasurement
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **reftype**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Type of offset from reference center point.   | cart           |
+       | **Required**: :blue:`False`                  | Type of offset from reference center point.   | cartesian cart |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: cartesian                       |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -122,9 +134,12 @@ DefineMeasurement
        |                                              | point.                                        |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -147,11 +162,14 @@ DefineMeasurement
        |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -172,11 +190,14 @@ DefineMeasurement
        |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -197,11 +218,14 @@ DefineMeasurement
        |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -222,11 +246,42 @@ DefineMeasurement
        |                                              | units.                                        |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: m                               |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`measurements`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **measurements**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Dictionary of measurements with keys as       | {'hx': EMeasure|
+       |                                              | channel types (e.g., 'hx', 'hy', 'ex', 'ey',  | ment(...),     |
+       | **Units**: None                              | etc.) and values as EMeasurement or           | 'hy': HMeasurem|
+       |                                              | HMeasurement objects.                         | ent(...)}      |
+       | **Type**: dict[str, mt_metadata.transfer_func|                                               |                |
+       | tions.io.edi.metadata.emeasurement.          |                                               |                |
+       | EMeasurement | mt_metadata.transfer          |                                               |                |
+       | _functions.io.edi.metadata.hmeasure          |                                               |                |
+       | ment.HMeasurement]                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: dict                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

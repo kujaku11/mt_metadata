@@ -22,9 +22,12 @@ ProcessingInfo
        |                                              | output                                        | t)             |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <enum 'SignConventionEnum'>        |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: exp(+ i\omega t)                |                                               |                |
        |                                              |                                               |                |
@@ -47,9 +50,12 @@ ProcessingInfo
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -72,11 +78,14 @@ ProcessingInfo
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp | None              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -97,9 +106,96 @@ ProcessingInfo
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`processing_software.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **processing_software.author**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author of the software                        | Neo            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`processing_software.version`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **processing_software.version**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software version                              | 12.01a         |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`processing_software.last_updated`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **processing_software.last_updated**         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Most recent date the software was updated.    | 2020-01-01     |
+       |                                              | Prefer to use version, but this works for     |                |
+       | **Units**: None                              | non-versioned software.                       |                |
+       |                                              |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp | None              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -118,15 +214,18 @@ ProcessingInfo
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **processing_software.name**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Name of the software used for processing      | EMTF           |
+       | **Required**: :red:`True`                    | Software name                                 | mtrules        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -147,17 +246,20 @@ ProcessingInfo
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp | None              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`processing_software.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`remote_info.site.project`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -166,15 +268,774 @@ ProcessingInfo
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **processing_software.author**               | **Description**                               | **Example**    |
+       | **remote_info.site.project**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Author of the software used for processing    | MT Guru        |
+       | **Required**: :red:`True`                    | Name of the project                           | USMTArray      |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.survey`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.survey**                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Name of the survey                            | MT 2020        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.year_collected`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.year_collected**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Year data collected                           | 2020           |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.country`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.country**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Country where data was collected              | USA            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.id`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.id**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Station ID name.  This should be an alpha     | MT001          |
+       |                                              | numeric name that is typically 5-6 characters |                |
+       | **Units**: None                              | long.  Commonly the project name in 2 or 3    |                |
+       |                                              | letters and the station number.               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.name**                    | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | closest geographic name to the station        | "Whitehorse,   |
+       |                                              |                                               | YK"            |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.acquired_by`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.acquired_by**             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Person or group who collected the data        | MT Group       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.start`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.start**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date time when the data collection started    | 2020-01-       |
+       |                                              |                                               | 01T12:00:00    |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.end`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.end**                     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date time when the data collection ended      | 2020-05-       |
+       |                                              |                                               | 01T12:00:00    |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.run_list`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.run_list**                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | list of runs recorded by the station. Should  | "[ mt001a,     |
+       |                                              | be a summary of all runs recorded             | mt001b, mt001c |
+       | **Units**: None                              |                                               | ]"             |
+       |                                              |                                               |                |
+       | **Type**: list[str] | None                   |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: list                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_notes.good_from_period`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 58 45 15
+
+       +-----------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_notes.good_from_period**  | **Description**                               | **Example**    |
+       +===========================================================+===============================================+================+
+       | **Required**: :red:`True`                                 | Data are good for periods larger than this    | 0.01           |
+       |                                                           | number                                        |                |
+       | **Units**: None                                           |                                               |                |
+       |                                                           |                                               |                |
+       | **Type**: float | None                                    |                                               |                |
+       |                                                           |                                               |                |
+       |                                                           |                                               |                |
+       |                                                           |                                               |                |
+       |                                                           |                                               |                |
+       |                                                           |                                               |                |
+       |                                                           |                                               |                |
+       | **Default**: None                                         |                                               |                |
+       |                                                           |                                               |                |
+       |                                                           |                                               |                |
+       +-----------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_notes.good_to_period`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 56 45 15
+
+       +---------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_notes.good_to_period**  | **Description**                               | **Example**    |
+       +=========================================================+===============================================+================+
+       | **Required**: :red:`True`                               | Data are good for periods smaller than this   | 1000           |
+       |                                                         | number                                        |                |
+       | **Units**: None                                         |                                               |                |
+       |                                                         |                                               |                |
+       | **Type**: float | None                                  |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       | **Default**: None                                       |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       +---------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_notes.rating`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 48 45 15
+
+       +-------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_notes.rating**  | **Description**                               | **Example**    |
+       +=================================================+===============================================+================+
+       | **Required**: :red:`True`                       | Rating of the data from 0 to 5 where 5 is the | 4              |
+       |                                                 | best and 0 is unrated                         |                |
+       | **Units**: None                                 |                                               |                |
+       |                                                 |                                               |                |
+       | **Type**: int | None                            |                                               |                |
+       |                                                 |                                               |                |
+       |                                                 |                                               |                |
+       |                                                 |                                               |                |
+       |                                                 |                                               |                |
+       |                                                 |                                               |                |
+       |                                                 |                                               |                |
+       | **Default**: None                               |                                               |                |
+       |                                                 |                                               |                |
+       |                                                 |                                               |                |
+       +-------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_notes.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 57 45 15
+
+       +----------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_notes.comments.author**  | **Description**                               | **Example**    |
+       +==========================================================+===============================================+================+
+       | **Required**: :red:`True`                                | person who authored the comment               | J. Pedantic    |
+       |                                                          |                                               |                |
+       | **Units**: None                                          |                                               |                |
+       |                                                          |                                               |                |
+       | **Type**: str | None                                     |                                               |                |
+       |                                                          |                                               |                |
+       |                                                          |                                               |                |
+       |                                                          |                                               |                |
+       |                                                          |                                               |                |
+       |                                                          |                                               |                |
+       |                                                          |                                               |                |
+       | **Default**: None                                        |                                               |                |
+       |                                                          |                                               |                |
+       |                                                          |                                               |                |
+       +----------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_notes.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 61 45 15
+
+       +--------------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_notes.comments.time_stamp**  | **Description**                               | **Example**    |
+       +==============================================================+===============================================+================+
+       | **Required**: :red:`True`                                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                                              |                                               | 670+00:00      |
+       |                                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 |                   |                                               |                |
+       | pandas._libs.tslibs.timestamps.Timestamp | str |             |                                               |                |
+       | mt_metadata.common.mttime.MTime | None                       |                                               |                |
+       |                                                              |                                               |                |
+       |                                                              |                                               |                |
+       |                                                              |                                               |                |
+       |                                                              |                                               |                |
+       | **Default**: MTime                                           |                                               |                |
+       |                                                              |                                               |                |
+       |                                                              |                                               |                |
+       +--------------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_notes.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 56 45 15
+
+       +---------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_notes.comments.value**  | **Description**                               | **Example**    |
+       +=========================================================+===============================================+================+
+       | **Required**: :red:`True`                               | comment string                                | failure at     |
+       |                                                         |                                               | midnight.      |
+       | **Units**: None                                         |                                               |                |
+       |                                                         |                                               |                |
+       | **Type**: str | list | None                             |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       | **Default**: None                                       |                                               |                |
+       |                                                         |                                               |                |
+       |                                                         |                                               |                |
+       +---------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_warnings.flag`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 49 45 15
+
+       +--------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_warnings.flag**  | **Description**                               | **Example**    |
+       +==================================================+===============================================+================+
+       | **Required**: :red:`True`                        | Flag for data quality                         | 0              |
+       |                                                  |                                               |                |
+       | **Units**: None                                  |                                               |                |
+       |                                                  |                                               |                |
+       | **Type**: int | None                             |                                               |                |
+       |                                                  |                                               |                |
+       |                                                  |                                               |                |
+       |                                                  |                                               |                |
+       |                                                  |                                               |                |
+       |                                                  |                                               |                |
+       |                                                  |                                               |                |
+       | **Default**: None                                |                                               |                |
+       |                                                  |                                               |                |
+       |                                                  |                                               |                |
+       +--------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_warnings.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 60 45 15
+
+       +-------------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_warnings.comments.author**  | **Description**                               | **Example**    |
+       +=============================================================+===============================================+================+
+       | **Required**: :red:`True`                                   | person who authored the comment               | J. Pedantic    |
+       |                                                             |                                               |                |
+       | **Units**: None                                             |                                               |                |
+       |                                                             |                                               |                |
+       | **Type**: str | None                                        |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       | **Default**: None                                           |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       +-------------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_warnings.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 64 45 15
+
+       +-----------------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_warnings.comments.time_stamp**  | **Description**                               | **Example**    |
+       +=================================================================+===============================================+================+
+       | **Required**: :red:`True`                                       | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                                                 | made.                                         | 01T09:23:45.453|
+       | **Units**: None                                                 |                                               | 670+00:00      |
+       |                                                                 |                                               |                |
+       | **Type**: float | int | numpy.datetime64 |                      |                                               |                |
+       | pandas._libs.tslibs.timestamps.Timestamp | str |                |                                               |                |
+       | mt_metadata.common.mttime.MTime | None                          |                                               |                |
+       |                                                                 |                                               |                |
+       |                                                                 |                                               |                |
+       |                                                                 |                                               |                |
+       |                                                                 |                                               |                |
+       | **Default**: MTime                                              |                                               |                |
+       |                                                                 |                                               |                |
+       |                                                                 |                                               |                |
+       +-----------------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.data_quality_warnings.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 59 45 15
+
+       +------------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.data_quality_warnings.comments.value**  | **Description**                               | **Example**    |
+       +============================================================+===============================================+================+
+       | **Required**: :red:`True`                                  | comment string                                | failure at     |
+       |                                                            |                                               | midnight.      |
+       | **Units**: None                                            |                                               |                |
+       |                                                            |                                               |                |
+       | **Type**: str | list | None                                |                                               |                |
+       |                                                            |                                               |                |
+       |                                                            |                                               |                |
+       |                                                            |                                               |                |
+       |                                                            |                                               |                |
+       |                                                            |                                               |                |
+       |                                                            |                                               |                |
+       | **Default**: None                                          |                                               |                |
+       |                                                            |                                               |                |
+       |                                                            |                                               |                |
+       +------------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.orientation.angle_to_geographic_north`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 60 45 15
+
+       +-------------------------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.orientation.angle_to_geographic_north**  | **Description**                               | **Example**    |
+       +=============================================================+===============================================+================+
+       | **Required**: :red:`True`                                   | Angle to geographic north of the station      | 0              |
+       |                                                             | orientation                                   |                |
+       | **Units**: degrees                                          |                                               |                |
+       |                                                             |                                               |                |
+       | **Type**: <class 'float'>                                   |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       | **Default**: 0.0                                            |                                               |                |
+       |                                                             |                                               |                |
+       |                                                             |                                               |                |
+       +-------------------------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.orientation.layout`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.orientation.layout**      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Orientation of channels relative to each      | orthogonal     |
+       |                                              | other                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <enum 'ChannelOrientationEnum'>    |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**:                                 |                                               |                |
+       | ChannelOrientationEnum.orthogonal            |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.location.latitude`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.location.latitude**       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Latitude of the location.                     | 12.324         |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.location.longitude`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.location.longitude**      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Longitude of the location.                    | 12.324         |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.location.elevation`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.location.elevation**      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Elevation of the location.                    | 1234.0         |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.comments.author**         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.comments.time_stamp**     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`remote_info.site.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **remote_info.site.comments.value**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -197,961 +1058,14 @@ ProcessingInfo
        |                                              |                                               | station remote |
        | **Units**: None                              |                                               | referencing    |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.project`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.project**                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Name of the project                           | USMTArray      |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.survey`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.survey**                  | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Name of the survey                            | MT 2020        |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.year_collected`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.year_collected**          | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Year data collected                           | 2020           |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.country`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.country**                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Country where data was collected              | USA            |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.id`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.id**                      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Station ID name.  This should be an alpha     | MT001          |
-       |                                              | numeric name that is typically 5-6 characters |                |
-       | **Units**: None                              | long.  Commonly the project name in 2 or 3    |                |
-       |                                              | letters and the station number.               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.name`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.name**                    | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | closest geographic name to the station        | "Whitehorse,   |
-       |                                              |                                               | YK"            |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.acquired_by`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.acquired_by**             | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Person or group who collected the data        | MT Group       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.start`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.start**                   | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Date time when the data collection started    | 2020-01-01T12:0|
-       |                                              |                                               | 0:00           |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: date time                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.end`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.end**                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Date time when the data collection ended      | 2020-05-01T12:0|
-       |                                              |                                               | 0:00           |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: date time                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.run_list`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.run_list**                | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | list of runs recorded by the station. Should  | "[ mt001a,     |
-       |                                              | be a summary of all runss recorded            | mt001b, mt001c |
-       | **Units**: None                              |                                               | ]"             |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.latitude`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.latitude**       | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level                                  |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.longitude`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.longitude**      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level                                  |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.elevation`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.elevation**      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | elevation of location in datum specified at   | 123.4          |
-       |                                              | survey level                                  |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.latitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 52 45 15
-
-       +-----------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.latitude_uncertainty**  | **Description**                               | **Example**    |
-       +=====================================================+===============================================+================+
-       | **Required**: :blue:`False`                         | uncertainty in latitude estimation in degrees | 0.01           |
-       |                                                     |                                               |                |
-       | **Units**: degrees                                  |                                               |                |
-       |                                                     |                                               |                |
-       | **Type**: float                                     |                                               |                |
-       |                                                     |                                               |                |
-       | **Style**: number                                   |                                               |                |
-       |                                                     |                                               |                |
-       | **Default**: None                                   |                                               |                |
-       |                                                     |                                               |                |
-       |                                                     |                                               |                |
-       +-----------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.longitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 53 45 15
-
-       +------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.longitude_uncertainty**  | **Description**                               | **Example**    |
-       +======================================================+===============================================+================+
-       | **Required**: :blue:`False`                          | uncertainty in longitude estimation in        | 0.01           |
-       |                                                      | degrees                                       |                |
-       | **Units**: degrees                                   |                                               |                |
-       |                                                      |                                               |                |
-       | **Type**: float                                      |                                               |                |
-       |                                                      |                                               |                |
-       | **Style**: number                                    |                                               |                |
-       |                                                      |                                               |                |
-       | **Default**: None                                    |                                               |                |
-       |                                                      |                                               |                |
-       |                                                      |                                               |                |
-       +------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.elevation_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 53 45 15
-
-       +------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.elevation_uncertainty**  | **Description**                               | **Example**    |
-       +======================================================+===============================================+================+
-       | **Required**: :blue:`False`                          | uncertainty in elevation estimation           | 0.01           |
-       |                                                      |                                               |                |
-       | **Units**: meters                                    |                                               |                |
-       |                                                      |                                               |                |
-       | **Type**: float                                      |                                               |                |
-       |                                                      |                                               |                |
-       | **Style**: number                                    |                                               |                |
-       |                                                      |                                               |                |
-       | **Default**: None                                    |                                               |                |
-       |                                                      |                                               |                |
-       |                                                      |                                               |                |
-       +------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.datum`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.datum**          | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS84          |
-       |                                              | known datum like WGS84.                       |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.x`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.x**              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.x2`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.x2**             | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.y`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.y**              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.y2`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.y2**             | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.z`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.z**              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.z2`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.z2**             | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.x_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.x_uncertainty**  | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
-       |                                              | x-direction                                   |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.y_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.y_uncertainty**  | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
-       |                                              | y-direction                                   |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.location.z_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.location.z_uncertainty**  | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
-       |                                              | z-direction                                   |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.orientation.angle_to_geographic_north`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 60 45 15
-
-       +-------------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.orientation.angle_to_geographic_north**  | **Description**                               | **Example**    |
-       +=============================================================+===============================================+================+
-       | **Required**: :blue:`False`                                 | Angle to geographic north of the station      | 0              |
-       |                                                             | orientation                                   |                |
-       | **Units**: degrees                                          |                                               |                |
-       |                                                             |                                               |                |
-       | **Type**: float                                             |                                               |                |
-       |                                                             |                                               |                |
-       | **Style**: number                                           |                                               |                |
-       |                                                             |                                               |                |
-       | **Default**: 0.0                                            |                                               |                |
-       |                                                             |                                               |                |
-       |                                                             |                                               |                |
-       +-------------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.orientation.layout`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.orientation.layout**      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Orientation of channels relative to each      | orthogonal     |
-       |                                              | other                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: orthogonal                      |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_notes.good_from_period`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 58 45 15
-
-       +-----------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_notes.good_from_period**  | **Description**                               | **Example**    |
-       +===========================================================+===============================================+================+
-       | **Required**: :blue:`False`                               | Data are good for periods larger than this    | 0.01           |
-       |                                                           | number                                        |                |
-       | **Units**: None                                           |                                               |                |
-       |                                                           |                                               |                |
-       | **Type**: float                                           |                                               |                |
-       |                                                           |                                               |                |
-       | **Style**: number                                         |                                               |                |
-       |                                                           |                                               |                |
-       | **Default**: None                                         |                                               |                |
-       |                                                           |                                               |                |
-       |                                                           |                                               |                |
-       +-----------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_notes.good_to_period`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 56 45 15
-
-       +---------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_notes.good_to_period**  | **Description**                               | **Example**    |
-       +=========================================================+===============================================+================+
-       | **Required**: :blue:`False`                             | Data are good for periods smaller than this   | 1000           |
-       |                                                         | number                                        |                |
-       | **Units**: None                                         |                                               |                |
-       |                                                         |                                               |                |
-       | **Type**: float                                         |                                               |                |
-       |                                                         |                                               |                |
-       | **Style**: number                                       |                                               |                |
-       |                                                         |                                               |                |
-       | **Default**: None                                       |                                               |                |
-       |                                                         |                                               |                |
-       |                                                         |                                               |                |
-       +---------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_notes.rating`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 48 45 15
-
-       +-------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_notes.rating**  | **Description**                               | **Example**    |
-       +=================================================+===============================================+================+
-       | **Required**: :blue:`False`                     | Rating of the data from 0 to 5 where 5 is the | 4              |
-       |                                                 | best and 0 is unrated                         |                |
-       | **Units**: None                                 |                                               |                |
-       |                                                 |                                               |                |
-       | **Type**: integer                               |                                               |                |
-       |                                                 |                                               |                |
-       | **Style**: number                               |                                               |                |
-       |                                                 |                                               |                |
-       | **Default**: None                               |                                               |                |
-       |                                                 |                                               |                |
-       |                                                 |                                               |                |
-       +-------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_notes.comments.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 57 45 15
-
-       +----------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_notes.comments.author**  | **Description**                               | **Example**    |
-       +==========================================================+===============================================+================+
-       | **Required**: :blue:`False`                              | Author who made the comment                   | M. Tee         |
-       |                                                          |                                               |                |
-       | **Units**: None                                          |                                               |                |
-       |                                                          |                                               |                |
-       | **Type**: string                                         |                                               |                |
-       |                                                          |                                               |                |
-       | **Style**: free form                                     |                                               |                |
-       |                                                          |                                               |                |
-       | **Default**: None                                        |                                               |                |
-       |                                                          |                                               |                |
-       |                                                          |                                               |                |
-       +----------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_notes.comments.date`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 55 45 15
-
-       +--------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_notes.comments.date**  | **Description**                               | **Example**    |
-       +========================================================+===============================================+================+
-       | **Required**: :blue:`False`                            | Date the comment was made                     | 2020-01-21     |
-       |                                                        |                                               |                |
-       | **Units**: None                                        |                                               |                |
-       |                                                        |                                               |                |
-       | **Type**: string                                       |                                               |                |
-       |                                                        |                                               |                |
-       | **Style**: date                                        |                                               |                |
-       |                                                        |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00                 |                                               |                |
-       |                                                        |                                               |                |
-       |                                                        |                                               |                |
-       +--------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_notes.comments.value`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 56 45 15
-
-       +---------------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_notes.comments.value**  | **Description**                               | **Example**    |
-       +=========================================================+===============================================+================+
-       | **Required**: :blue:`False`                             | Comment string                                | This is a      |
-       |                                                         |                                               | comment        |
-       | **Units**: None                                         |                                               |                |
-       |                                                         |                                               |                |
-       | **Type**: string                                        |                                               |                |
-       |                                                         |                                               |                |
-       | **Style**: free form                                    |                                               |                |
-       |                                                         |                                               |                |
-       | **Default**: None                                       |                                               |                |
-       |                                                         |                                               |                |
-       |                                                         |                                               |                |
-       +---------------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.data_quality_warnings.flag`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 49 45 15
-
-       +--------------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.data_quality_warnings.flag**  | **Description**                               | **Example**    |
-       +==================================================+===============================================+================+
-       | **Required**: :blue:`False`                      | Flag for data quality                         | 0              |
-       |                                                  |                                               |                |
-       | **Units**: None                                  |                                               |                |
-       |                                                  |                                               |                |
-       | **Type**: integer                                |                                               |                |
-       |                                                  |                                               |                |
-       | **Style**: number                                |                                               |                |
-       |                                                  |                                               |                |
-       | **Default**: None                                |                                               |                |
-       |                                                  |                                               |                |
-       |                                                  |                                               |                |
-       +--------------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.comments.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.comments.author**         | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Author who made the comment                   | M. Tee         |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.comments.date`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.comments.date**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Date the comment was made                     | 2020-01-21     |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`remote_info.site.comments.value`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **remote_info.site.comments.value**          | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Comment string                                | This is a      |
-       |                                              |                                               | comment        |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

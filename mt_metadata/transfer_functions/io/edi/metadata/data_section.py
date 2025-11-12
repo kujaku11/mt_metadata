@@ -1,24 +1,17 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec  4 18:52:52 2021
-
-@author: jpeacock
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
 
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from loguru import logger
+from pydantic import Field, PrivateAttr
+
+from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import validate_name
 
-# =============================================================================
-attr_dict = get_schema("data_section", SCHEMA_FN_PATHS)
 
-# ==============================================================================
-# data section
-# ==============================================================================
-class DataSection(Base):
+# =====================================================
+class DataSection(MetadataBase):
     """
     DataSection contains the small metadata block that describes which channel
     is which.  A typical block looks like::
@@ -59,38 +52,168 @@ class DataSection(Base):
     .. [1] Changes these values to change what is written to edi file
     """
 
-    def __init__(self, **kwargs):
-        """
-        writing the EDI files MTSECT
-        :param fn:
-        :param edi_lines:
-        """
+    nfreq: Annotated[
+        int,
+        Field(
+            default=0,
+            description="Number of frequencies",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": [16, 1],
+            },
+        ),  # type: ignore
+    ]
 
-        self.data_type_out = "z"
-        self.data_type_in = "z"
-        self._line_num = 0
-        self.data_list = None
+    sectid: Annotated[
+        str,
+        Field(
+            default="",
+            description="ID of the station that the data is from. This is important if you have more than one station per file.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["mt001"],
+            },
+        ),
+    ]
 
-        self.nfreq = 0
-        self.sectid = None
-        self.nchan = 0
-        self.maxblks = 999
-        self.ex = None
-        self.ey = None
-        self.hx = None
-        self.hy = None
-        self.hz = None
-        self.rrhx = None
-        self.rrhy = None
-        self.channel_ids = []
+    nchan: Annotated[
+        int,
+        Field(
+            default=0,
+            description="Number of channels in the transfer function",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [7],
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    maxblocks: Annotated[
+        int,
+        Field(
+            default=999,
+            description="Maximum number of data blocks",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [999],
+            },
+        ),
+    ]
 
-        self._kw_list = [
+    ex: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for EX",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["1"],
+            },
+        ),
+    ]
+
+    ey: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for EY",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["2"],
+            },
+        ),
+    ]
+
+    hx: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for HX",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["3"],
+            },
+        ),
+    ]
+
+    hy: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for HY",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["4"],
+            },
+        ),
+    ]
+
+    hz: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for HZ",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["5"],
+            },
+        ),
+    ]
+
+    rrhx: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for RRHX",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["6"],
+            },
+        ),
+    ]
+
+    rrhy: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Measurement ID for RRHY",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["7"],
+            },
+        ),
+    ]
+
+    # List of keywords for the data section, used for writing metadata.
+    # This list can be modified to change what is written to the EDI file.
+    _kw_list: list[str] = PrivateAttr(
+        default_factory=lambda: [
             "nfreq",
             "sectid",
             "nchan",
-            "maxblks",
+            "maxblocks",
             "ex",
             "ey",
             "hx",
@@ -99,20 +222,33 @@ class DataSection(Base):
             "rrhx",
             "rrhy",
         ]
+    )
 
-    def __str__(self):
+    # Private attributes
+    # Line number in the EDI file where the data section starts.
+    _line_num: int = PrivateAttr(default=0)
+
+    # Data type for output, typically 'z' for complex impedance data.
+    _data_type_out: str = PrivateAttr(default="z")
+
+    # Data type for input, typically 'z' for complex impedance data.
+    _data_type_in: str = PrivateAttr(default="z")
+
+    # List of channel IDs associated with the data section.
+    _channel_ids: list[str] = PrivateAttr(default_factory=list)
+
+    def __str__(self) -> str:
         return "".join(self.write_data())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def get_data(self, edi_lines):
+    def get_data(self, edi_lines: list[str]) -> list[str]:
         """
-        read in the data of the file, will detect if reading spectra or
+        Read in the data of the file, will detect if reading spectra or
         impedance.
         """
-
-        self.data_list = []
+        data_list = []
         data_find = False
 
         for ii, line in enumerate(edi_lines):
@@ -120,27 +256,27 @@ class DataSection(Base):
                 data_find = True
                 self._line_num = ii
                 if "spect" in line.lower():
-                    self.data_type_in = "spectra"
+                    self._data_type_in = "spectra"
                 elif "mt" in line.lower():
-                    self.data_type_in = "z"
+                    self._data_type_in = "z"
             elif ">" in line and data_find is True:
                 self._line_num = ii
                 break
 
             elif data_find:
                 if len(line.strip()) > 2:
-                    self.data_list.append(line.strip())
+                    data_list.append(line.strip())
+        return data_list
 
-    def read_data(self, edi_lines):
+    def read_data(self, edi_lines: list[str]) -> None:
         """
-        read data section
+        Read data section
         """
-
-        self.get_data(edi_lines)
+        data_list = self.get_data(edi_lines)
 
         channels = False
-        self.channel_ids = []
-        for d_line in self.data_list:
+        self._channel_ids = []
+        for d_line in data_list:
             d_list = d_line.split("=")
             if len(d_list) > 1:
                 key = d_list[0].lower()
@@ -159,20 +295,21 @@ class DataSection(Base):
                     continue
                 if channels:
                     if len(d_line) > 10:
-                        self.channel_ids += d_line.strip().split()
+                        self._channel_ids += d_line.strip().split()
                     else:
-                        self.channel_ids.append(d_line)
-        if self.channel_ids == []:
+                        self._channel_ids.append(d_line)
+        if self._channel_ids == []:
             for comp in self._kw_list[4:]:
                 ch_id = getattr(self, comp)
                 if ch_id is not None:
-                    self.channel_ids.append(ch_id)
+                    self._channel_ids.append(ch_id)
 
-    def write_data(self, data_list=None, over_dict=None):
+    def write_data(
+        self, data_list: list[str] | None = None, over_dict: dict | None = None
+    ) -> list[str]:
         """
-        write a data section
+        Write the data section to a list of strings.
         """
-
         # FZ: need to modify the nfreq (number of freqs),
         # when re-writing effective EDI files)
         if over_dict is not None:
@@ -182,15 +319,14 @@ class DataSection(Base):
         if data_list is not None:
             self.read_data(data_list)
 
-        self.logger.debug("Writing out data a impedances")
+        logger.debug("Writing out data a impedances")
 
-        if self.data_type_out == "z":
+        if self._data_type_out == "z":
             data_lines = ["\n>=mtsect\n".upper()]
-        elif self.data_type_out == "spectra":
+        elif self._data_type_out == "spectra":
             data_lines = ["\n>spectrasect\n".upper()]
 
         for key in self._kw_list[0:4]:
-
             data_lines.append(f"{' '*4}{key.upper()}={getattr(self, key)}\n")
 
         # need to sort the list so it is descending order by channel number
@@ -216,22 +352,13 @@ class DataSection(Base):
 
         return data_lines
 
-    def match_channels(self, ch_ids):
+    def match_channels(self, ch_ids: dict[str, str]) -> None:
+        """
+        Match the channels in the data section with the provided channel IDs.
+        This method updates the channel IDs based on the provided list.
         """
 
-
-        Parameters
-        ----------
-        ch_ids : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-
-        for ch_id in self.channel_ids:
+        for ch_id in self._channel_ids:
             for key, value in ch_ids.items():
                 if isinstance(ch_id, (str)):
                     ch_id = ch_id.lower().split("ch")[-1]
@@ -239,4 +366,4 @@ class DataSection(Base):
                     if float(ch_id) == value:
                         setattr(self, key.lower(), value)
                 except ValueError:
-                    self.logger.warning(f"Could not match channel {ch_id}")
+                    logger.warning(f"Could not match channel {ch_id}")
