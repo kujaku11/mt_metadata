@@ -320,28 +320,28 @@ class ChannelBase(MetadataBase):
 
     @field_validator("filters", mode="before")
     @classmethod
-    def parse_filters_string(cls, v):
+    def parse_filters_string(cls, value):
         """Parse string representation of filters into list of AppliedFilter objects"""
-        if isinstance(v, str):
+        if isinstance(value, str):
             import ast
             import json
             import re
             from collections import OrderedDict
 
             # Handle string representation of list of dicts
-            if v.strip().startswith("[") and v.strip().endswith("]"):
+            if value.strip().startswith("[") and value.strip().endswith("]"):
                 try:
                     # First try json.loads for JSON-style strings (handles true/false/null)
-                    parsed_data = json.loads(v)
+                    parsed_data = json.loads(value)
                 except (ValueError, json.JSONDecodeError):
                     try:
                         # Fall back to ast.literal_eval for Python-style literals
-                        parsed_data = ast.literal_eval(v)
+                        parsed_data = ast.literal_eval(value)
                     except (ValueError, SyntaxError):
                         try:
                             # Handle OrderedDict function calls with eval and safe namespace
                             # Clean up newlines between dictionary items by adding commas
-                            cleaned = re.sub(r"}\s+\{", "}, {", v)
+                            cleaned = re.sub(r"}\s+\{", "}, {", value)
 
                             # Use eval with a restricted namespace
                             safe_namespace = {
@@ -376,33 +376,44 @@ class ChannelBase(MetadataBase):
                 return filters
 
             # Handle single filter string representations
-            elif v.strip():
-                logger.warning(f"Unknown filter string format: {v}")
+            elif value.strip():
+                logger.warning(f"Unknown filter string format: {value}")
                 return []
+        elif isinstance(value, list):
+            # Assume list of AppliedFilter objects or dicts
+            filters = []
+            for item in value:
+                if isinstance(item, AppliedFilter):
+                    filters.append(item)
+                elif isinstance(item, dict):
+                    filters.append(AppliedFilter(**item))
+                else:
+                    logger.warning(f"Unknown filter list item type: {type(item)}")
+            return filters
 
-        return v
+        return value
 
     @field_validator("filters", mode="after")
     @classmethod
-    def validate_filters(cls, v, info):
+    def validate_filters(cls, value, info):
         """sort the filters by stage number and check for duplicates"""
         # Get the instance being validated
         instance = info.data if hasattr(info, "data") else None
 
         # Sort filters by stage number, treating None as 0
-        v.sort(key=lambda f: f.stage if f.stage is not None else 0)
+        value.sort(key=lambda f: f.stage if f.stage is not None else 0)
 
         # TEMPORARILY DISABLED: Check for duplicates
         # There's a known issue in MTH5 serialization that causes filter duplication
         # This will be re-enabled once the MTH5 duplication bug is fixed
         # TODO: Re-enable duplicate validation after fixing MTH5 filter duplication
         # seen = set()
-        # for f in v:
+        # for f in value:
         #     if f.name in seen:
         #         raise ValueError(f"Duplicate filter found: {f.name}")
         #     seen.add(f.name)
 
-        return v
+        return value
 
     def add_filter(
         self,
