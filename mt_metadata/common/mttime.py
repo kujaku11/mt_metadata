@@ -271,12 +271,13 @@ def parse(
             raise ValueError(
                 "Input is before GPS start time '1980/01/06', check value."
             )
-        if dt_str / 3e8 < 1e3:
-            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str, unit="s"))
-            logger.debug("Assuming time input is in units of seconds")
-        else:
-            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str, unit="ns"))
-            logger.debug("Assuming time input is in units of nanoseconds")
+        elif ratio > 1e3:
+            dt_str = dt_str / 1e9
+            logger.debug(
+                "Assuming input float/int is in nanoseconds, converting to seconds."
+            )
+        # need to use utcfromtimestamp to avoid local time zone issues
+        t_min_max, stamp = _check_timestamp(pd.Timestamp.utcfromtimestamp(dt_str))
 
     elif hasattr(dt_str, "isoformat"):
         try:
