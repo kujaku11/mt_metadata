@@ -34,8 +34,8 @@ def test_time_period_with_epoch():
     end_time = 1580826225.453670
     time_period = TimePeriod(start=start_time, end=end_time)
 
-    assert time_period.start.isoformat() == "2020-02-01T07:23:45.453670025+00:00"
-    assert time_period.end.isoformat() == "2020-02-04T14:23:45.453670025+00:00"
+    assert time_period.start.isoformat() == "2020-02-01T07:23:45.453670+00:00"
+    assert time_period.end.isoformat() == "2020-02-04T14:23:45.453670+00:00"
 
 
 def test_time_period_with_np_datetime64():
