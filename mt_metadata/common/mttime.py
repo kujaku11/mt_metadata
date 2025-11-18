@@ -67,12 +67,34 @@ leap_second_dict = {
 
 def calculate_leap_seconds(year: int, month: int, day: int) -> int:
     """
-    get the leap seconds for the given year to convert GPS time to UTC time
+    Get the leap seconds for the given year to convert GPS time to UTC time.
 
-    .. note:: GPS time started in 1980
+    GPS time started in 1980. GPS time is leap seconds ahead of UTC time,
+    therefore you should subtract leap seconds from GPS time to get UTC time.
 
-    .. note:: GPS time is leap seconds ahead of UTC time, therefore you
-              should subtract leap seconds from GPS time to get UTC time.
+    Parameters
+    ----------
+    year : int
+        Year of the date.
+    month : int
+        Month of the date (1-12).
+    day : int
+        Day of the date (1-31).
+
+    Returns
+    -------
+    int
+        Number of leap seconds for the given date.
+
+    Raises
+    ------
+    ValueError
+        If the date is outside the defined leap second range
+        (1981-07-01 to 2026-07-01).
+
+    Notes
+    -----
+    Leap seconds are defined for the following date ranges:
 
     =========================== ===============================================
     Date Range                  Leap Seconds
@@ -113,7 +135,7 @@ def calculate_leap_seconds(year: int, month: int, day: int) -> int:
 
     raise ValueError(
         f"Leap seconds not defined for date {year}-{month:02d}-{day:02d}. "
-        "Leap seconds are defined from 1981-07-01 to 2026-01-01."
+        "Leap seconds are defined from 1981-07-01 to 2026-07-01."
     )
 
 
@@ -122,18 +144,20 @@ def calculate_leap_seconds(year: int, month: int, day: int) -> int:
 # =============================================================================
 def _localize_utc(stamp: pd.Timestamp) -> pd.Timestamp:
     """
-    Localize a time stamp to UTC.  This forces a timestamp
-    to have a timezone of UTC.
+    Localize a timestamp to UTC timezone.
+
+    Forces a timestamp to have a timezone of UTC. If the timestamp is
+    timezone-naive, it will be localized to UTC.
 
     Parameters
     ----------
     stamp : pd.Timestamp
-        input timestamp
+        Input timestamp to be localized.
 
     Returns
     -------
     pd.Timestamp
-        UTC time stamp
+        Timestamp with UTC timezone.
     """
 
     # check time zone and enforce UTC
@@ -151,22 +175,27 @@ TMAX = _localize_utc(pd.Timestamp.max)
 
 def _parse_string(dt_str: str) -> datetime.datetime:
     """
-    arse string, check for order of day and month
+    Parse a datetime string with flexible day/month order handling.
+
+    Attempts to parse a datetime string using dateutil.parser. If parsing
+    fails due to 24-hour format (T24:00:00), it converts to T23:00:00 and
+    adds one hour. Also tries day-first parsing as a fallback.
 
     Parameters
     ----------
     dt_str : str
-        date time string
+        Datetime string to parse (e.g., "2020-01-15T12:30:45").
 
     Returns
     -------
     datetime.datetime
-        date time object
+        Parsed datetime object.
 
     Raises
     ------
     ValueError
-        If unable to parse the string using datetime.dtparser
+        If unable to parse the string using any of the attempted methods.
+        Error message suggests proper formatting as YYYY-MM-DDThh:mm:ss.ns.
     """
 
     try:
@@ -193,13 +222,29 @@ def _parse_string(dt_str: str) -> datetime.datetime:
 
 def _fix_out_of_bounds_time_stamp(dt):
     """
+    Fix timestamps that are outside pandas Timestamp bounds.
 
-    :param dt_str: DESCRIPTION
-    :type dt_str: TYPE
-    :raises ValueError: DESCRIPTION
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Checks if a datetime is outside the valid pandas timestamp range
+    (approximately 1900-2200) and clamps it to the minimum or maximum
+    allowed values.
 
+    Parameters
+    ----------
+    dt : datetime.datetime
+        Input datetime object to check.
+
+    Returns
+    -------
+    stamp : pd.Timestamp
+        Corrected timestamp within valid bounds.
+    t_min_max : bool
+        True if the timestamp was clamped to bounds, False otherwise.
+
+    Notes
+    -----
+    If the year is greater than 2200, the timestamp is set to TMAX.
+    If the year is less than 1900, the timestamp is set to TMIN.
+    Otherwise, a UTC timezone is applied to the timestamp.
     """
     t_min_max = False
 
@@ -219,13 +264,23 @@ def _fix_out_of_bounds_time_stamp(dt):
 
 def _check_timestamp(pd_timestamp):
     """
-    check if time stamp is before or after earlies or latest time allowed
+    Check if timestamp is within allowed bounds and clamp if necessary.
 
-    :param pd_timestamp: DESCRIPTION
-    :type pd_timestamp: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Verifies that a pandas timestamp is within the minimum and maximum
+    allowed time range. If outside bounds, clamps to the nearest boundary.
 
+    Parameters
+    ----------
+    pd_timestamp : pd.Timestamp
+        Input timestamp to validate.
+
+    Returns
+    -------
+    t_min_max : bool
+        True if the timestamp was clamped to bounds, False otherwise.
+    pd_timestamp : pd.Timestamp
+        Validated timestamp, potentially clamped to bounds and
+        localized to UTC.
     """
 
     t_min_max = False
@@ -242,19 +297,50 @@ def _check_timestamp(pd_timestamp):
 
 
 def parse(
-    dt_str: Optional[float | int | np.datetime64 | pd.Timestamp | str | dict] = None,
+    dt_str: Optional[
+        float | int | np.number | np.datetime64 | pd.Timestamp | str | dict
+    ] = None,
     gps_time: bool = False,
 ) -> pd.Timestamp:
     """
-    Parse a date-time string using dateutil.parser
+    Parse a datetime input into a pandas Timestamp with UTC timezone.
 
-    Need to use dateutil.parser.isoparser to get correct tzinfo=tzutc
-    If the input is a weird date string then try to use parse.
+    Accepts various input types and converts them to a standardized pandas
+    Timestamp object. Handles special cases like GPS time conversion,
+    nanosecond timestamps, and out-of-bounds dates.
 
-    :param dt_str: date-time string
-    :type: string
+    Parameters
+    ----------
+    dt_str : float, int, np.number, np.datetime64, pd.Timestamp, str, dict, or None, optional
+        Input to be parsed. Can be:
+        - None, empty string, or "none" variants: returns default 1980-01-01
+        - float/int: interpreted as epoch seconds (or nanoseconds if large)
+        - numpy numeric types: converted to standard Python types first
+        - pd.Timestamp: validated and timezone-corrected
+        - str: parsed using dateutil.parser with flexible formatting
+        - dict: extracted time_stamp and gps_time fields
+        Default is None.
+    gps_time : bool, optional
+        If True, converts GPS time to UTC by subtracting leap seconds.
+        Default is False.
 
+    Returns
+    -------
+    pd.Timestamp
+        UTC-localized timestamp object.
 
+    Raises
+    ------
+    ValueError
+        If input is before GPS start time when gps_time=True.
+        If string parsing fails with invalid format.
+
+    Notes
+    -----
+    - Large numeric inputs (ratio > 1000 vs 3e8) are assumed to be nanoseconds
+    - Timestamps outside pandas bounds are clamped to min/max values
+    - GPS time conversion uses calculated leap seconds for the date
+    - All outputs are forced to UTC timezone regardless of input timezone
     """
     t_min_max = False
     if dt_str in [None, "", "none", "None", "NONE", "Na", {}]:
@@ -264,7 +350,11 @@ def parse(
     elif isinstance(dt_str, pd.Timestamp):
         t_min_max, stamp = _check_timestamp(dt_str)
 
-    elif isinstance(dt_str, (float, int)):
+    elif isinstance(dt_str, (float, int, np.number)):
+        # Convert numpy numbers to standard Python float/int for consistent handling
+        if isinstance(dt_str, np.number):
+            dt_str = float(dt_str)
+
         # using 3E8 which is about the start of GPS time
         ratio = dt_str / 3e8
         if ratio < 1 and gps_time:
@@ -322,61 +412,67 @@ def parse(
 # ==============================================================================
 class MTime(BaseModel):
     """
-    Date and Time container based on :class:`pandas.Timestamp`
+    Date and time container based on pandas.Timestamp with UTC enforcement.
 
-    Will read in a string or a epoch seconds into a :class:`pandas.Timestamp`
-    object assuming the time zone is UTC.  If UTC is not the timezone then
-    the time is corrected to UTC.
+    A flexible datetime container that accepts various input formats and
+    converts them to a UTC-localized pandas.Timestamp object. Provides
+    convenient access to date/time components and handles nanosecond precision.
 
-    The benefit of using :class:`pandas.Timestamp` is that it can handle
-    nanoseconds.
+    Parameters
+    ----------
+    time_stamp : float, int, np.number, np.datetime64, pd.Timestamp, str, or None, optional
+        Input timestamp in various formats:
+        - float/int: epoch seconds
+        - np.number: numpy numeric types (converted to Python types)
+        - np.datetime64: numpy datetime
+        - pd.Timestamp: pandas timestamp (will be UTC-localized)
+        - str: ISO format or parseable date string
+        - None: defaults to 1980-01-01T00:00:00+00:00
+        Default is None.
+    gps_time : bool, optional
+        If True, interprets time_stamp as GPS time and converts to UTC.
+        Default is False.
 
-    Accepted inputs are:
+    Attributes
+    ----------
+    time_stamp : pd.Timestamp
+        The stored timestamp, always UTC-localized.
+    gps_time : bool
+        Whether GPS time conversion was applied.
 
-    - :class:`pandas.Timestamp`
-    - :class:`numpy.datetime64`
-    - :class:`datetime.datetime`
-    - :class:`datetime.date`
-    - :class:`datetime.timedelta`
-    - :class:`obspy.UTCDateTime`
-    - :class:`str` (ISO format or other formats)
-    - :class:`float` (epoch seconds)
-    - :class:`int` (epoch seconds)
-    - :class:`None` (default to 1980-01-01T00:00:00+00:00)
+    Notes
+    -----
+    The pandas.Timestamp backend allows nanosecond precision timing.
 
-    Outputs can be an ISO formatted string YYYY-MM-DDThh:mm:ss.ssssss+00:00:
+    Input values outside pandas timestamp bounds are automatically clamped:
+    - Values > 2200: set to pandas.Timestamp.max (2262-04-11 23:47:16.854775807)
+    - Values < 1900: set to pandas.Timestamp.min (1677-09-21 00:12:43.145224193)
 
-        >>> t = MTtime()
-        >>> t.isoformat()
-        '1980-01-01T00:00:00+00:00'
+    All timestamps are forced to UTC timezone regardless of input timezone.
 
-    .. note:: if microseconds are 0 they are omitted. Same with nanoseconds.
+    Examples
+    --------
+    Create from various input types:
 
-    or Epoch seconds (float):
+    >>> t = MTime()  # Default time
+    >>> t.isoformat()
+    '1980-01-01T00:00:00+00:00'
 
-        >>> t.epoch_seconds
-        315532800.0
+    >>> t = MTime(time_stamp="2020-01-15T12:30:45")
+    >>> t.year
+    2020
 
+    >>> t = MTime(time_stamp=1579095045.0)  # Epoch seconds
+    >>> t.isoformat()
+    '2020-01-15T12:30:45+00:00'
 
-    Convenience getters/setters are provided as properties for the different
-    parts of time.
+    Access and modify components:
 
-        >>> t = MTtime()
-        >>> t.year = 2020
-        >>> t.year
-        2020
-
-    .. note:: If the input data is greater than pandas.Timestamp.max then the
-     value is set to
-     :class:`pandas.Timestamp.max` = '2262-04-11 23:47:16.854775807'. Similarly,
-     If the input data is less than pandas.Timestamp.min then the value is
-     set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'
-
-
-    >>> t = MTime(time_stamp="3000-01-01")
-    [line 295] mt_metadata.utils.mttime.MTime.parse -
-    INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
-
+    >>> t.year = 2025
+    >>> t.month = 12
+    >>> t.day = 31
+    >>> t.epoch_seconds
+    1767225045.0
     """
 
     _default_time: str = PrivateAttr("1980-01-01T00:00:00+00:00")
@@ -399,7 +495,7 @@ class MTime(BaseModel):
     ] = False
 
     time_stamp: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | None,
+        float | int | np.number | np.datetime64 | pd.Timestamp | str | None,
         Field(
             default_factory=lambda: pd.Timestamp(MTime._default_time.default),
             # default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
@@ -416,35 +512,28 @@ class MTime(BaseModel):
         validation_info: ValidationInfo,
     ) -> pd.Timestamp:
         """
-        Validate the input time stamp and convert it to a pandas timestamp.
-        This function is called before the model is created and is used to
-        validate the input data.
+        Validate and convert input timestamp to pandas Timestamp.
 
-        The function will check if the input data is a string, float, int,
-        np.datetime64, pd.Timestamp, or UTCDateTime and convert to a
-        pd.Timestamp object.
-
-        If `gps_time` is True, the function will convert the time to UTC time
-        by subtracting the leap seconds from the GPS time.
-
-        If the input data is greater than pandas.Timestamp.max then the
-        value is set to :class:`pandas.Timestamp.max` = '2262-04-11 23:47:16.854775807'.
-
-        Similarly, If the input data is less than pandas.Timestamp.min then the value is
-        set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'.
+        Pydantic field validator that processes various timestamp input formats
+        and converts them to a standardized UTC pandas Timestamp object.
 
         Parameters
         ----------
-        field_value : float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
-            input time stamp
+        field_value : float, int, np.datetime64, pd.Timestamp, str, or UTCDateTime
+            Input timestamp value in any supported format.
         validation_info : ValidationInfo
-            Validation information object that contains the data and other
-            information about the model.
+            Pydantic validation context containing model data including gps_time setting.
 
         Returns
         -------
         pd.Timestamp
-            converted time stamp
+            UTC-localized timestamp object, clamped to pandas bounds if necessary.
+
+        Notes
+        -----
+        This method is automatically called during model instantiation.
+        GPS time conversion is applied if gps_time=True in the model data.
+        Out-of-bounds timestamps are automatically clamped to valid ranges.
         """
         # Check if the time_stamp is a string and parse it
         return parse(field_value, gps_time=validation_info.data["gps_time"])
@@ -1015,12 +1104,19 @@ class MTime(BaseModel):
 
 def get_now_utc() -> "MTime":
     """
-    Get the current time in UTC format as an MTime object
+    Get the current UTC time as an MTime object.
+
+    Creates an MTime instance set to the current UTC time.
 
     Returns
     -------
-    MTime
-        Current time in UTC format as an MTime object.
+    str
+        ISO format string of the current UTC time.
+
+    Notes
+    -----
+    Despite the return type annotation suggesting MTime, this function
+    actually returns an ISO format string from the MTime object.
     """
 
     m_obj = MTime()

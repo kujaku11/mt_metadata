@@ -761,5 +761,140 @@ def test_mdate_to_mtime(subtests):
         assert t.seconds == 0
 
 
+# =============================================================================
+# Tests for numpy numeric types - verifies fix for numpy.float/int handling
+# =============================================================================
+def test_numpy_float_inputs(subtests):
+    """Test that numpy float types are properly handled by the parse function."""
+    epoch_time = 1579522520.123  # 2020-01-20T12:15:20.123000+00:00
+
+    # Test numpy.float64 and longdouble with full precision
+    numpy_float_types_precise = [np.float64(epoch_time), np.longdouble(epoch_time)]
+
+    for np_float in numpy_float_types_precise:
+        with subtests.test(f"numpy {type(np_float).__name__}"):
+            # Test direct parse function
+            result = parse(np_float)
+            assert isinstance(result, pd.Timestamp)
+            assert result.timestamp() == pytest.approx(epoch_time, abs=0.01)
+
+            # Test through MTime class
+            t = MTime(time_stamp=np_float)
+            assert isinstance(t.time_stamp, pd.Timestamp)
+            assert t.epoch_seconds == pytest.approx(epoch_time, abs=0.01)
+
+    # Test numpy.float32 separately due to precision limitations
+    with subtests.test("numpy float32 precision"):
+        np_float32 = np.float32(epoch_time)
+        result = parse(np_float32)
+        assert isinstance(result, pd.Timestamp)
+        # float32 loses precision, so we just check it's reasonably close
+        assert result.timestamp() == pytest.approx(float(np_float32), abs=1.0)
+
+        t = MTime(time_stamp=np_float32)
+        assert isinstance(t.time_stamp, pd.Timestamp)
+        assert t.epoch_seconds == pytest.approx(float(np_float32), abs=1.0)
+
+
+def test_numpy_int_inputs(subtests):
+    """Test that numpy integer types are properly handled by the parse function."""
+    epoch_time = 1579522520  # 2020-01-20T12:15:20+00:00
+
+    numpy_int_types = [
+        np.int8(123),  # Small value for int8 range
+        np.int16(12345),  # Small value for int16 range
+        np.int32(epoch_time),  # Full epoch time
+        np.int64(epoch_time),  # Full epoch time
+        np.uint32(epoch_time),  # Unsigned version
+        np.uint64(epoch_time),  # Unsigned 64-bit
+    ]
+
+    for np_int in numpy_int_types:
+        with subtests.test(f"numpy {type(np_int).__name__}"):
+            # Test direct parse function
+            result = parse(np_int)
+            assert isinstance(result, pd.Timestamp)
+
+            # Test through MTime class
+            t = MTime(time_stamp=np_int)
+            assert isinstance(t.time_stamp, pd.Timestamp)
+            # For small values, just verify it creates a valid timestamp
+            if np_int < 1000:
+                assert t.year == 1970  # Should be near epoch
+            else:
+                # For epoch times, verify approximate correctness
+                expected_epoch = float(np_int)
+                assert t.epoch_seconds == pytest.approx(expected_epoch, abs=1.0)
+
+
+def test_numpy_large_nanoseconds(subtests):
+    """Test numpy numbers that should trigger nanosecond conversion."""
+    # Large value that should be converted from nanoseconds to seconds
+    ns_time = np.int64(1579522520123000000)  # nanoseconds
+
+    with subtests.test("numpy int64 nanoseconds"):
+        result = parse(ns_time)
+        assert isinstance(result, pd.Timestamp)
+        # Should convert to approximately the same time as epoch 1579522520.123
+        assert result.timestamp() == pytest.approx(1579522520.123, abs=0.001)
+
+    with subtests.test("numpy float64 large value triggering nanosecond conversion"):
+        # Use a value that actually triggers the > 1e3 ratio condition
+        large_float = np.float64(1579522520123000000.0)  # Same as nanoseconds above
+        result = parse(large_float)
+        assert isinstance(result, pd.Timestamp)
+        # Should be converted from nanoseconds to seconds
+        expected_seconds = 1579522520123000000.0 / 1e9
+        assert result.timestamp() == pytest.approx(expected_seconds, abs=0.001)
+
+
+def test_numpy_zero_and_edge_cases(subtests):
+    """Test edge cases with numpy numeric types."""
+    edge_cases = [
+        (np.float32(0.0), "zero float32"),
+        (np.float64(0.0), "zero float64"),
+        (np.int32(0), "zero int32"),
+        (np.int64(0), "zero int64"),
+        (np.float32(1.0), "small float32"),
+        (np.int64(1), "small int64"),
+    ]
+
+    for np_value, description in edge_cases:
+        with subtests.test(description):
+            # Test parse function
+            result = parse(np_value)
+            assert isinstance(result, pd.Timestamp)
+
+            # Test MTime class
+            t = MTime(time_stamp=np_value)
+            assert isinstance(t.time_stamp, pd.Timestamp)
+
+            # Verify epoch time matches (converted to float)
+            expected_epoch = float(np_value)
+            assert t.epoch_seconds == pytest.approx(expected_epoch, abs=0.001)
+
+
+def test_isinstance_check_fix(subtests):
+    """Test that isinstance check now properly identifies numpy numeric types."""
+    test_values = [
+        np.float32(123.456),
+        np.float64(123.456),
+        np.int32(123),
+        np.int64(123),
+        123.456,  # regular float
+        123,  # regular int
+    ]
+
+    for val in test_values:
+        with subtests.test(f"{type(val).__name__} isinstance check"):
+            # This should work for all types now (both Python and numpy)
+            is_numeric = isinstance(val, (float, int, np.number))
+            assert is_numeric, f"{type(val)} should be identified as numeric"
+
+            # Verify parse function handles it
+            result = parse(val)
+            assert isinstance(result, pd.Timestamp)
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
