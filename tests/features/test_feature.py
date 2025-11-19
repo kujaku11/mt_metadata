@@ -85,7 +85,7 @@ def invalid_data_types():
         123,
         [1, 2, 3],
         {"key": "value"},
-        object(),
+        "object_placeholder",
     ]
 
 
@@ -94,8 +94,8 @@ def valid_comment_inputs():
     """Valid input types for comment validation."""
     return [
         "Simple string comment",
-        Comment(value="Comment object"),
-        Comment(value="Another comment", author="test_author"),
+        {"value": "Comment object"},
+        {"value": "Another comment", "author": "test_author"},
     ]
 
 
@@ -169,8 +169,14 @@ class TestFeatureValidation:
     def test_comments_validation_with_subtests(self, valid_comment_inputs, subtests):
         """Test comment validation using subtests for efficiency."""
         for comment_input in valid_comment_inputs:
-            with subtests.test(comment_input=comment_input):
-                feature = Feature(comments=comment_input)
+            with subtests.test(comment_input=str(comment_input)):
+                if isinstance(comment_input, dict):
+                    # Create Comment object from dict data
+                    comment_obj = Comment(**comment_input)
+                    feature = Feature(comments=comment_obj)
+                else:
+                    # String input
+                    feature = Feature(comments=comment_input)
                 assert isinstance(feature.comments, Comment)
 
     def test_data_validation_none(self):
@@ -199,11 +205,15 @@ class TestFeatureValidation:
     def test_data_validation_invalid_types(self, invalid_data_types, subtests):
         """Test data validation with invalid types using subtests."""
         for invalid_data in invalid_data_types:
-            with subtests.test(invalid_data=invalid_data):
+            with subtests.test(invalid_data=str(invalid_data)):
+                # Convert string placeholder back to actual object for testing
+                test_data = (
+                    object() if invalid_data == "object_placeholder" else invalid_data
+                )
                 with pytest.raises(
                     TypeError, match="Data must be a numpy array, xarray, or None"
                 ):
-                    Feature(data=invalid_data)
+                    Feature(data=test_data)
 
     def test_invalid_domain_value(self):
         """Test validation error for invalid domain value."""

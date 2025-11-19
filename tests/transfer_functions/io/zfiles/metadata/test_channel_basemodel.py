@@ -167,7 +167,7 @@ class TestChannelValidation:
     def test_valid_channel_types(self, channel_validation_cases, subtests):
         """Test that valid channel configurations are accepted."""
         for case in channel_validation_cases["valid_cases"]:
-            with subtests.test(case=case):
+            with subtests.test(case=str(case)):
                 channel = Channel(**case)
                 assert channel.number == case["number"]
                 assert channel.azimuth == case["azimuth"]
@@ -182,7 +182,7 @@ class TestChannelValidation:
     def test_boundary_cases(self, channel_validation_cases, subtests):
         """Test boundary value cases."""
         for case in channel_validation_cases["boundary_cases"]:
-            with subtests.test(case=case):
+            with subtests.test(case=str(case)):
                 channel = Channel(**case)
                 assert channel.number == case["number"]
                 assert channel.azimuth == case["azimuth"]
@@ -202,7 +202,7 @@ class TestChannelValidation:
         ]
 
         for ch in valid_channels:
-            with subtests.test(channel=ch):
+            with subtests.test(channel=str(ch)):
                 channel = Channel(channel=ch)
                 assert channel.channel == ch
 

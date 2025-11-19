@@ -76,7 +76,7 @@ def test_symmetry_corrected_coefficients(fir_filter_with_data, subtests):
     ]
 
     for symmetry, expected in test_cases:
-        with subtests.test(symmetry=symmetry):
+        with subtests.test(symmetry=str(symmetry)):
             fir_filter_with_data.symmetry = symmetry
             assert np.allclose(
                 fir_filter_with_data.symmetry_corrected_coefficients, expected
@@ -202,7 +202,7 @@ def test_to_obspy_stage_with_different_symmetry(subtests):
     ]
 
     for enum_value, expected_string in symmetry_mapping:
-        with subtests.test(symmetry=enum_value):
+        with subtests.test(symmetry=str(enum_value)):
             fir_filter = FIRFilter(
                 coefficients=[0.1, 0.5, 0.1],
                 symmetry=enum_value,
