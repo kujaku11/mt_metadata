@@ -11,6 +11,7 @@ Created on Thu Feb 18 12:49:13 2021
 # =============================================================================
 # Imports
 # =============================================================================
+import enum
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.base.helpers import requires
@@ -92,6 +93,12 @@ class XMLEquipmentMTRun(BaseTranslator):
                 mt_run = self._parse_description(value, mt_run)
             elif xml_key in ["resource_id"]:
                 mt_run.id = value.split(":")[1]
+            elif xml_key in ["installation_date", "removal_date"]:
+                # Handle time fields - convert from ObsPy UTCDateTime to string
+                if value is not None:
+                    # Convert ObsPy UTCDateTime to ISO format string for MTime objects
+                    value = str(value)
+                mt_run.update_attribute(mt_key, value)
             else:
                 mt_run.update_attribute(mt_key, value)
 
@@ -115,9 +122,18 @@ class XMLEquipmentMTRun(BaseTranslator):
             elif mt_key == "id":
                 value = f"mt.run.id:{mt_run.id}"
             elif "date" in xml_key:
-                value = mt_run.get_attr_from_name(mt_key).time_stamp
+                time_obj = mt_run.get_attr_from_name(mt_key)
+                # Convert MTime object to ISO format string for ObsPy UTCDateTime
+                value = (
+                    time_obj.iso_str
+                    if hasattr(time_obj, "iso_str")
+                    else time_obj.time_stamp
+                )
             else:
                 value = mt_run.get_attr_from_name(mt_key)
+                # Handle enum values by getting their actual value instead of string representation
+                if isinstance(value, enum.Enum):
+                    value = value.value
             setattr(equipment, xml_key, value)
 
         return equipment
