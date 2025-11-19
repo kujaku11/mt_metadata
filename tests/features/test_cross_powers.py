@@ -81,22 +81,24 @@ def parametrized_feature_data(request):
 @pytest.fixture
 def invalid_data_types():
     """Invalid data types for testing data validation."""
+    # Return factory functions instead of objects to avoid serialization issues
     return [
         "string_data",
         123,
         [1, 2, 3],
         {"key": "value"},
-        object(),
+        "object_placeholder",  # Will be replaced with object() in tests
     ]
 
 
 @pytest.fixture
 def valid_comment_inputs():
     """Valid input types for comment validation."""
+    # Return data to create Comment objects in tests to avoid serialization issues
     return [
         "Simple string comment",
-        Comment(value="Comment object"),
-        Comment(value="Another comment", author="test_author"),
+        {"type": "comment", "value": "Comment object"},
+        {"type": "comment", "value": "Another comment", "author": "test_author"},
     ]
 
 
@@ -169,8 +171,18 @@ class TestFeatureValidation:
 
     def test_comments_validation_with_subtests(self, valid_comment_inputs, subtests):
         """Test comment validation using subtests for efficiency."""
-        for comment_input in valid_comment_inputs:
-            with subtests.test(comment_input=comment_input):
+        for comment_data in valid_comment_inputs:
+            # Create Comment objects locally to avoid serialization issues
+            if isinstance(comment_data, dict) and comment_data.get("type") == "comment":
+                comment_input = Comment(
+                    value=comment_data["value"], author=comment_data.get("author")
+                )
+                test_key = f"Comment({comment_data['value'][:20]}...)"
+            else:
+                comment_input = comment_data
+                test_key = str(comment_data)
+
+            with subtests.test(comment_input=test_key):
                 feature = Feature(comments=comment_input)
                 assert isinstance(feature.comments, Comment)
 
@@ -200,7 +212,10 @@ class TestFeatureValidation:
     def test_data_validation_invalid_types(self, invalid_data_types, subtests):
         """Test data validation with invalid types using subtests."""
         for invalid_data in invalid_data_types:
-            with subtests.test(invalid_data=invalid_data):
+            # Create object() locally to avoid serialization issues
+            if invalid_data == "object_placeholder":
+                invalid_data = object()
+            with subtests.test(invalid_data=str(type(invalid_data).__name__)):
                 with pytest.raises(
                     TypeError, match="Data must be a numpy array, xarray, or None"
                 ):
@@ -843,12 +858,20 @@ class TestCrossPowersValidation:
         """Test comment validation specific to cross powers."""
         test_comments = [
             "Computed using Welch method",
-            Comment(value="Multitaper cross power estimation"),
             "Cross powers between H and E field components",
         ]
+        # Create Comment object locally to avoid serialization issues
+        comment_obj = Comment(value="Multitaper cross power estimation")
+        test_comments.append(comment_obj)
 
         for comment in test_comments:
-            with subtests.test(comment=comment):
+            # Use string representation for subtest key to avoid serialization
+            test_key = (
+                str(comment)
+                if not isinstance(comment, Comment)
+                else f"Comment({comment.value})"
+            )
+            with subtests.test(comment=test_key):
                 cp = CrossPowers(comments=comment)
                 assert isinstance(cp.comments, Comment)
 
@@ -862,7 +885,13 @@ class TestCrossPowersValidation:
         ]
 
         for invalid in invalid_data:
-            with subtests.test(invalid=invalid):
+            # Use string representation for subtest key
+            test_key = (
+                str(type(invalid).__name__)
+                if not isinstance(invalid, (str, int))
+                else str(invalid)
+            )
+            with subtests.test(invalid=test_key):
                 with pytest.raises(
                     TypeError, match="Data must be a numpy array, xarray, or None"
                 ):
