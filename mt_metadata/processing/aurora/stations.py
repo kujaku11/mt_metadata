@@ -156,14 +156,14 @@ class Stations(MetadataBase):
         if df.empty:
             return
 
-        station = df[df.remote == False].station_id.unique()[0]
-        rr_stations = df[df.remote == True].station_id.unique()
+        station = df[df.remote == False].station.unique()[0]
+        rr_stations = df[df.remote == True].station.unique()
 
-        self.local.from_dataset_dataframe(df[df.station_id == station])
+        self.local.from_dataset_dataframe(df[df.station == station])
 
         for rr_station in rr_stations:
             rr = Station()  # type: ignore
-            rr.from_dataset_dataframe(df[df.station_id == rr_station])
+            rr.from_dataset_dataframe(df[df.station == rr_station])
             self.add_remote(rr)
 
     def to_dataset_dataframe(self) -> pd.DataFrame:

@@ -219,7 +219,7 @@ class Station(MetadataBase):
         if df.empty:
             return
 
-        self.id = df.station_id.unique()[0]
+        self.id = df.station.unique()[0]
         self.mth5_path = df.mth5_path.unique()[0]
         self.remote = df.remote.unique()[0]
 
