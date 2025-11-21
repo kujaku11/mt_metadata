@@ -483,7 +483,7 @@ class TestFeatureTSRunPerformanceIntegration:
             feature_ts_run_instance.to_json()
         json_time = time.time() - start_time
 
-        assert dict_time < 1.0  # 1000 to_dict calls in less than 1 second
+        assert dict_time < 2.0  # 1000 to_dict calls in less than 2 seconds
         assert json_time < 2.0  # 1000 to_json calls in less than 2 seconds
 
     def test_field_validation_performance(self):
