@@ -386,13 +386,13 @@ class TestStationDataFrameConversion:
         try:
             empty_df = pd.DataFrame(
                 columns=[
-                    "station_id",
-                    "run_id",
+                    "station",
+                    "run",
                     "sample_rate",
                     "start",
                     "end",
-                    "input_channel_names",
-                    "output_channel_names",
+                    "input_channels",
+                    "output_channels",
                 ]
             )
 
@@ -416,15 +416,15 @@ class TestStationDataFrameConversion:
         # Create a DataFrame with the correct column names expected by from_dataset_dataframe
         df = pd.DataFrame(
             {
-                "station_id": ["STA001", "STA002"],
-                "run_id": ["001", "001"],
+                "station": ["STA001", "STA002"],
+                "run": ["001", "001"],
                 "sample_rate": [1024.0, 512.0],
                 "start": ["2021-01-01T00:00:00", "2021-01-02T00:00:00"],
                 "end": ["2021-01-01T01:00:00", "2021-01-02T01:00:00"],
                 "mth5_path": ["/path/to/data1.mth5", "/path/to/data2.mth5"],
                 "remote": [False, True],
-                "input_channel_names": [["ex", "ey"], ["hx", "hy"]],
-                "output_channel_names": [["hx", "hy"], ["hz"]],
+                "input_channels": [["ex", "ey"], ["hx", "hy"]],
+                "output_channels": [["hx", "hy"], ["hz"]],
                 "channel_scale_factors": [{}, {}],
             }
         )

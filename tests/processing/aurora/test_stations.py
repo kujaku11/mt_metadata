@@ -98,8 +98,8 @@ def stations_with_remotes(local_station, remote_station_1, remote_station_2):
 def sample_stations_dataframe():
     """Sample DataFrame for testing DataFrame conversions"""
     data = {
-        "station_id": ["LOCAL001", "LOCAL001", "REMOTE001", "REMOTE002"],
-        "run_id": ["001", "002", "001", "001"],
+        "station": ["LOCAL001", "LOCAL001", "REMOTE001", "REMOTE002"],
+        "run": ["001", "002", "001", "001"],
         "start": [
             "2021-01-01T00:00:00",
             "2021-01-02T00:00:00",
@@ -120,8 +120,8 @@ def sample_stations_dataframe():
         ],
         "remote": [False, False, True, True],
         "sample_rate": [1024.0, 1024.0, 1024.0, 1024.0],
-        "input_channel_names": [["ex", "ey"], ["ex", "ey"], ["ex", "ey"], ["ex", "ey"]],
-        "output_channel_names": [
+        "input_channels": [["ex", "ey"], ["ex", "ey"], ["ex", "ey"], ["ex", "ey"]],
+        "output_channels": [
             ["hx", "hy", "hz"],
             ["hx", "hy", "hz"],
             ["hx", "hy", "hz"],
@@ -328,7 +328,7 @@ class TestStationsDataFrameConversion:
             assert isinstance(df, pd.DataFrame)
             # Check that we have data from both local and remote stations
             if not df.empty:
-                assert "station_id" in df.columns or "station" in df.columns
+                assert "station" in df.columns or "station" in df.columns
         except Exception:
             # DataFrame conversion may have implementation issues
             pytest.skip("DataFrame conversion implementation issue")

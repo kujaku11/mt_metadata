@@ -44,14 +44,14 @@ class TestStationDataset(unittest.TestCase):
             self.assertListEqual(
                 df.columns.to_list(),
                 [
-                    "station_id",
-                    "run_id",
+                    "station",
+                    "run",
                     "start",
                     "end",
                     "mth5_path",
                     "sample_rate",
-                    "input_channel_names",
-                    "output_channel_names",
+                    "input_channels",
+                    "output_channels",
                     "remote",
                     "channel_scale_factors",
                 ],
