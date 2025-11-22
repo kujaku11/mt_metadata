@@ -166,14 +166,14 @@ class Station(MetadataBase):
         for run in self.runs:
             for tp in run.time_periods:
                 entry = {
-                    "station_id": self.id,
-                    "run_id": run.id,
+                    "station": self.id,
+                    "run": run.id,
                     "start": str(tp.start),  # Convert to string to avoid MTime issues
                     "end": str(tp.end),  # Convert to string to avoid MTime issues
                     "mth5_path": self.mth5_path,
                     "sample_rate": run.sample_rate,
-                    "input_channel_names": run.input_channels,
-                    "output_channel_names": run.output_channels,
+                    "input_channels": run.input_channels,
+                    "output_channels": run.output_channels,
                     "remote": self.remote,
                     "channel_scale_factors": run.channel_scale_factors,
                 }

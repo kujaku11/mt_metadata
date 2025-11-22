@@ -9,8 +9,8 @@ on:
     - '*'
 
 concurrency:
-  group: testing_in_conda
-  cancel-in-progress: true
+  group: ${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
   # This ensures that only one job runs at a time for the same branch
   # and cancels any in-progress jobs if a new one is triggered.
 jobs:
