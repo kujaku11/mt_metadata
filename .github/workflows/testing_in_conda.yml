@@ -7,6 +7,12 @@ on:
  pull_request:
    branches:
     - '*'
+
+concurrency:
+  group: testing_in_conda
+  cancel-in-progress: true
+  # This ensures that only one job runs at a time for the same branch
+  # and cancels any in-progress jobs if a new one is triggered.
 jobs:
   setup-build:
     name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }}) (${{ matrix.optionals}})
