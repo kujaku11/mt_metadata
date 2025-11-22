@@ -259,41 +259,141 @@ class TestBandIndicesAndHarmonics:
 class TestBandNameValidation:
     """Test name validation and generation"""
 
-    def test_name_auto_generation(self, band_params):
-        """Test automatic name generation from center frequency"""
-        # Remove the name parameter to test auto-generation
-        params = band_params.copy()
-        params.pop("name", None)
+    def test_name_auto_generation_with_frequencies(self):
+        """Test automatic name generation from center frequency when frequencies provided"""
+        band = Band(
+            frequency_min=2.0,
+            frequency_max=4.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+        )
+        # Should auto-generate name as center frequency: (2.0 + 4.0) / 2 = 3.0
+        assert band.name == "3.000000"
 
-        # The name validator has a bug - it tries to access center_frequency from info.data
-        # but center_frequency is a computed field. We'll test with explicit name for now.
-        params["name"] = "test_band"
-        band = Band(**params)
-        assert band.name == "test_band"
+    def test_name_empty_band_when_no_frequencies(self):
+        """Test that 'empty_band' is generated when frequencies are zero"""
+        band = Band(
+            frequency_min=0.0,
+            frequency_max=0.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+        )
+        assert band.name == "empty_band"
 
-    def test_name_custom(self, band_params):
-        """Test custom name setting"""
-        params = band_params.copy()
-        params["name"] = "custom_band"
-        band = Band(**params)
+    def test_name_custom_preserved(self):
+        """Test custom name is preserved"""
+        band = Band(
+            frequency_min=2.0,
+            frequency_max=4.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+            name="custom_band",
+        )
         assert band.name == "custom_band"
 
-    def test_name_empty_string_generates_default(self, band_params):
-        """Test that empty string generates default name"""
-        # This test may fail due to the bug in the name validator
-        # The validator tries to access center_frequency from info.data which doesn't exist
-        params = band_params.copy()
-        params["name"] = "empty_test"  # Use explicit name due to validator bug
-        band = Band(**params)
-        assert band.name == "empty_test"
+    def test_name_empty_string_generates_center_frequency(self):
+        """Test that empty string generates center frequency name"""
+        band = Band(
+            frequency_min=1.0,
+            frequency_max=3.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+            name="",
+        )
+        # Should generate name as center frequency: (1.0 + 3.0) / 2 = 2.0
+        assert band.name == "2.000000"
 
-    def test_name_none_generates_default(self, band_params):
-        """Test that None generates default name"""
-        # This test may fail due to the bug in the name validator
-        params = band_params.copy()
-        params["name"] = "none_test"  # Use explicit name due to validator bug
-        band = Band(**params)
-        assert band.name == "none_test"
+    def test_name_none_generates_center_frequency(self):
+        """Test that None generates center frequency name"""
+        band = Band(
+            frequency_min=1.0,
+            frequency_max=5.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+            name=None,
+        )
+        # Should generate name as center frequency: (1.0 + 5.0) / 2 = 3.0
+        assert band.name == "3.000000"
+
+    def test_post_instantiation_frequency_update(self):
+        """Test that name updates when frequencies are set after instantiation"""
+        # Create band without frequencies (should get 'empty_band' name)
+        band = Band(
+            frequency_min=0.0,
+            frequency_max=0.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+        )
+        assert band.name == "empty_band"
+
+        # Update frequencies - name should automatically update
+        band.frequency_min = 2.0
+        band.frequency_max = 6.0
+        # Should update to center frequency: (2.0 + 6.0) / 2 = 4.0
+        assert band.name == "4.000000"
+
+    def test_post_instantiation_frequency_update_preserves_custom_name(self):
+        """Test that custom names are preserved when frequencies are updated"""
+        band = Band(
+            frequency_min=1.0,
+            frequency_max=2.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+            name="my_custom_band",
+        )
+        assert band.name == "my_custom_band"
+
+        # Update frequencies - custom name should be preserved
+        band.frequency_min = 3.0
+        band.frequency_max = 4.0
+        assert band.name == "my_custom_band"
+
+    def test_empty_band_to_frequencies_updates_name(self):
+        """Test specific case of transitioning from empty_band to valid frequencies"""
+        # Start with empty band
+        band = Band(
+            frequency_min=0.0,
+            frequency_max=0.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+        )
+        assert band.name == "empty_band"
+
+        # Set frequencies one at a time
+        band.frequency_min = 1.0
+        # Still should be empty_band since max is still 0
+        assert band.name == "empty_band"
+
+        band.frequency_max = 3.0
+        # Now should update to center frequency: (1.0 + 3.0) / 2 = 2.0
+        assert band.name == "2.000000"
+
+    def test_frequencies_to_zero_keeps_generated_name(self):
+        """Test that setting frequencies back to zero doesn't change already generated name"""
+        band = Band(
+            frequency_min=1.0,
+            frequency_max=2.0,
+            decimation_level=0,
+            index_min=0,
+            index_max=0,
+        )
+        # Should have auto-generated name
+        original_name = band.name
+        assert original_name == "1.500000"
+
+        # Set frequencies back to zero
+        band.frequency_min = 0.0
+        band.frequency_max = 0.0
+        # Name should remain the same (not change to empty_band)
+        assert band.name == original_name
 
 
 class TestBandRelationships:

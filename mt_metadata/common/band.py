@@ -9,11 +9,17 @@ Development Notes:
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
+from typing import Annotated, Optional
 
 import numpy as np
 import pandas as pd
-from pydantic import computed_field, Field, field_validator, ValidationInfo
+from pydantic import (
+    computed_field,
+    Field,
+    field_validator,
+    model_validator,
+    ValidationInfo,
+)
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import StrEnumerationBase
@@ -131,9 +137,9 @@ class Band(MetadataBase):
     ]
 
     name: Annotated[
-        str,
+        Optional[str],
         Field(
-            default=None,
+            default="",
             description="Name of the band",
             alias=None,
             json_schema_extra={
@@ -144,13 +150,12 @@ class Band(MetadataBase):
         ),
     ]
 
-
     # we want a name to be generated if not provided, but we also want to allow
-    # the user to set a name explicitly, so we use a field validator that runs after, 
+    # the user to set a name explicitly, so we use a field validator that runs after,
     # but we also need a model validator for after.
     @field_validator("name", mode="after")
     @classmethod
-    def validate_name(cls, value: str, info: ValidationInfo) -> str:
+    def validate_name(cls, value: Optional[str], info: ValidationInfo) -> str:
         if value in ["", None]:
             # Generate a default name using available data
             if "frequency_min" in info.data and "frequency_max" in info.data:
@@ -164,6 +169,29 @@ class Band(MetadataBase):
             raise TypeError(f"Expected string, got {type(value)}")
         else:
             return value
+
+    @field_validator("frequency_min", "frequency_max", mode="after")
+    @classmethod
+    def update_name_on_frequency_change(
+        cls, value: float, info: ValidationInfo
+    ) -> float:
+        # This will trigger a model validation after the field is set
+        return value
+
+    @model_validator(mode="after")
+    def check_name(self) -> "Band":
+        # Update name if it's the default "empty_band" and we now have frequencies
+        if self.name in ["", None] or (
+            self.name == "empty_band"
+            and self.frequency_min != 0.0
+            and self.frequency_max != 0.0
+        ):
+            if self.frequency_min != 0.0 and self.frequency_max != 0.0:
+                center_freq = (self.frequency_min + self.frequency_max) / 2
+                self.name = f"{center_freq:.6f}"
+            else:
+                self.name = "empty_band"
+        return self
 
     @computed_field
     @property
