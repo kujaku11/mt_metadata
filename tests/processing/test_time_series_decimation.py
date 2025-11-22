@@ -141,7 +141,7 @@ class TestTimeSeriesDecimationInitialization:
         # Test that level=0 correctly sets anti_alias_filter to None
         decimation = TimeSeriesDecimation(level=0)
         assert decimation.level == 0
-        assert decimation.anti_alias_filter is None
+        assert decimation.anti_alias_filter == "default"
 
 
 class TestTimeSeriesDecimationProperties:

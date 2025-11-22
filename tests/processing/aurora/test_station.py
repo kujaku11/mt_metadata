@@ -430,7 +430,7 @@ class TestStationDataFrameConversion:
         )
 
         # Test with first station data only (single station)
-        station1_df = df[df.station_id == "STA001"].copy()
+        station1_df = df[df.station == "STA001"].copy()
         station = Station(id="TEST", mth5_path="", remote=False, runs=[])
         station.from_dataset_dataframe(station1_df)
 
