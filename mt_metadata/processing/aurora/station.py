@@ -225,7 +225,7 @@ class Station(MetadataBase):
 
         for entry in df.itertuples():
             try:
-                r = self.run_dict[entry.run_id]
+                r = self.run_dict[entry.run]
                 r.time_periods.append(
                     TimePeriod(start=str(entry.start), end=str(entry.end))
                 )
@@ -236,7 +236,7 @@ class Station(MetadataBase):
                 else:
                     channel_scale_factors = {}
                 r = Run(
-                    id=entry.run_id,
+                    id=entry.run,
                     sample_rate=entry.sample_rate,
                     input_channels=entry.input_channel_names,
                     output_channels=entry.output_channel_names,
