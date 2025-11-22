@@ -99,11 +99,11 @@ class TimeSeriesDecimation(MetadataBase):
         # Only perform validation if level is an integer or None
         if level is not None and isinstance(level, int) and level < 0:
             raise ValueError("Decimation level must be a non-negative integer.")
-        elif level == 0:
-            # Set anti_alias_filter to None for level 0
-            if isinstance(values, dict):
-                values["anti_alias_filter"] = None
-            else:
-                values.anti_alias_filter = None
+        # elif level == 0:
+        #     # Set anti_alias_filter to None for level 0
+        #     if isinstance(values, dict):
+        #         values["anti_alias_filter"] = None
+        #     else:
+        #         values.anti_alias_filter = None
 
         return values
