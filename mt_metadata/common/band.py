@@ -144,7 +144,7 @@ class Band(MetadataBase):
         ),
     ]
 
-    @field_validator("name", mode="before")
+    @field_validator("name", mode="after")
     @classmethod
     def validate_name(cls, value: str, info: ValidationInfo) -> str:
         if value in ["", None]:
