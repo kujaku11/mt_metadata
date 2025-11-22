@@ -10,6 +10,7 @@ Created on Wed Dec 23 20:37:52 2020
 """
 import json
 import logging
+from pathlib import Path
 
 # =============================================================================
 # Imports
@@ -1062,6 +1063,8 @@ class NumpyEncoder(json.JSONEncoder):
             return str(obj)
         elif hasattr(obj, "unicode_string"):
             return obj.unicode_string()
+        elif isinstance(obj, Path):
+            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 
