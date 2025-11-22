@@ -57,7 +57,7 @@ class TestStationDataset(unittest.TestCase):
                 ],
             )
         with self.subTest("single station"):
-            self.assertTrue(len(df.station_id.unique()) == 1)
+            self.assertTrue(len(df.station.unique()) == 1)
 
     def test_from_dataframe(self):
         df = self.station.to_dataset_dataframe()
