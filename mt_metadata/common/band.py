@@ -144,6 +144,10 @@ class Band(MetadataBase):
         ),
     ]
 
+
+    # we want a name to be generated if not provided, but we also want to allow
+    # the user to set a name explicitly, so we use a field validator that runs after, 
+    # but we also need a model validator for after.
     @field_validator("name", mode="after")
     @classmethod
     def validate_name(cls, value: str, info: ValidationInfo) -> str:
