@@ -172,8 +172,8 @@ class Station(MetadataBase):
                     "end": str(tp.end),  # Convert to string to avoid MTime issues
                     "mth5_path": self.mth5_path,
                     "sample_rate": run.sample_rate,
-                    "input_channel_names": run.input_channel_names,
-                    "output_channel_names": run.output_channel_names,
+                    "input_channel_names": run.input_channels,
+                    "output_channel_names": run.output_channels,
                     "remote": self.remote,
                     "channel_scale_factors": run.channel_scale_factors,
                 }
@@ -238,8 +238,8 @@ class Station(MetadataBase):
                 r = Run(
                     id=entry.run,
                     sample_rate=entry.sample_rate,
-                    input_channels=entry.input_channel_names,
-                    output_channels=entry.output_channel_names,
+                    input_channels=entry.input_channels,
+                    output_channels=entry.output_channels,
                     time_periods=[
                         TimePeriod(start=str(entry.start), end=str(entry.end))
                     ],
