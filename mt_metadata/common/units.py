@@ -417,8 +417,9 @@ def get_unit_from_df(value: str, allow_none=True) -> Unit:
         (UNITS_DF["name"].str.lower() == value.lower()) | (UNITS_DF["symbol"] == value)
     ]
 
-    # If no exact match, try case-insensitive symbol match
-    if unit_row.empty:
+    # If no exact match, try case-insensitive symbol match only for single-character inputs
+    # This handles cases like 'M' -> 'meter' while preserving 'ft' as unknown (not 'fT')
+    if unit_row.empty and len(value) == 1:
         unit_row = UNITS_DF[UNITS_DF["symbol"].str.lower() == value.lower()]
 
     # Check if a match was found

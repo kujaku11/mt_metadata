@@ -184,8 +184,8 @@ def test_gain(fap_filter, subtests):
         assert fap_filter.gain == 0.25
 
     with subtests.test(msg="negative string input"):
-        with pytest.raises(ValidationError):
-            fap_filter.gain = "-.25"
+        fap_filter.gain = "-.25"
+        assert fap_filter.gain == -0.25
 
     with subtests.test(msg="integer input"):
         fap_filter.gain = int(1)
