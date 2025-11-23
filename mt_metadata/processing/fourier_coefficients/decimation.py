@@ -179,8 +179,7 @@ class Decimation(MetadataBase):
         return channels
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_channels_consistency(cls, values):
+    def validate_channels_consistency(self):
         """
         Ensure that channels_estimated and channels are synchronized.
 
@@ -189,8 +188,8 @@ class Decimation(MetadataBase):
         - Ensure all channels in channels ListDict have their component names
           in channels_estimated
         """
-        channels_estimated = values.channels_estimated
-        channels = values.channels
+        channels_estimated = self.channels_estimated
+        channels = self.channels
 
         # Get existing channel component names from the channels ListDict
         existing_channel_names = set(channels.keys()) if channels.keys() else set()
@@ -214,9 +213,9 @@ class Decimation(MetadataBase):
         if extra_channels:
             logger.info(f"Adding channels to channels_estimated: {extra_channels}")
             # Add the extra channel names to channels_estimated
-            values.channels_estimated.extend(list(extra_channels))
+            self.channels_estimated.extend(list(extra_channels))
 
-        return values
+        return self
 
     def add(self, other):
         """
