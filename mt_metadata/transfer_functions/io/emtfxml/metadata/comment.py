@@ -34,7 +34,7 @@ class Comment(Base):
 
     @property
     def date(self):
-        return self._dt.iso_str
+        return self._dt.isoformat()
 
     @date.setter
     def date(self, dt_str):

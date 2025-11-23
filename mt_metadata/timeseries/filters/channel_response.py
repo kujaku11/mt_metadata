@@ -164,7 +164,8 @@ class ChannelResponse(FilterBase):
             if self.normalization_frequency == 0.0:
                 if self.pass_band is not None:
                     # Calculate geometric mean of pass band
-                    norm_freq = np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
+                    with np.errstate(divide="ignore"):
+                        norm_freq = np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
                     logger.info(
                         f"Setting normalization frequency to {norm_freq} Hz based on pass band"
                     )

@@ -251,7 +251,7 @@ def test_compare_dt(subtests):
         assert dt_01 == dt_02
 
     with subtests.test("equality with string"):
-        assert dt_01 == dt_02.iso_str
+        assert dt_01 == dt_02.isoformat()
 
     with subtests.test("equality with nanoseconds"):
         assert dt_01 == (dt_02.epoch_seconds * 1e9)

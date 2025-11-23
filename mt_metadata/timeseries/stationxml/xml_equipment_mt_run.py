@@ -125,8 +125,8 @@ class XMLEquipmentMTRun(BaseTranslator):
                 time_obj = mt_run.get_attr_from_name(mt_key)
                 # Convert MTime object to ISO format string for ObsPy UTCDateTime
                 value = (
-                    time_obj.iso_str
-                    if hasattr(time_obj, "iso_str")
+                    time_obj.isoformat()
+                    if hasattr(time_obj, "isoformat")
                     else time_obj.time_stamp
                 )
             else:
