@@ -411,10 +411,15 @@ def get_unit_from_df(value: str, allow_none=True) -> Unit:
     KeyError
         If the unit is not found in the DataFrame.
     """
-    # Search for the unit by name or symbol
+    # First try exact match for symbol (case-sensitive) to handle prefixes correctly
+    # (e.g., 'mV' should match milliVolt, not megaVolt)
     unit_row = UNITS_DF[
         (UNITS_DF["name"].str.lower() == value.lower()) | (UNITS_DF["symbol"] == value)
     ]
+
+    # If no exact match, try case-insensitive symbol match
+    if unit_row.empty:
+        unit_row = UNITS_DF[UNITS_DF["symbol"].str.lower() == value.lower()]
 
     # Check if a match was found
     if not unit_row.empty:

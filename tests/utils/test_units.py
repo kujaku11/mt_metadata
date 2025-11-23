@@ -270,3 +270,114 @@ class TestUnitsDataFrame:
                 assert row.iloc[0]["name"] == "milliVolt"
             with subtests.test("mV unit description"):
                 assert row.iloc[0]["description"] == "Milli Unit of electric potential"
+
+
+class TestCaseInsensitiveMatching:
+    """Test class for case-insensitive unit matching logic.
+
+    Tests the two-stage matching strategy:
+    1. Exact symbol match (case-sensitive, preserves SI prefix distinction)
+    2. Case-insensitive fallback (handles inconsistent capitalization)
+    """
+
+    @pytest.fixture
+    def exact_match_test_cases(self):
+        """Test cases requiring exact symbol matching (stage 1)."""
+        return [
+            # SI prefixes are case-sensitive
+            {"input": "mV", "expected_name": "milliVolt", "expected_symbol": "mV"},
+            {"input": "MV", "expected_name": "megaVolt", "expected_symbol": "MV"},
+            {"input": "nT", "expected_name": "nanoTesla", "expected_symbol": "nT"},
+            {"input": "km", "expected_name": "kilometer", "expected_symbol": "km"},
+            {"input": "pV", "expected_name": "picoVolt", "expected_symbol": "pV"},
+        ]
+
+    @pytest.fixture
+    def case_insensitive_fallback_test_cases(self):
+        """Test cases requiring case-insensitive fallback (stage 2)."""
+        return [
+            # Base units with incorrect capitalization
+            {"input": "M", "expected_name": "meter", "expected_symbol": "m"},
+            {"input": "v", "expected_name": "Volt", "expected_symbol": "V"},
+            {"input": "t", "expected_name": "Tesla", "expected_symbol": "T"},
+            {"input": "ohm", "expected_name": "Ohm", "expected_symbol": "\u03a9"},
+        ]
+
+    @pytest.fixture
+    def compound_unit_test_cases(self):
+        """Test cases for compound units with mixed case."""
+        return [
+            # Original issue: 'V/M' should parse as Volt per meter
+            {
+                "input": "V/M",
+                "expected_name": "Volt per meter",
+                "expected_symbol": "V/m",
+            },
+            # Lowercase variant
+            {
+                "input": "v/m",
+                "expected_name": "Volt per meter",
+                "expected_symbol": "V/m",
+            },
+            # Mixed case with prefixes
+            {
+                "input": "mV/M",
+                "expected_name": "milliVolt per meter",
+                "expected_symbol": "mV/m",
+            },
+            # Complex compound unit
+            {
+                "input": "mV nT/[km ohm]",
+                "expected_name": "milliVolt nanoTesla per kilometer Ohm",
+                "expected_symbol": "mV nT/km \u03a9",
+            },
+        ]
+
+    def test_exact_symbol_matching(self, subtests, exact_match_test_cases):
+        """Test that exact symbol matches take priority (stage 1)."""
+        for case in exact_match_test_cases:
+            with subtests.test(input_unit=case["input"]):
+                unit = get_unit_from_df(case["input"])
+                assert (
+                    unit.name == case["expected_name"]
+                ), f"Expected '{case['expected_name']}' but got '{unit.name}'"
+                assert unit.symbol == case["expected_symbol"]
+
+    def test_case_insensitive_fallback(
+        self, subtests, case_insensitive_fallback_test_cases
+    ):
+        """Test that case-insensitive matching works for base units (stage 2)."""
+        for case in case_insensitive_fallback_test_cases:
+            with subtests.test(input_unit=case["input"]):
+                unit = get_unit_from_df(case["input"])
+                assert (
+                    unit.name == case["expected_name"]
+                ), f"Expected '{case['expected_name']}' but got '{unit.name}'"
+                assert unit.symbol == case["expected_symbol"]
+
+    def test_compound_units_with_mixed_case(self, subtests, compound_unit_test_cases):
+        """Test compound units that require both exact and case-insensitive matching."""
+        for case in compound_unit_test_cases:
+            with subtests.test(input_unit=case["input"]):
+                unit = get_unit_object(case["input"])
+                assert (
+                    unit.name == case["expected_name"]
+                ), f"Expected '{case['expected_name']}' but got '{unit.name}'"
+                assert unit.symbol == case["expected_symbol"]
+
+    def test_prefix_distinction_preserved(self, subtests):
+        """Test that SI prefix case sensitivity is maintained."""
+        test_pairs = [
+            ("m", "k"),  # milli vs kilo prefix
+            ("M", "k"),  # mega vs kilo prefix
+            ("p", "n"),  # pico vs nano prefix
+        ]
+
+        for prefix1, prefix2 in test_pairs:
+            with subtests.test(prefix_comparison=f"{prefix1} vs {prefix2}"):
+                unit1 = get_unit_from_df(f"{prefix1}V")
+                unit2 = get_unit_from_df(f"{prefix2}V")
+                # Ensure they resolve to different units
+                assert (
+                    unit1.name != unit2.name
+                ), f"Prefixes {prefix1} and {prefix2} should not match the same unit"

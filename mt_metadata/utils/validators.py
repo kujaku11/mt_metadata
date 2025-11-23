@@ -60,6 +60,8 @@ def validate_doi(value: str | HttpUrl | None) -> HttpUrl | None:
     if value is None:
         return None
     elif isinstance(value, str):
+        if value == "":
+            return None
         if value.startswith("10."):
             value = f"https://doi.org/{value}"
         elif value.startswith("doi:"):

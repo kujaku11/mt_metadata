@@ -141,7 +141,6 @@ class FilterBase(MetadataBase):
             default=1.0,
             description="scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
             alias=None,
-            gt=0.0,
             json_schema_extra={
                 "units": None,
                 "required": True,
