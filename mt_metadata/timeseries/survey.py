@@ -40,7 +40,7 @@ class Survey(MetadataBase):
             default="",
             description="Alpha numeric ID that will be unique for archiving.",
             alias=None,
-            pattern=r"^[a-zA-Z0-9_\- ]+$",
+            pattern=r"^[a-zA-Z0-9_\- ]*$",  # Allow empty string (zero or more chars)
             json_schema_extra={
                 "units": None,
                 "required": True,

@@ -13,6 +13,7 @@ Created on Sat Sep  4 17:59:53 2021
 # Imports
 # =============================================================================
 import inspect
+from enum import Enum
 from pathlib import Path
 from xml.etree import cElementTree as et
 
@@ -969,8 +970,10 @@ class EMTFXML:
                         continue
                 elif value not in NULL_VALUES:
                     # need to add remote site information
+                    # Handle Enum types by using .value property
+                    str_value = value.value if isinstance(value, Enum) else value
                     s.transfer_function.processing_parameters.append(
-                        f"remote_info.site.{key} = {value}"
+                        f"remote_info.site.{key} = {str_value}"
                     )
 
             # need to add remote site field notes information
@@ -985,22 +988,38 @@ class EMTFXML:
                         [],
                         "",
                     ]:
+                        # Handle Enum types by using .value property
+                        str_value = (
+                            rr_value.value if isinstance(rr_value, Enum) else rr_value
+                        )
                         s.transfer_function.processing_parameters.append(
-                            f"remote_info.field_notes.{rr_key} = {rr_value}"
+                            f"remote_info.field_notes.{rr_key} = {str_value}"
                         )
                 for ii, dp in enumerate(rfn.dipole):
                     dp_dict = dp.to_dict(single=True)
                     for dp_key, dp_value in dp_dict.items():
                         if dp_value not in [None, ""]:
+                            # Handle Enum types by using .value property
+                            str_value = (
+                                dp_value.value
+                                if isinstance(dp_value, Enum)
+                                else dp_value
+                            )
                             s.transfer_function.processing_parameters.append(
-                                f"remote_info.field_notes.dipole_{ii}.{dp_key} = {dp_value}"
+                                f"remote_info.field_notes.dipole_{ii}.{dp_key} = {str_value}"
                             )
                 for ii, mag in enumerate(rfn.magnetometer):
                     mag_dict = mag.to_dict(single=True)
                     for mag_key, mag_value in mag_dict.items():
                         if mag_value not in [None, ""]:
+                            # Handle Enum types by using .value property
+                            str_value = (
+                                mag_value.value
+                                if isinstance(mag_value, Enum)
+                                else mag_value
+                            )
                             s.transfer_function.processing_parameters.append(
-                                f"remote_info.field_notes.magnetometer_{ii}.{dp_key} = {dp_value}"
+                                f"remote_info.field_notes.magnetometer_{ii}.{mag_key} = {str_value}"
                             )
 
         s.transfer_function.data_quality.good_from_period = (
