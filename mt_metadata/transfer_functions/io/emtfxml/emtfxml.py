@@ -1195,6 +1195,8 @@ class EMTFXML:
         self.site.location.elevation = sm.location.elevation
         self.site.orientation.angle_to_geographic_north = (
             sm.orientation.angle_to_geographic_north
+            if sm.orientation.angle_to_geographic_north is not None
+            else 0.0
         )
 
         self.provenance.creating_application = sm.provenance.software.name
