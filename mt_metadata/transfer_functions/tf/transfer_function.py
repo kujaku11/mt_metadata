@@ -68,7 +68,7 @@ class TransferFunction(MetadataBase):
     runs_processed: Annotated[
         list[str],
         Field(
-            default=list,
+            default=[],
             description="list of runs used in the processing",
             alias=None,
             json_schema_extra={

@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field, HttpUrl
+from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
@@ -12,7 +12,7 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 # =====================================================
 class ExternalUrl(MetadataBase):
     description: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="description of where the external URL points towards",
@@ -26,9 +26,9 @@ class ExternalUrl(MetadataBase):
     ]
 
     url: Annotated[
-        HttpUrl,
+        HttpUrl | None,
         Field(
-            default="",
+            default=None,
             description="full URL of where the data is stored",
             alias=None,
             json_schema_extra={
@@ -38,6 +38,14 @@ class ExternalUrl(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("url", mode="before")
+    @classmethod
+    def validate_url(cls, value: None | HttpUrl | str) -> None | HttpUrl:
+        if value in [None, ""]:
+            return None
+        else:
+            return HttpUrl(value)
 
     def read_dict(self, input_dict: dict) -> None:
         """

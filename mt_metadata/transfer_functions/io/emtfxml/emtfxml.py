@@ -1210,7 +1210,9 @@ class EMTFXML:
         self.provenance.submitter.organization = sm.provenance.submitter.organization
         self.provenance.submitter.url = sm.provenance.submitter.url
 
-        self.external_url.url = sm.provenance.archive.url
+        self.external_url.url = (
+            sm.provenance.archive.url if sm.provenance.archive.url is not None else ""
+        )
         self.external_url.description = sm.provenance.archive.comments.value
 
         self.site.start = sm.time_period.start

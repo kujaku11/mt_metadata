@@ -81,7 +81,7 @@ class GenericPerson(MetadataBase):
         """
         Validate that the value is a valid comment.
         """
-        if isinstance(value, str):
+        if isinstance(value, str | None):
             return Comment(value=value)  # type: ignore[return-value]
         return value
 
