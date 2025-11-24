@@ -60,6 +60,8 @@ class DataTypeEnum(StrEnumerationBase):
     BB = "BB"
     WB = "WB"
     MT_TF = "MT_TF"
+    BBMT_TF = "BBMT_TF"
+    WBMT_TF = "WBMT_TF"
     LPMT_TF = "LPMT_TF"
     CSAMT = "CSAMT"
     NSAMT = "NSAMT"
