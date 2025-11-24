@@ -158,6 +158,17 @@ class MetadataBase(DotNotationBaseModel):
     _json_extras: List[str] = PrivateAttr(["units", "required", "examples", "alias"])
     _skip_equals: List[str] = PrivateAttr([])
 
+    # @model_validator(mode="before")
+    # @classmethod
+    # def convert_none_to_empty(cls, values):
+    #     """Convert None values to empty strings or 0.0 for numeric fields."""
+    #     for field, field_info in cls.model_fields.items():
+    #         if field_info.annotation is str and values.get(field) is None:
+    #             values[field] = ""
+    #         elif field_info.annotation is float and values.get(field) is None:
+    #             values[field] = 0.0
+    #     return values
+
     @computed_field
     @property
     def _class_name(self) -> str:

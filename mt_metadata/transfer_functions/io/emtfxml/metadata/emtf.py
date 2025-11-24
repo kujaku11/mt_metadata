@@ -14,7 +14,7 @@ from mt_metadata.common.enumerations import DataTypeEnum
 
 class EMTF(MetadataBase):
     description: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="description of what is in the file; default is magnetotelluric transfer functions",
@@ -28,7 +28,7 @@ class EMTF(MetadataBase):
     ]
 
     product_id: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="ID given as the archive ID of the station",
@@ -43,7 +43,7 @@ class EMTF(MetadataBase):
     ]
 
     tags: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="tags that help describe the data",
