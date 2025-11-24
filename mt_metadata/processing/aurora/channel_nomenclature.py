@@ -154,22 +154,22 @@ class ChannelNomenclature(MetadataBase):
     @computed_field
     @property
     def ex_ey(self) -> list[str]:
-        return [self.ex, self.ey]
+        return [self.ex.value, self.ey.value]
 
     @computed_field
     @property
     def hx_hy(self) -> list[str]:
-        return [self.hx, self.hy]
+        return [self.hx.value, self.hy.value]
 
     @computed_field
     @property
     def hx_hy_hz(self) -> list[str]:
-        return [self.hx, self.hy, self.hz]
+        return [self.hx.value, self.hy.value, self.hz.value]
 
     @computed_field
     @property
     def ex_ey_hz(self) -> list[str]:
-        return [self.ex, self.ey, self.hz]
+        return [self.ex.value, self.ey.value, self.hz.value]
 
     @computed_field
     @property
@@ -210,7 +210,7 @@ class ChannelNomenclature(MetadataBase):
         self.hz = channel_map["hz"]  # type: ignore
 
     def unpack(self) -> tuple:
-        return self.ex, self.ey, self.hx, self.hy, self.hz
+        return self.ex.value, self.ey.value, self.hx.value, self.hy.value, self.hz.value
 
     @computed_field
     @property
