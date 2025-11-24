@@ -10,7 +10,6 @@ Created on Wed Dec 23 20:37:52 2020
 """
 import json
 import logging
-from pathlib import Path
 
 # =============================================================================
 # Imports
@@ -19,6 +18,7 @@ import textwrap
 from collections import defaultdict, OrderedDict
 from collections.abc import MutableMapping
 from operator import itemgetter
+from pathlib import Path
 from typing import Any, Dict
 from xml.dom import minidom
 from xml.etree import cElementTree as et
@@ -905,7 +905,10 @@ def recursive_split_xml(element, item, base, name, attr_dict=None):
             recursive_split_xml(sub_element, ii, base, name, attr_dict)
     elif isinstance(item, str):
         element.text = item
-    elif isinstance(item, (float, int, type(None))):
+    elif item is None:
+        # Leave element.text as None so XML has empty element (no text)
+        pass
+    elif isinstance(item, (float, int)):
         element.text = str(item)
     else:
         # if the value is an hdf5 reference make it a string
@@ -1348,4 +1351,6 @@ def _should_convert_none_to_empty_string(field_name: str) -> bool:
         "provenance.software.author",
         "provenance.software.version",
     }
+    # Convert external URL None -> "" for backward compatibility in to_dict
+    string_fields.add("url")
     return field_name in string_fields

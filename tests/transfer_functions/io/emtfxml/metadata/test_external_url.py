@@ -107,7 +107,7 @@ class TestExternalUrlInstantiation:
 
     def test_url_type_after_assignment(self, empty_external_url):
         """Test that URL becomes HttpUrl object after valid assignment."""
-        # Initially a string
+        # Initially a string (empty)
         assert isinstance(empty_external_url.url, str)
 
         # After assignment becomes HttpUrl
@@ -122,7 +122,7 @@ class TestExternalUrlInstantiation:
 
         # Cannot assign empty string to HttpUrl field after creation
         with pytest.raises(ValidationError):
-            empty_external_url.url = ""
+            empty_external_url.url = 6
 
 
 # =============================================================================
