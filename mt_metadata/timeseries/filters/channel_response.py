@@ -162,11 +162,12 @@ class ChannelResponse(FilterBase):
             object.__setattr__(self, "units_in", self.filters_list[0].units_in)
             object.__setattr__(self, "units_out", self.filters_list[-1].units_out)
             if self.normalization_frequency == 0.0:
-                if self.pass_band is not None:
+                pass_band = self.pass_band
+                if pass_band is not None:
                     # Calculate geometric mean of pass band
                     with np.errstate(divide="ignore"):
-                        norm_freq = np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
-                    logger.info(
+                        norm_freq = np.round(10 ** np.mean(np.log10(pass_band)), 3)
+                    logger.debug(
                         f"Setting normalization frequency to {norm_freq} Hz based on pass band"
                     )
                     # Set normalization frequency to the gain of the first filter
@@ -246,11 +247,11 @@ class ChannelResponse(FilterBase):
     def pass_band(self) -> list[float]:
         """estimate pass band for all filters in frequency"""
         if self.frequencies is None:
-            logger.warning("No frequencies provided, cannot calculate pass band")
+            logger.debug("No frequencies provided, cannot calculate pass band")
             return None
 
         if len(self.frequencies) == 0:
-            logger.warning("No frequencies provided, cannot calculate pass band")
+            logger.debug("No frequencies provided, cannot calculate pass band")
             return None
 
         pb = []
