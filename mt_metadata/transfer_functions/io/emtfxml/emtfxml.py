@@ -1213,7 +1213,11 @@ class EMTFXML:
         self.external_url.url = (
             sm.provenance.archive.url if sm.provenance.archive.url is not None else ""
         )
-        self.external_url.description = sm.provenance.archive.comments.value
+        self.external_url.description = (
+            sm.provenance.archive.comments.value
+            if sm.provenance.archive.comments.value is not None
+            else ""
+        )
 
         self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
