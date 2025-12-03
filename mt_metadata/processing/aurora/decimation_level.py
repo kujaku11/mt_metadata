@@ -532,7 +532,10 @@ class DecimationLevel(MetadataBase):
             logger.info(msg)
             return False
 
-        if -1 in fc_decimation.stft.harmonic_indices:
+        if fc_decimation.stft.harmonic_indices is None:
+            # harmonic_indices not set, skip this check
+            pass
+        elif -1 in fc_decimation.stft.harmonic_indices:
             # if harmonic_indices is -1, it means the archive kept all so we can skip this check.
             pass
         else:
