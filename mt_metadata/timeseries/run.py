@@ -249,6 +249,21 @@ class Run(MetadataBase):
             return Comment(value=value)
         return value
 
+    @field_validator("data_type", mode="before")
+    @classmethod
+    def validate_data_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the data_type is a string.
+        """
+        if isinstance(value, DataTypeEnum):
+            value = value.value
+        elif isinstance(value, str):
+            if "," in value:
+                value = value.split(",")[0].strip()
+        elif not isinstance(value, str):
+            raise TypeError(f"data_type must be a string, not {type(value)}")
+        return value
+
     @field_validator(
         "channels_recorded_electric",
         "channels_recorded_magnetic",

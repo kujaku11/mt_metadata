@@ -172,8 +172,8 @@ class Station(MetadataBase):
                     "end": str(tp.end),  # Convert to string to avoid MTime issues
                     "mth5_path": self.mth5_path,
                     "sample_rate": run.sample_rate,
-                    "input_channels": run.input_channels,
-                    "output_channels": run.output_channels,
+                    "input_channels": run.input_channel_names,
+                    "output_channels": run.output_channel_names,
                     "remote": self.remote,
                     "channel_scale_factors": run.channel_scale_factors,
                 }
