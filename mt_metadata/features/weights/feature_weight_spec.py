@@ -6,12 +6,13 @@ from typing import Annotated
 
 import numpy as np
 from loguru import logger
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import Field, field_validator, model_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.features.coherence import Coherence
 from mt_metadata.features.fc_coherence import FCCoherence
 from mt_metadata.features.feature import Feature
+from mt_metadata.features.striding_window_coherence import StridingWindowCoherence
 from mt_metadata.features.weights.activation_monotonic_weight_kernel import (
     ActivationMonotonicWeightKernel,
 )
@@ -26,6 +27,7 @@ feature_classes = {
     "base": Feature,
     "coherence": Coherence,
     "fc_coherence": FCCoherence,
+    "striding_window_coherence": StridingWindowCoherence,
 }
 
 weight_classes = {
@@ -57,7 +59,7 @@ class FeatureWeightSpec(MetadataBase):
     ]
 
     feature: Annotated[
-        dict | Feature | Coherence | FCCoherence,
+        dict | Feature | Coherence | FCCoherence | StridingWindowCoherence,
         Field(
             default_factory=Feature,  # type: ignore
             description="The feature specification.",
@@ -86,36 +88,76 @@ class FeatureWeightSpec(MetadataBase):
         ),
     ]
 
+    @model_validator(mode="before")
+    @classmethod
+    def pre_process_feature(cls, data: dict) -> dict:
+        """Pre-process the feature dict to ensure correct class is instantiated."""
+        if isinstance(data, dict) and "feature" in data:
+            feature_data = data["feature"]
+            # Handle nested feature dict wrapping
+            while isinstance(feature_data, dict) and "feature" in feature_data:
+                feature_data = feature_data["feature"]
+
+            if isinstance(feature_data, dict):
+                feature_name = feature_data.get("name")
+                logger.info(f"pre_process_feature: feature_name={feature_name}")
+                if feature_name in feature_classes:
+                    feature_cls = feature_classes[feature_name]
+                    logger.info(
+                        f"pre_process_feature: Creating {feature_cls.__name__} instance"
+                    )
+                    data["feature"] = feature_cls(**feature_data)
+                else:
+                    logger.warning(
+                        f"pre_process_feature: Unknown feature name '{feature_name}', using Feature"
+                    )
+        return data
+
     @field_validator("feature", mode="before")
     @classmethod
     def validate_feature(
         cls, value, info: ValidationInfo
-    ) -> Feature | Coherence | FCCoherence | None:
+    ) -> Feature | Coherence | FCCoherence | StridingWindowCoherence | None:
         """Validate the feature field to ensure it matches the feature_name."""
+        logger.info(
+            f"validate_feature called with value type: {type(value)}, value: {value}"
+        )
         while (
             isinstance(value, dict)
             and "feature" in value
             and isinstance(value["feature"], dict)
         ):
+            logger.info(f"Unwrapping nested feature dict")
             value = value["feature"]
         if isinstance(value, dict):
             feature_name = value.get("name")
             # Import here to avoid circular import at module level
-            logger.debug(
-                f"Feature setter: feature_name={feature_name}, value={value}"
+            logger.info(
+                f"Feature setter: feature_name={feature_name}, value keys={value.keys()}"
             )  # DEBUG
             if not isinstance(feature_name, str) or feature_name not in feature_classes:
+                logger.warning(
+                    f"Feature name '{feature_name}' not in feature_classes, using base Feature"
+                )
                 feature_cls = Feature
             else:
                 feature_cls = feature_classes[feature_name]
+                logger.info(f"Selected feature class: {feature_cls.__name__}")
             logger.debug(
                 f"Feature setter: instantiated {feature_cls.__class__}"
             )  # DEBUG
             return feature_cls(**value)
-        elif isinstance(value, (Feature, Coherence, FCCoherence)):
-            logger.debug(f"Feature setter: set directly to {type(value)}")  # DEBUG
+        elif isinstance(
+            value, (Feature, Coherence, FCCoherence, StridingWindowCoherence)
+        ):
+            logger.info(
+                f"Feature setter: set directly to {type(value).__name__}"
+            )  # DEBUG
             return value
         else:
+            logger.warning(
+                f"Feature value is neither dict nor Feature instance: {type(value)}"
+            )
             return None
 
     @field_validator("weight_kernels", mode="before")

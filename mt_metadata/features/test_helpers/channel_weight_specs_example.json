@@ -11,12 +11,13 @@
                             "feature_weight_spec": {
                                 "feature": {
                                     "name": "striding_window_coherence",
-                                    "ch1": "ex",
-                                    "ch2": "hy"
+                                    "channel_1": "ex",
+                                    "channel_2": "hy"
                                 },
                                 "weight_kernels": [
                                     {
                                         "weight_kernel": {
+                                            "style": "taper",
                                             "half_window_style": "hann",
                                             "transition_lower_bound": 0.6,
                                             "transition_upper_bound": 0.9,
@@ -25,6 +26,7 @@
                                     },
                                     {
                                         "weight_kernel": {
+                                            "style": "taper",
                                             "half_window_style": "hann",
                                             "transition_lower_bound": 0.9995,
                                             "transition_upper_bound": 1.01,
@@ -43,6 +45,7 @@
                                 "weight_kernels": [
                                     {
                                         "weight_kernel": {
+                                            "style": "activation",
                                             "activation_style": "sigmoid",
                                             "transition_lower_bound": 0.8,
                                             "transition_upper_bound": 1.2,
@@ -66,12 +69,13 @@
                             "feature_weight_spec": {
                                 "feature": {
                                     "name": "striding_window_coherence",
-                                    "ch1": "ey",
-                                    "ch2": "hx"
+                                    "channel_1": "ey",
+                                    "channel_2": "hx"
                                 },
                                 "weight_kernels": [
                                     {
                                         "weight_kernel": {
+                                            "style": "taper",
                                             "half_window_style": "hann",
                                             "transition_lower_bound": 0.4,
                                             "transition_upper_bound": 0.77,
@@ -90,6 +94,7 @@
                                 "weight_kernels": [
                                     {
                                         "weight_kernel": {
+                                            "style": "taper",
                                             "half_window_style": "hann",
                                             "transition_lower_bound": 0.4,
                                             "transition_upper_bound": 0.8,
@@ -113,8 +118,8 @@
                             "feature_weight_spec": {
                                 "feature": {
                                     "name": "striding_window_coherence",
-                                    "ch1": "hx",
-                                    "ch2": "rx"
+                                    "channel_1": "hx",
+                                    "channel_2": "rx"
                                 },
                                 "weight_kernels": [
                                     {
@@ -133,8 +138,8 @@
                             "feature_weight_spec": {
                                 "feature": {
                                     "name": "striding_window_coherence",
-                                    "ch1": "hy",
-                                    "ch2": "ry"
+                                    "channel_1": "hy",
+                                    "channel_2": "ry"
                                 },
                                 "weight_kernels": [
                                     {

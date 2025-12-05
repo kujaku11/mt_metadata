@@ -69,7 +69,6 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common.band import Band
 from mt_metadata.common.enumerations import StrEnumerationBase
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
-from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
 
 
 # =====================================================
@@ -139,8 +138,20 @@ class ChannelWeightSpec(MetadataBase):
     @field_validator("feature_weight_specs", mode="before")
     @classmethod
     def check_feature_weight_specs(cls, value, info: ValidationInfo):
-        values = validate_setter_input(value, FeatureWeightSpec)
-        return [cast_to_class_if_dict(obj, FeatureWeightSpec) for obj in values]
+        if not isinstance(value, list):
+            value = [value]
+
+        result = []
+        for item in value:
+            if isinstance(item, FeatureWeightSpec):
+                result.append(item)
+            elif isinstance(item, dict):
+                # Construct directly to ensure validators run
+                result.append(FeatureWeightSpec(**item))
+            else:
+                raise TypeError(f"Expected FeatureWeightSpec or dict, got {type(item)}")
+
+        return result
 
     @field_validator("weights", mode="before")
     @classmethod
