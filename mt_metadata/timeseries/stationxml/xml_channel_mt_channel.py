@@ -622,7 +622,7 @@ class XMLChannelMTChannel(BaseTranslator):
         if original_sensor_description is None:
             sensor_description = ""  # make a string
         else:
-            sensor_description = copy.deepcopy(original_sensor_type)
+            sensor_description = copy.deepcopy(original_sensor_description)
 
         if sensor_type.lower() in self.understood_sensor_types:
             return sensor_type
