@@ -382,6 +382,9 @@ class TransferFunction(MetadataBase):
         for key in self.array_dict.keys():
             if self.array_dict[key] is None:
                 continue
+            if self.array_dict[key].size == 0:
+                logger.debug(f"No data for {key}, skipping.")
+                continue
             arr = np.nan_to_num(self.array_dict[key][index])
 
             # set zeros to empty value of 1E32
