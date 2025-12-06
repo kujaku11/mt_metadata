@@ -366,8 +366,9 @@ def get_unit_object(unit: str, allow_none=True) -> Unit:
     """
     # digital counts is a special case, as it is not in the UNITS_DF DataFrame
     # but is used in the metadata. It is a placeholder for the unit of digital counts
-    if unit.lower() in ["digital counts", "counts", "digital count"]:
-        return get_unit_from_df("digital counts", allow_none=allow_none)
+    if isinstance(unit, str):
+        if unit.lower() in ["digital counts", "counts", "digital count"]:
+            return get_unit_from_df("digital counts", allow_none=allow_none)
     if unit in [None, ""]:
         return Unit(
             name="unknown",
