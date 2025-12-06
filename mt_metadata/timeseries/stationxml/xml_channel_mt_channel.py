@@ -503,7 +503,6 @@ class XMLChannelMTChannel(BaseTranslator):
             return mt_channel
         name = xml_channel.response.response_stages[-1].output_units
         description = xml_channel.response.response_stages[-1].output_units_description
-        description = xml_channel.response.response_stages[-1].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description
