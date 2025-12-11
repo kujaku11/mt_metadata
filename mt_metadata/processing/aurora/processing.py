@@ -38,7 +38,7 @@ class Processing(MetadataBase):
     band_specification_style: Annotated[
         BandSpecificationStyleEnum | None,
         Field(
-            default=None,
+            default="EMTF",
             description="describes how bands were sourced",
             alias=None,
             json_schema_extra={
