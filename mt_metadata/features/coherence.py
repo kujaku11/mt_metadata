@@ -240,16 +240,16 @@ class Coherence(Feature):
                 self.station_2 = None
 
         if not self.station_1:
-            if self.channel_1[0].lower() != "r":
-                self.station_1 = local_station_id
-            else:
+            if self.channel_1.lower().startswith("r"):
                 self.station_1 = remote_station_id
+            else:
+                self.station_1 = local_station_id
 
         if not self.station_2:
-            if self.channel_2[0].lower() != "r":
-                self.station_2 = local_station_id
-            else:
+            if self.channel_2.lower().startswith("r"):
                 self.station_2 = remote_station_id
+            else:
+                self.station_2 = local_station_id
 
         # by this time, all stations should be set.  Confirm that we do not have a station that is None
         # TODO Consider returning False if exception encountered here.

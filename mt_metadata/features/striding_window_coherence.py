@@ -53,6 +53,7 @@ class StridingWindowCoherence(Coherence):
         self.subwindow.type = self.window.type
         self.subwindow.num_samples = int(self.window.num_samples * fraction)
         self.subwindow.overlap = int(self.subwindow.num_samples // 2)
+        self.subwindow.additional_args = self.window.additional_args
         # No need to update stride; main window stride is set by self.window.num_samples_advance
 
     def compute(
@@ -77,13 +78,28 @@ class StridingWindowCoherence(Coherence):
             end = start + main_win_len
             seg1 = ts_1[start:end]
             seg2 = ts_2[start:end]
-            f, coh = ssig.coherence(
+            
+            if self.subwindow.type in ["kaiser", "kaiser_bessel_derived", "gaussian", "general_cosine", "general_gaussian", "general_hamming", "dpss", "chebwin"]:
+                win_tuple = tuple(
+                    [self.subwindow.type]+[param for param in self.subwindow.additional_args.values()]
+                    )
+                f, coh = ssig.coherence(
                 seg1,
                 seg2,
-                window=self.subwindow.type,
+                window=win_tuple,
                 nperseg=self.subwindow.num_samples,
                 noverlap=self.subwindow.overlap,
                 detrend=self.detrend,
             )
+            else:
+                f, coh = ssig.coherence(
+                    seg1,
+                    seg2,
+                    window=self.subwindow.type,
+                    nperseg=self.subwindow.num_samples,
+                    noverlap=self.subwindow.overlap,
+                    detrend=self.detrend,
+                )
+
             results.append(coh)
         return f, np.array(results)

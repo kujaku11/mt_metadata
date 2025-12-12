@@ -100,10 +100,10 @@ class FeatureWeightSpec(MetadataBase):
 
             if isinstance(feature_data, dict):
                 feature_name = feature_data.get("name")
-                logger.info(f"pre_process_feature: feature_name={feature_name}")
+                logger.debug(f"pre_process_feature: feature_name={feature_name}")
                 if feature_name in feature_classes:
                     feature_cls = feature_classes[feature_name]
-                    logger.info(
+                    logger.debug(
                         f"pre_process_feature: Creating {feature_cls.__name__} instance"
                     )
                     data["feature"] = feature_cls(**feature_data)
@@ -119,7 +119,7 @@ class FeatureWeightSpec(MetadataBase):
         cls, value, info: ValidationInfo
     ) -> Feature | Coherence | FCCoherence | StridingWindowCoherence | None:
         """Validate the feature field to ensure it matches the feature_name."""
-        logger.info(
+        logger.debug(
             f"validate_feature called with value type: {type(value)}, value: {value}"
         )
         while (
@@ -127,12 +127,12 @@ class FeatureWeightSpec(MetadataBase):
             and "feature" in value
             and isinstance(value["feature"], dict)
         ):
-            logger.info(f"Unwrapping nested feature dict")
+            logger.debug(f"Unwrapping nested feature dict")
             value = value["feature"]
         if isinstance(value, dict):
             feature_name = value.get("name")
             # Import here to avoid circular import at module level
-            logger.info(
+            logger.debug(
                 f"Feature setter: feature_name={feature_name}, value keys={value.keys()}"
             )  # DEBUG
             if not isinstance(feature_name, str) or feature_name not in feature_classes:
@@ -142,7 +142,7 @@ class FeatureWeightSpec(MetadataBase):
                 feature_cls = Feature
             else:
                 feature_cls = feature_classes[feature_name]
-                logger.info(f"Selected feature class: {feature_cls.__name__}")
+                logger.debug(f"Selected feature class: {feature_cls.__name__}")
             logger.debug(
                 f"Feature setter: instantiated {feature_cls.__class__}"
             )  # DEBUG
@@ -150,7 +150,7 @@ class FeatureWeightSpec(MetadataBase):
         elif isinstance(
             value, (Feature, Coherence, FCCoherence, StridingWindowCoherence)
         ):
-            logger.info(
+            logger.debug(
                 f"Feature setter: set directly to {type(value).__name__}"
             )  # DEBUG
             return value
