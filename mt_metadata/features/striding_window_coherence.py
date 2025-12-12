@@ -76,8 +76,8 @@ class StridingWindowCoherence(Coherence):
         results = []
         for start in range(0, n - main_win_len + 1, main_stride):
             end = start + main_win_len
-            seg1 = ts_1[start:end]
-            seg2 = ts_2[start:end]
+            seg1 = np.nan_to_num(ts_1[start:end])
+            seg2 = np.nan_to_num(ts_2[start:end])
             
             if self.subwindow.type in ["kaiser", "kaiser_bessel_derived", "gaussian", "general_cosine", "general_gaussian", "general_hamming", "dpss", "chebwin"]:
                 win_tuple = tuple(
