@@ -6,7 +6,7 @@ TODO: Factor or rename.  The decimation level class here has information about t
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, get_args, List, TYPE_CHECKING, Union
+from typing import Annotated, get_args, List, Union
 
 import numpy as np
 import pandas as pd
@@ -21,18 +21,12 @@ from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
 
 
-if TYPE_CHECKING:
-    from mt_metadata.features.weights import ChannelWeightSpecs
+from mt_metadata.features.weights import ChannelWeightSpec
 
 from mt_metadata.processing.aurora.estimator import Estimator
 from mt_metadata.processing.aurora.frequency_bands import FrequencyBands
 from mt_metadata.processing.aurora.regression import Regression
 
-
-if TYPE_CHECKING:
-    from mt_metadata.features.weights.channel_weight_spec import (
-        ChannelWeightSpec as ChannelWeightSpecs,
-    )
 
 from mt_metadata.processing.fourier_coefficients.decimation import (
     Decimation as FCDecimation,
@@ -60,7 +54,7 @@ class DecimationLevel(MetadataBase):
     ]
 
     channel_weight_specs: Annotated[
-        List["ChannelWeightSpecs"],
+        List[ChannelWeightSpec],
         Field(
             default_factory=list,
             description="List of weighting schemes to use for TF processing for each output channel",
@@ -205,11 +199,9 @@ class DecimationLevel(MetadataBase):
         """
         Validator for channel_weight_specs field.
         """
-        # Import here to avoid circular imports
-        from mt_metadata.features.weights import ChannelWeightSpecs
 
         # Handle singleton cases
-        if isinstance(value, (ChannelWeightSpecs, dict)):
+        if isinstance(value, (ChannelWeightSpec, dict)):
             value = [value]
 
         if not isinstance(value, list):
@@ -219,12 +211,12 @@ class DecimationLevel(MetadataBase):
         validated_specs = []
         for item in value:
             if isinstance(item, dict):
-                validated_specs.append(ChannelWeightSpecs(**item))
-            elif isinstance(item, ChannelWeightSpecs):
+                validated_specs.append(ChannelWeightSpec(**item))
+            elif isinstance(item, ChannelWeightSpec):
                 validated_specs.append(item)
             else:
                 raise TypeError(
-                    f"List entry must be a ChannelWeightSpecs object or dict, not {type(item)}"
+                    f"List entry must be a ChannelWeightSpec object or dict, not {type(item)}"
                 )
 
         return validated_specs
