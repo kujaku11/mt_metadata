@@ -2,6 +2,7 @@
 # Imports
 # ==============================================================================
 from typing import Annotated
+from pathos.multiprocessing import ProcessingPool as Pool
 
 import numpy as np
 import scipy.signal as ssig
@@ -57,7 +58,7 @@ class StridingWindowCoherence(Coherence):
         # No need to update stride; main window stride is set by self.window.num_samples_advance
 
     def compute(
-        self, ts_1: np.ndarray, ts_2: np.ndarray
+        self, ts_1: np.ndarray, ts_2: np.ndarray, parallel: bool = False
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         For each main window (length self.window.num_samples, stride self.window.num_samples_advance),
@@ -74,32 +75,64 @@ class StridingWindowCoherence(Coherence):
             else main_win_len
         )
         results = []
-        for start in range(0, n - main_win_len + 1, main_stride):
-            end = start + main_win_len
-            seg1 = np.nan_to_num(ts_1[start:end])
-            seg2 = np.nan_to_num(ts_2[start:end])
-            
-            if self.subwindow.type in ["kaiser", "kaiser_bessel_derived", "gaussian", "general_cosine", "general_gaussian", "general_hamming", "dpss", "chebwin"]:
-                win_tuple = tuple(
-                    [self.subwindow.type]+[param for param in self.subwindow.additional_args.values()]
-                    )
-                f, coh = ssig.coherence(
-                seg1,
-                seg2,
-                window=win_tuple,
-                nperseg=self.subwindow.num_samples,
-                noverlap=self.subwindow.overlap,
-                detrend=self.detrend,
+
+        if self.subwindow.type in [
+            "kaiser",
+            "kaiser_bessel_derived",
+            "gaussian",
+            "general_cosine",
+            "general_gaussian",
+            "general_hamming",
+            "dpss",
+            "chebwin",
+        ]:
+
+            win_tuple = tuple(
+                [self.subwindow.type]
+                + [param for param in self.subwindow.additional_args.values()]
             )
-            else:
+
+        else:
+            win_tuple = self.subwindow.type
+
+        ts_1 = np.nan_to_num(ts_1)
+        ts_2 = np.nan_to_num(ts_2)
+
+        starts = range(0, n - main_win_len + 1, main_stride)
+        if parallel:
+
+            def process_segment(start):
                 f, coh = ssig.coherence(
-                    seg1,
-                    seg2,
-                    window=self.subwindow.type,
+                    ts_1[start : start + main_win_len],
+                    ts_2[start : start + main_win_len],
+                    window=win_tuple,
                     nperseg=self.subwindow.num_samples,
                     noverlap=self.subwindow.overlap,
                     detrend=self.detrend,
                 )
+                return f, coh
 
-            results.append(coh)
-        return f, np.array(results)
+            with Pool() as pool:
+                results = pool.map(process_segment, starts)
+
+            f = results[0][0]
+            coherences = [r[1] for r in results]
+
+        else:
+            coherences = []
+            for start in starts:
+                end = start + main_win_len
+                seg1 = ts_1[start:end]
+                seg2 = ts_2[start:end]
+
+                f, coh = ssig.coherence(
+                    seg1,
+                    seg2,
+                    window=win_tuple,
+                    nperseg=self.subwindow.num_samples,
+                    noverlap=self.subwindow.overlap,
+                    detrend=self.detrend,
+                )
+                coherences.append(coh)
+
+        return f, np.array(coherences)
