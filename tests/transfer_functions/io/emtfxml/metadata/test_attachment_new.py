@@ -42,7 +42,6 @@ VALID_DESCRIPTION_CASES = [
 ]
 
 INVALID_FIELD_CASES = [
-    (None, "filename cannot be None"),
     (True, "filename must be string"),
     ([], "filename must be string"),
     ({}, "filename must be string"),

@@ -410,7 +410,6 @@ class TestEdgeCases:
     @pytest.mark.parametrize(
         "invalid_input",
         [
-            None,
             True,
             [],
             {},

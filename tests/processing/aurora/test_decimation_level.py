@@ -16,7 +16,7 @@ import pandas as pd
 import pytest
 
 from mt_metadata.common.band import Band
-from mt_metadata.features.weights import ChannelWeightSpecs
+from mt_metadata.features.weights import ChannelWeightSpec
 from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
 from mt_metadata.processing.aurora.decimation_level import (
@@ -67,8 +67,8 @@ def sample_bands():
 
 @pytest.fixture
 def sample_channel_weight_spec():
-    """Create a sample ChannelWeightSpecs for testing."""
-    return ChannelWeightSpecs()
+    """Create a sample ChannelWeightSpec for testing."""
+    return ChannelWeightSpec()
 
 
 @pytest.fixture
@@ -642,13 +642,13 @@ class TestDecimationLevelValidation:
         # Test with list of objects
         dec_level = DecimationLevel(channel_weight_specs=[sample_channel_weight_spec])
         assert len(dec_level.channel_weight_specs) == 1
-        assert isinstance(dec_level.channel_weight_specs[0], ChannelWeightSpecs)
+        assert isinstance(dec_level.channel_weight_specs[0], ChannelWeightSpec)
 
         # Test with list of dictionaries
         weight_spec_dict = {"id": "test_spec"}
         dec_level = DecimationLevel(channel_weight_specs=[weight_spec_dict])
         assert len(dec_level.channel_weight_specs) == 1
-        assert isinstance(dec_level.channel_weight_specs[0], ChannelWeightSpecs)
+        assert isinstance(dec_level.channel_weight_specs[0], ChannelWeightSpec)
 
     def test_invalid_save_fcs_type(self):
         """Test validation error for invalid save_fcs_type."""

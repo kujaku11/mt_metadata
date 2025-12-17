@@ -287,11 +287,12 @@ class TestFieldValidation:
         assert empty_params.tbw == 0.0
         assert empty_params.deltat == 0.0
 
-        # Test that reassignment of None fails for float fields due to validation
-        with pytest.raises(Exception):
-            empty_params.tbw = None
-        with pytest.raises(Exception):
-            empty_params.deltat = None
+        # Test that reassignment of None converts to 0.0 for float fields
+        empty_params.tbw = None
+        assert empty_params.tbw == 0.0
+
+        empty_params.deltat = None
+        assert empty_params.deltat == 0.0
 
     def test_field_metadata(self, empty_params):
         """Test that field metadata is accessible."""

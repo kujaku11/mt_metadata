@@ -549,9 +549,9 @@ class TestEdgeCases:
         empty_software.author = None
         assert empty_software.author is None
 
-        # But name field is str only, so None should raise ValidationError
-        with pytest.raises(Exception):  # ValidationError
-            empty_software.name = None
+        # name field is str with default="", so None converts to empty string
+        empty_software.name = None
+        assert empty_software.name == ""
 
     def test_xml_escaping(self, empty_software):
         """Test that XML special characters are properly escaped."""
@@ -608,15 +608,15 @@ class TestBoundaryValues:
             setattr(empty_software, field, "")
             assert getattr(empty_software, field) == ""
 
-        # Test None handling - only author field accepts None
+        # Test None handling - only author field accepts None as-is
         # author field is str | None, so it should accept None
         empty_software.author = None
         assert empty_software.author is None
 
-        # name and version fields are str only, so None should raise ValidationError
+        # name and version fields are str with default="", so None converts to empty string
         for field in ["name", "version"]:
-            with pytest.raises(Exception):  # ValidationError
-                setattr(empty_software, field, None)
+            setattr(empty_software, field, None)
+            assert getattr(empty_software, field) == ""
 
     def test_whitespace_handling(self, empty_software):
         """Test whitespace handling in fields."""

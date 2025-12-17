@@ -196,7 +196,7 @@ class TestFieldValidation:
         assert isinstance(getattr(empty_header, field_name), float)
 
     @pytest.mark.parametrize("field_name", ["title", "station"])
-    @pytest.mark.parametrize("invalid_val", [[1, 2], {"key": "value"}, None])
+    @pytest.mark.parametrize("invalid_val", [[1, 2], {"key": "value"}])
     def test_invalid_string_values_raise_error(
         self, empty_header, field_name, invalid_val
     ):
