@@ -18,7 +18,7 @@ class Magnetic(Channel):
             default="hx",
             description="Component of the magnetic field.",
             alias=None,
-            pattern=r"^[hHbBrR][a-zA-Z1-9]*$",
+            pattern=r"^[hHbBrR][a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,

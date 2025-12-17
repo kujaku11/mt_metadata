@@ -19,7 +19,7 @@ class Electric(ChannelBase):
             default="e_default",
             description="Component of the electric field.",
             alias=None,
-            pattern=r"^[eE][a-zA-Z1-9]*$",
+            pattern=r"^[eE][a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,

@@ -132,12 +132,13 @@ class DotNotationBaseModel(BaseModel):
         # Navigate to the deepest level
         for part in parts[:-1]:
             if not hasattr(current, part):
-                raise AttributeError(
-                    f"'{type(current).__name__}' has no attribute '{part}'"
-                )
+                # Skip attributes that don't exist on nested paths
+                # This handles metadata that may reference fields that don't exist
+                return
             current = getattr(current, part)
 
         # Set the final attribute
+        setattr(current, parts[-1], attr_value)
         setattr(current, parts[-1], attr_value)
 
 
