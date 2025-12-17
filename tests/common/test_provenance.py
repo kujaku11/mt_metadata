@@ -161,7 +161,7 @@ def test_provenance_creation_time_formats(time_formats, subtests):
 
 def test_provenance_invalid_types(invalid_types):
     """Test the Provenance model with invalid types."""
-    with pytest.raises((ValidationError, AttributeError)) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         kwargs = {invalid_types["attr"]: invalid_types["value"]}
         Provenance(**kwargs)
     assert invalid_types["error_msg"] in str(excinfo.value)
