@@ -163,7 +163,7 @@ class MetadataBase(DotNotationBaseModel):
 
     _default_keys: List[str] = PrivateAttr(["annotation", "default", "description"])
     _json_extras: List[str] = PrivateAttr(["units", "required", "examples", "alias"])
-    _skip_equals: List[str] = PrivateAttr([])
+    _skip_equals: List[str] = PrivateAttr(["processed_date"])
 
     @model_validator(mode="before")
     @classmethod

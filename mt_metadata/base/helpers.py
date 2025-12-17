@@ -47,6 +47,9 @@ filter_descriptions = {
 # write doc strings
 # =============================================================================
 
+# Cache for get_all_fields to avoid infinite recursion and repeated computation
+_FIELDS_CACHE = {}
+
 
 def get_all_fields(model: BaseModel) -> Dict[str, Any]:
     """
@@ -65,6 +68,14 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
         For BaseModel fields, returns a nested dictionary of their fields.
     """
     from typing import get_origin
+
+    # Use the model's class as the cache key (not the instance)
+    model_class = model.__class__
+    cache_key = id(model_class)
+
+    # Check if we've already computed this for this class
+    if cache_key in _FIELDS_CACHE:
+        return _FIELDS_CACHE[cache_key]
 
     fields = {}
 
@@ -107,6 +118,8 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
             # It's a simple field, include the field info
             fields[field_name] = field_info
 
+    # Cache the result before returning
+    _FIELDS_CACHE[cache_key] = fields
     return fields
 
 
