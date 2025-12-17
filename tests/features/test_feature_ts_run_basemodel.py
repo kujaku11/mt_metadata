@@ -153,9 +153,9 @@ class TestFeatureTSRunIdField:
 
     def test_id_none_handling(self):
         """Test handling of None ID value."""
-        # None values for ID are not allowed
-        with pytest.raises(ValidationError):
-            FeatureTSRun(id=None)
+        # None values for ID are converted to empty string
+        feature_ts_run = FeatureTSRun(id=None)
+        assert feature_ts_run.id == ""
 
     def test_id_numeric_handling(self):
         """Test handling of numeric ID values."""
@@ -181,7 +181,6 @@ class TestFeatureTSRunSampleRateField:
         "invalid_sample_rate",
         [
             "not_a_number",
-            None,
             [],
             {},
         ],

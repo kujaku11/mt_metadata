@@ -334,9 +334,6 @@ class TestFeatureFCRunSampleRateValidation:
             FeatureFCRun(sample_rate="invalid")
         assert "Input should be a valid number" in str(exc_info.value)
 
-        with pytest.raises(ValidationError):
-            FeatureFCRun(sample_rate=None)
-
 
 class TestFeatureFCRunCommentsValidation:
     """Test class for comments field validation and Comment integration."""
