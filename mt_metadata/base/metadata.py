@@ -23,7 +23,14 @@ from xml.etree import cElementTree as et
 import numpy as np
 import pandas as pd
 from loguru import logger
-from pydantic import BaseModel, computed_field, ConfigDict, create_model
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+    create_model,
+    field_validator,
+    model_validator,
+)
 from pydantic.fields import FieldInfo, PrivateAttr
 from typing_extensions import deprecated
 
@@ -158,16 +165,70 @@ class MetadataBase(DotNotationBaseModel):
     _json_extras: List[str] = PrivateAttr(["units", "required", "examples", "alias"])
     _skip_equals: List[str] = PrivateAttr([])
 
-    # @model_validator(mode="before")
-    # @classmethod
-    # def convert_none_to_empty(cls, values):
-    #     """Convert None values to empty strings or 0.0 for numeric fields."""
-    #     for field, field_info in cls.model_fields.items():
-    #         if field_info.annotation is str and values.get(field) is None:
-    #             values[field] = ""
-    #         elif field_info.annotation is float and values.get(field) is None:
-    #             values[field] = 0.0
-    #     return values
+    @model_validator(mode="before")
+    @classmethod
+    def convert_none_to_empty(cls, values):
+        """Convert None values to empty strings or 0.0 for numeric fields, except for fields that explicitly default to None."""
+        # Ensure values is a dictionary before processing
+        if not isinstance(values, dict):
+            return values
+
+        for field, field_info in cls.model_fields.items():
+            # Skip conversion if the field's default is explicitly None
+            if field_info.default is None:
+                continue
+
+            # Only process fields that are in the input values and are None
+            if field in values and values[field] is None:
+                try:
+                    annotation = field_info.annotation
+                    # Convert None to empty string for str fields
+                    if annotation is str:
+                        values[field] = ""
+                    # Convert None to 0.0 for float/int fields
+                    elif annotation in (float, int):
+                        values[field] = 0.0
+                except (AttributeError, TypeError):
+                    # If there's any issue checking the annotation, skip conversion
+                    pass
+        return values
+
+    @field_validator("*", mode="before")
+    @classmethod
+    def validate_none_on_assignment(cls, value, info):
+        """
+        Convert None values to appropriate defaults when attributes are set after instantiation.
+        This validator runs for all fields due to 'validate_assignment=True' in model config.
+        Works generically for string and numeric fields without subclass-specific validators.
+
+        For complex types, this validator skips conversion and lets Pydantic handle validation normally.
+        Does NOT convert None if the field explicitly has None as its default.
+        """
+        if value is None:
+            field_name = info.field_name
+            # Get field info from the class model fields
+            if field_name in cls.model_fields:
+                field_info = cls.model_fields[field_name]
+
+                # Skip conversion if the field's default is explicitly None
+                if field_info.default is None:
+                    return value
+
+                # Only attempt conversion for primitive types
+                try:
+                    # Check the annotation, handling both direct types and Annotated types
+                    annotation = field_info.annotation
+
+                    # Convert None to empty string for str fields
+                    if annotation is str:
+                        return ""
+                    # Convert None to 0.0 for float/int fields
+                    elif annotation in (float, int):
+                        return 0.0
+                except (AttributeError, TypeError):
+                    # If there's any issue checking the annotation, let Pydantic handle it normally
+                    pass
+        return value
 
     @computed_field
     @property

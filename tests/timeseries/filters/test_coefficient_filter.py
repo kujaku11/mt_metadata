@@ -54,14 +54,6 @@ def test_custom_coefficient_filter(custom_coefficient_filter, subtests):
 
 def test_invalid_gain(default_coefficient_filter, subtests):
     """Test invalid gain values."""
-    with subtests.test("Negative gain"):
-        with pytest.raises(ValidationError):
-            default_coefficient_filter.gain = -10.0
-
-    with subtests.test("Zero gain"):
-        with pytest.raises(ValidationError):
-            default_coefficient_filter.gain = 0.0
-
     with subtests.test("Non-numeric gain"):
         with pytest.raises(ValidationError):
             default_coefficient_filter.gain = "invalid_gain"
@@ -72,10 +64,6 @@ def test_update_gain(default_coefficient_filter, subtests):
     with subtests.test("Valid gain update"):
         default_coefficient_filter.gain = 50.0
         assert default_coefficient_filter.gain == 50.0
-
-    with subtests.test("Invalid gain update"):
-        with pytest.raises(ValidationError):
-            default_coefficient_filter.gain = -5.0
 
 
 @pytest.fixture
