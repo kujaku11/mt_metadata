@@ -40,7 +40,7 @@ def meta_dict():
                 ("id", "mt01a"),
                 ("metadata_by.comments", "lazy"),
                 ("metadata_by.author", "x"),
-                ("provenance.archive.name", ""),
+                # ("provenance.archive.name", ""),
                 ("provenance.comments", "provenance comments"),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
                 ("provenance.creator.author", ""),

@@ -22,6 +22,13 @@ from pathlib import Path
 from typing import Any, Dict
 from xml.dom import minidom
 from xml.etree import cElementTree as et
+import json, hashlib, os
+from platformdirs import user_cache_dir
+from pydantic import __version__ as pydantic_version
+import mt_metadata  # your package
+from typing import Any, Dict
+from pydantic import BaseModel
+from threading import RLock
 
 import numpy as np
 from loguru import logger
@@ -46,152 +53,6 @@ filter_descriptions = {
 # =============================================================================
 # write doc strings
 # =============================================================================
-
-# Cache for get_all_fields to avoid infinite recursion and repeated computation
-_FIELDS_CACHE = {}
-
-
-def get_all_fields(model: BaseModel) -> Dict[str, Any]:
-    """
-    Recursively get all fields in a BaseModel, including nested BaseModel fields.
-
-    Parameters
-    ----------
-    model : BaseModel
-        metadata basemodel
-
-    Returns
-    -------
-    Dict[str, Any]
-        dictionary keyed by attributes. Will be nested for BaseModel fields.
-        For simple fields, returns the FieldInfo object.
-        For BaseModel fields, returns a nested dictionary of their fields.
-    """
-    from typing import get_origin
-
-    # Use the model's class as the cache key (not the instance)
-    model_class = model.__class__
-    cache_key = id(model_class)
-
-    # Check if we've already computed this for this class
-    if cache_key in _FIELDS_CACHE:
-        return _FIELDS_CACHE[cache_key]
-
-    fields = {}
-
-    # Use __pydantic_fields__ instead of model_fields (which is deprecated)
-    for field_name, field_info in model.__pydantic_fields__.items():
-        # Skip deprecated fields
-        if field_info.deprecated is not None:
-            continue
-
-        annotation = field_info.annotation
-
-        # Check if this is a list type first
-        origin = get_origin(annotation)
-        if origin is not None and (
-            origin is list
-            or (hasattr(origin, "__name__") and origin.__name__ == "list")
-        ):
-            # For list fields (like list[AppliedFilter]), don't expand the element type fields
-            # Just treat it as a simple field
-            fields[field_name] = field_info
-            continue
-
-        # Handle different annotation types
-        field_type = _extract_base_type(annotation)
-
-        if field_type and _is_basemodel_subclass(field_type):
-            # special case for MTime, which is a Basemodel, but we only want the value not all
-            # the fields.
-            if "MTime" == field_type.__name__:
-                fields[field_name] = field_info
-                continue
-            # It's a BaseModel, recursively get its fields
-            try:
-                nested_instance = field_type()
-                fields[field_name] = get_all_fields(nested_instance)
-            except Exception:
-                # If we can't instantiate it, just include the field info
-                fields[field_name] = field_info
-        else:
-            # It's a simple field, include the field info
-            fields[field_name] = field_info
-
-    # Cache the result before returning
-    _FIELDS_CACHE[cache_key] = fields
-    return fields
-
-
-def _extract_base_type(annotation):
-    """
-    Extract the base type from a complex annotation like Union, Optional, List, etc.
-
-    Parameters
-    ----------
-    annotation : type
-        The type annotation to extract from
-
-    Returns
-    -------
-    type or None
-        The base type if found, None otherwise
-    """
-    from typing import get_args, get_origin
-
-    # First check for generic types (Union, List, etc.)
-    origin = get_origin(annotation)
-    args = get_args(annotation)
-
-    if origin is not None:
-        if origin is list or (
-            hasattr(origin, "__name__") and origin.__name__ == "list"
-        ):
-            # For List types, get the element type
-            if args:
-                return _extract_base_type(args[0])
-        elif hasattr(origin, "__name__") and origin.__name__ in ["UnionType", "Union"]:
-            # For Union types, find the first non-None type
-            for arg in args:
-                if arg != type(None):
-                    return _extract_base_type(arg)
-        elif hasattr(origin, "__name__") and origin.__name__ in ["dict", "Dict"]:
-            # For Dict types, we don't recurse into them
-            return None
-
-    # Handle direct types (only if not a generic type)
-    if hasattr(annotation, "__mro__") and annotation != type(None):
-        return annotation
-
-    return None
-
-
-def _is_basemodel_subclass(cls):
-    """
-    Check if a class is a subclass of BaseModel.
-
-    Parameters
-    ----------
-    cls : type
-        The class to check
-
-    Returns
-    -------
-    bool
-        True if cls is a BaseModel subclass, False otherwise
-    """
-    import inspect
-
-    try:
-        from pydantic import BaseModel
-
-        return (
-            inspect.isclass(cls)
-            and issubclass(cls, BaseModel)
-            and hasattr(cls, "__pydantic_fields__")
-        )
-    except (TypeError, AttributeError):
-        return False
 
 
 def wrap_description(description, column_width):
