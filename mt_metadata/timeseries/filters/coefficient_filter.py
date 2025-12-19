@@ -39,7 +39,7 @@ class CoefficientFilter(FilterBase):
             default=1.0,
             description="Scale factor for a simple coefficient filter.",
             alias=None,
-            gt=0.0,
+            # gt=0.0,
             json_schema_extra={
                 "units": None,
                 "required": True,

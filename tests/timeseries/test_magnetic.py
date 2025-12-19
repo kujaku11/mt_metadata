@@ -21,7 +21,7 @@ from mt_metadata.timeseries import Magnetic
 @pytest.fixture
 def magnetic_object():
     """Create a basic empty Magnetic object."""
-    return Magnetic()
+    return Magnetic(component="hx")
 
 
 @pytest.fixture(scope="module")
@@ -90,7 +90,7 @@ def meta_dict():
 @pytest.fixture
 def populated_magnetic(magnetic_object, meta_dict):
     """Create a Magnetic object populated with test data."""
-    mag = Magnetic()
+    mag = Magnetic(component="hx")
     mag.from_dict(meta_dict)
     return mag
 
@@ -120,10 +120,10 @@ def test_in_out_json(magnetic_object, meta_dict, subtests):
 
     with subtests.test("object to JSON and back preserves data"):
         # Create a fresh object for this test to avoid filter accumulation
-        fresh_magnetic = Magnetic()
+        fresh_magnetic = Magnetic(component="hx")
         fresh_magnetic.from_dict(meta_dict)
         magnetic_json = fresh_magnetic.to_json(nested=True)
-        fresh_magnetic_2 = Magnetic()
+        fresh_magnetic_2 = Magnetic(component="hx")
         fresh_magnetic_2.from_json(magnetic_json)
         assert meta_dict == fresh_magnetic_2.to_dict()
 
@@ -132,7 +132,7 @@ def test_in_out_json(magnetic_object, meta_dict, subtests):
 def test_magnetic_initialization(subtests):
     """Test different ways to initialize a Magnetic object."""
     with subtests.test("default initialization"):
-        mag = Magnetic()
+        mag = Magnetic(component="hx")
         assert isinstance(mag, Magnetic)
         assert mag.type == "magnetic"
 

@@ -133,7 +133,7 @@ def test_set_channels_fail(run_object, subtests):
             set_channels(10)
     with subtests.test("fail from mixed input"):
         with pytest.raises(ValidationError):
-            set_channels([Run(), Electric()])
+            set_channels([Run(), Electric(component="ex")])
 
 
 def test_add_channels(run_object, subtests):
@@ -284,5 +284,5 @@ def test_invalid_channel_addition(run_object, subtests):
             run_object.add_channel([])
 
     with subtests.test("Missing component for non-auxiliary channel"):
-        with pytest.raises(TypeError):
+        with pytest.raises(ValidationError):
             run_object.add_channel(Electric(component=None))

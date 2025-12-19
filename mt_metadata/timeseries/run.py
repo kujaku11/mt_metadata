@@ -396,7 +396,11 @@ class Run(MetadataBase):
         :rtype: TYPE
 
         """
-        if not isinstance(other, type(self)):
+        # Check if other is a compatible Run type (handles dynamically created classes)
+        if not (
+            isinstance(other, type(self))
+            or (hasattr(other, "__class__") and other.__class__.__name__ == "Run")
+        ):
             logger.warning(f"Cannot update {type(self)} with {type(other)}")
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):

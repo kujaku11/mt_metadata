@@ -399,11 +399,11 @@ class TestRemoteRefReadDict:
         basic_remote_ref.read_dict(input_dict)
 
     def test_read_dict_none_type(self, basic_remote_ref):
-        """Test read_dict with None type value - should handle gracefully or raise validation error."""
+        """Test read_dict with None type value - should convert to empty string."""
         input_dict = {"remote_ref": {"type": None}}
-        # This should raise a validation error due to Pydantic's strict type checking
-        with pytest.raises(Exception):  # Expect validation error
-            basic_remote_ref.read_dict(input_dict)
+        # None should be converted to empty string
+        basic_remote_ref.read_dict(input_dict)
+        assert basic_remote_ref.type == ""
 
     def test_read_dict_empty_type(self, basic_remote_ref):
         """Test read_dict with empty type value."""
@@ -443,9 +443,9 @@ class TestRemoteRefEdgeCases:
         basic_remote_ref.type = ""
         assert basic_remote_ref.type == ""
 
-        # Test that None assignment raises validation error
-        with pytest.raises(Exception):  # Pydantic validation error expected
-            basic_remote_ref.type = None
+        # Test that None assignment converts to empty string
+        basic_remote_ref.type = None
+        assert basic_remote_ref.type == ""
 
     def test_xml_generation_consistency(self, populated_remote_ref):
         """Test that multiple XML generations are consistent."""

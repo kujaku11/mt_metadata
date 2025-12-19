@@ -458,9 +458,9 @@ class TestEdgeCasesAndErrorHandling:
 
     @pytest.mark.parametrize("field_name", ["theta1", "theta2", "phi"])
     def test_none_values_rejected(self, empty_angles, field_name):
-        """Test that None values are properly rejected."""
-        with pytest.raises(Exception):  # ValidationError
-            setattr(empty_angles, field_name, None)
+        """Test that None values are converted to 0.0."""
+        setattr(empty_angles, field_name, None)
+        assert getattr(empty_angles, field_name) == 0.0
 
     def test_equality_comparison(self, basic_angles):
         """Test equality comparison between BirrpAngles instances."""
@@ -620,15 +620,15 @@ class TestIntegrationAndWorkflow:
         except Exception:
             pass  # Expected to fail
 
-        try:
-            angles.phi = None
-        except Exception:
-            pass  # Expected to fail
-
-        # Original values should be preserved after failed operations
+        # Original theta1 should be preserved after failed operation
         assert angles.theta1 == original_values[0]
+
+        # None assignment converts to 0.0 (doesn't raise)
+        angles.phi = None
+        assert angles.phi == 0.0
+
+        # theta2 should still have original value
         assert angles.theta2 == original_values[1]
-        assert angles.phi == original_values[2]
 
         # Valid operations should still work
         angles.theta1 = 999.0

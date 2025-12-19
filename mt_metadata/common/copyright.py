@@ -34,6 +34,8 @@ class Copyright(MetadataBase):
         """
         Validate that the value is a valid license.
         """
+        if value in [None, ""]:
+            return "CC BY 4.0"
         value = (
             value.replace("-", "_")
             .replace(" ", "_")

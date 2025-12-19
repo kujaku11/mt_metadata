@@ -701,8 +701,8 @@ class TestHeaderFieldTypes:
             assert header.elevation == 1234.56
 
         with subtests.test(msg="Elevation as None"):
-            with pytest.raises(ValueError):
-                header.elevation = None
+            header.elevation = None
+            assert header.elevation == 0.0
 
     def test_string_fields(self, subtests):
         """Test string field types."""

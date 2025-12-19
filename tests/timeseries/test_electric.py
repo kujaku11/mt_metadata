@@ -25,7 +25,7 @@ from mt_metadata.timeseries import ChannelBase, Electric, Electrode
 @pytest.fixture(scope="module")
 def empty_electric():
     """Create an empty Electric object."""
-    return Electric()
+    return Electric(component="ex")
 
 
 @pytest.fixture(scope="module")
@@ -144,7 +144,7 @@ class TestElectricStructure:
     def test_default_attributes(self, empty_electric, subtests):
         """Test the default values of Electric attributes."""
         attribute_tests = [
-            ("component", "e_default"),
+            ("component", "ex"),  # Now using "ex" since component is required
             ("dipole_length", 0.0),
             ("positive", Electrode),
             ("negative", Electrode),
@@ -295,7 +295,7 @@ class TestElectricSerialization:
 
     def test_from_dict(self, electric_dict, subtests):
         """Test creating an Electric object from a dictionary."""
-        electric = Electric()
+        electric = Electric(component="ex")
         electric.from_dict(electric_dict)
 
         attribute_tests = [
@@ -369,7 +369,7 @@ class TestElectricSerialization:
             assert "electric" in json_data
 
         # Create new object from JSON
-        new_electric = Electric()
+        new_electric = Electric(component="ex")
         new_electric.from_json(json_str)
 
         attribute_tests = [
@@ -397,7 +397,7 @@ class TestElectricSerialization:
             assert isinstance(series, pd.Series)
 
         # Create new object from Series
-        new_electric = Electric()
+        new_electric = Electric(component="ex")
         new_electric.from_series(series)
 
         attribute_tests = [

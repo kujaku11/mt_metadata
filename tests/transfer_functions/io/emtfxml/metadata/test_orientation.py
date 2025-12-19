@@ -123,7 +123,6 @@ class TestOrientationInstantiation:
         "invalid_angle",
         [
             "not_a_number",
-            None,
             [],
             {},
         ],

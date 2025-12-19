@@ -7,7 +7,7 @@ from mt_metadata.timeseries.electric import Electric
 print("=== Test: Comprehensive scenarios ===")
 
 # Test with mixed old format keys to ensure f-string works correctly
-electric = Electric()
+electric = Electric(component="ex")
 
 # Test the method with various combinations
 test_cases = [
@@ -48,7 +48,7 @@ test_filtered = {
     "filtered.name": ["lowpass", "highpass"],
 }
 
-electric_test = Electric()
+electric_test = Electric(component="ex")
 electric_test.from_dict(test_filtered)
 print(
     f"Filtered format conversion successful: {len(electric_test.filters)} filters created"

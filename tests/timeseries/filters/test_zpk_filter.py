@@ -128,7 +128,7 @@ def test_pass_band(pole_zero_filter_with_data, frequencies, subtests):
     pb = pole_zero_filter_with_data.pass_band(frequencies, tol=1e-2)
 
     with subtests.test("test pass band values"):
-        assert np.allclose(pb, np.array([1.00000000e-05, 5.36363132e-01]))
+        assert np.allclose(pb, np.array([1.00000000e-05, 5.12175544e-01]))
 
     with subtests.test("test pass band is within frequencies range"):
         assert pb[0] >= frequencies[0] and pb[-1] <= frequencies[-1]

@@ -362,27 +362,17 @@ class TestFieldValidation:
         assert all(isinstance(x, int) for x in result)
 
     def test_none_values_handling(self, empty_block):
-        """Test None values for integer fields."""
-        # Default instantiation allows None values (they default to None)
+        """Test None values for fields with different defaults."""
+        # Default instantiation allows None values for optional fields
         assert empty_block.nskip is None
         assert empty_block.nread is None
 
-        # But explicit None during instantiation fails due to validation
-        with pytest.raises(Exception):
-            BirrpBlock(filnam="test.dat", ncomp=4, indices=[], nskip=None, nread=None)
+        # Fields with non-None defaults convert None to those defaults
+        empty_block.filnam = None
+        assert empty_block.filnam == ""
 
-        # And reassignment also fails due to validation
-        with pytest.raises(Exception):
-            empty_block.nskip = None
-        with pytest.raises(Exception):
-            empty_block.nread = None
-
-        # None should not be allowed for string fields
-        with pytest.raises(Exception):
-            empty_block.filnam = None
-
-        with pytest.raises(Exception):
-            empty_block.ncomp = None
+        empty_block.ncomp = None
+        assert empty_block.ncomp == 0
 
         # The indices field validator now handles None by converting to empty list
         # So this should not raise an exception

@@ -293,7 +293,7 @@ class TestRegressionValidation:
             ("max_iterations", "invalid"),
             ("max_iterations", []),
             ("r0", "invalid"),
-            ("r0", None),
+            ("r0", []),
             ("tolerance", "invalid"),
             ("verbosity", 1.5),
         ],
