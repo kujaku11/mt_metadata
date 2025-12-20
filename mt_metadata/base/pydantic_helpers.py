@@ -41,14 +41,19 @@ Notes
 
 from __future__ import annotations
 
-from pathlib import Path
 import enum
-import json
 import hashlib
+import json
 import os
 import sys
+from pathlib import Path
 from threading import RLock
-from typing import Any, Dict, Union, get_args, get_origin, Annotated, Literal, Optional
+from typing import Annotated, Any, Dict, get_args, get_origin, Literal, Optional, Union
+
+from pydantic import __version__ as _PYDANTIC_VERSION
+from pydantic import TypeAdapter  # Pydantic v2
+from pydantic import BaseModel
+
 
 # try:
 #     # Optional dependency for platform-aware cache directory
@@ -56,9 +61,6 @@ from typing import Any, Dict, Union, get_args, get_origin, Annotated, Literal, O
 # except Exception:  # pragma: no cover - optional
 #     user_cache_dir = None  # Fallback handled below
 
-from pydantic import BaseModel
-from pydantic import __version__ as _PYDANTIC_VERSION
-from pydantic import TypeAdapter  # Pydantic v2
 
 # -------------------------------
 # Configuration & Globals

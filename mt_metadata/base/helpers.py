@@ -8,8 +8,10 @@ Created on Wed Dec 23 20:37:52 2020
 :license: MIT
 
 """
+import hashlib
 import json
 import logging
+import os
 
 # =============================================================================
 # Imports
@@ -19,26 +21,16 @@ from collections import defaultdict, OrderedDict
 from collections.abc import MutableMapping
 from operator import itemgetter
 from pathlib import Path
+from threading import RLock
 from typing import Any, Dict
 from xml.dom import minidom
 from xml.etree import cElementTree as et
-import json, hashlib, os
-from platformdirs import user_cache_dir
-from pydantic import __version__ as pydantic_version
-import mt_metadata  # your package
-from typing import Any, Dict
-from pydantic import BaseModel
-from threading import RLock
 
 import numpy as np
 from loguru import logger
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
-
-
-# from mt_metadata.utils.units import get_unit_object
-
 
 filter_descriptions = {
     "zpk": "poles and zeros filter",
