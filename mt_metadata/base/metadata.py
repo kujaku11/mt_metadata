@@ -39,10 +39,7 @@ from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import validate_attribute, validate_name
 
 from . import helpers
-
-
-attr_dict = {}
-
+from . import pydantic_helpers
 
 # =============================================================================
 #  Base class that everything else will inherit
@@ -162,9 +159,8 @@ class MetadataBase(DotNotationBaseModel):
         coerce_numbers_to_str=True,
     )
 
-    _default_keys: List[str] = PrivateAttr(["annotation", "default", "description"])
-    _json_extras: List[str] = PrivateAttr(["units", "required", "examples", "alias"])
     _skip_equals: List[str] = PrivateAttr(["processed_date"])
+    _fields: dict[str, Any] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="before")
     @classmethod
@@ -569,7 +565,11 @@ class MetadataBase(DotNotationBaseModel):
             within the class.
         """
 
-        return helpers.flatten_dict(helpers.get_all_fields(self))
+        if not self._fields:
+            self._fields = pydantic_helpers.flatten_field_tree_map(
+                pydantic_helpers.get_all_fields_serializable(self)
+            )
+        return self._fields
 
     def get_attribute_list(self) -> list[str]:
         """
@@ -599,15 +599,14 @@ class MetadataBase(DotNotationBaseModel):
             List of required fields in the metadata standards.
         """
         required_fields = []
-        for name, field_info in self.get_all_fields().items():
-            if field_info.json_schema_extra is None:
-                continue
-            if field_info.json_schema_extra.get("required", False):
+        for name, field_dict in self.get_all_fields().items():
+            required = field_dict.get("required", False)
+            if required:
                 required_fields.append(name)
 
         return required_fields
 
-    def _field_info_to_string(self, name: str, field_info: FieldInfo) -> str:
+    def _field_info_to_string(self, name: str, field_dict: dict[str, Any]) -> str:
         """
         Create a string from a FieldInfo object for pretty printing
 
@@ -626,25 +625,9 @@ class MetadataBase(DotNotationBaseModel):
         """
 
         line = [f"{name}:"]
-        for key in self._default_keys:
-            line.append(f"\t{key}: {getattr(field_info, key)}")
-        json_extras = field_info.json_schema_extra
-        if json_extras is not None:
-            for key in self._json_extras:
-                try:
-                    line.append(f"\t{key}: {json_extras[key]}")
-                except KeyError:
-                    pass
-        if "enum" in str(field_info.annotation).lower():
-            options = []
-            if "|" in str(field_info.annotation).lower():
-                for ii, ktype in enumerate(field_info.annotation.__args__):
-                    if "enum" in str(ktype):
-                        options += [obj.value for obj in ktype]
-            else:
-                options += [obj.value for obj in field_info.annotation.__args__]
 
-            line.append(f"\taccepted options: [{', '.join(options)}]")
+        for key, value in field_dict.items():
+            line.append(f"\t{key}: {value}")
 
         return "\n".join(line)
 
