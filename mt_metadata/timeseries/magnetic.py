@@ -15,7 +15,7 @@ class Magnetic(Channel):
     component: Annotated[
         str,
         Field(
-            default="hx",
+            default="h_default",
             description="Component of the magnetic field.",
             alias=None,
             pattern=r"^[hHbBrR][a-zA-Z0-9_]*$",

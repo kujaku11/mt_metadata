@@ -360,15 +360,25 @@ class Run(MetadataBase):
         Update the channels recorded lists based on the channels in the run.
         """
         self._empty_channels_recorded()
-        self.channels_recorded_auxiliary = sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Auxiliary)]
-        )
-        self.channels_recorded_electric = sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Electric)]
-        )
-        self.channels_recorded_magnetic = sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Magnetic)]
-        )
+        aux_components = [
+            ch.component
+            for ch in self.channels
+            if isinstance(ch, Auxiliary)
+            and ch.component not in [None, "auxiliary_default"]
+        ]
+        elec_components = [
+            ch.component
+            for ch in self.channels
+            if isinstance(ch, Electric) and ch.component not in [None, "e_default"]
+        ]
+        mag_components = [
+            ch.component
+            for ch in self.channels
+            if isinstance(ch, Magnetic) and ch.component not in [None, "h_default"]
+        ]
+        self.channels_recorded_auxiliary = sorted(aux_components)
+        self.channels_recorded_electric = sorted(elec_components)
+        self.channels_recorded_magnetic = sorted(mag_components)
 
     # def __len__(self):
     #     return len(self.channels)
