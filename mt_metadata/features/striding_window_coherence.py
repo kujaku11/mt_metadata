@@ -2,7 +2,6 @@
 # Imports
 # ==============================================================================
 from typing import Annotated
-from pathos.multiprocessing import ProcessingPool as Pool
 
 import numpy as np
 import scipy.signal as ssig
@@ -10,6 +9,9 @@ from pydantic import Field, model_validator
 
 from mt_metadata.features.coherence import Coherence
 from mt_metadata.processing.window import Window
+
+
+# from pathos.multiprocessing import ProcessingPool as Pool
 
 
 # ==============================================================================
@@ -86,7 +88,6 @@ class StridingWindowCoherence(Coherence):
             "dpss",
             "chebwin",
         ]:
-
             win_tuple = tuple(
                 [self.subwindow.type]
                 + [param for param in self.subwindow.additional_args.values()]
@@ -99,40 +100,40 @@ class StridingWindowCoherence(Coherence):
         ts_2 = np.nan_to_num(ts_2)
 
         starts = range(0, n - main_win_len + 1, main_stride)
-        if parallel:
+        # if parallel:
 
-            def process_segment(start):
-                f, coh = ssig.coherence(
-                    ts_1[start : start + main_win_len],
-                    ts_2[start : start + main_win_len],
-                    window=win_tuple,
-                    nperseg=self.subwindow.num_samples,
-                    noverlap=self.subwindow.overlap,
-                    detrend=self.detrend,
-                )
-                return f, coh
+        #     def process_segment(start):
+        #         f, coh = ssig.coherence(
+        #             ts_1[start : start + main_win_len],
+        #             ts_2[start : start + main_win_len],
+        #             window=win_tuple,
+        #             nperseg=self.subwindow.num_samples,
+        #             noverlap=self.subwindow.overlap,
+        #             detrend=self.detrend,
+        #         )
+        #         return f, coh
 
-            with Pool() as pool:
-                results = pool.map(process_segment, starts)
+        #     with Pool() as pool:
+        #         results = pool.map(process_segment, starts)
 
-            f = results[0][0]
-            coherences = [r[1] for r in results]
+        #     f = results[0][0]
+        #     coherences = [r[1] for r in results]
 
-        else:
-            coherences = []
-            for start in starts:
-                end = start + main_win_len
-                seg1 = ts_1[start:end]
-                seg2 = ts_2[start:end]
+        # else:
+        coherences = []
+        for start in starts:
+            end = start + main_win_len
+            seg1 = ts_1[start:end]
+            seg2 = ts_2[start:end]
 
-                f, coh = ssig.coherence(
-                    seg1,
-                    seg2,
-                    window=win_tuple,
-                    nperseg=self.subwindow.num_samples,
-                    noverlap=self.subwindow.overlap,
-                    detrend=self.detrend,
-                )
-                coherences.append(coh)
+            f, coh = ssig.coherence(
+                seg1,
+                seg2,
+                window=win_tuple,
+                nperseg=self.subwindow.num_samples,
+                noverlap=self.subwindow.overlap,
+                detrend=self.detrend,
+            )
+            coherences.append(coh)
 
         return f, np.array(coherences)
