@@ -38,8 +38,8 @@ from mt_metadata import NULL_VALUES
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import validate_attribute, validate_name
 
-from . import helpers
-from . import pydantic_helpers
+from . import helpers, pydantic_helpers
+
 
 # =============================================================================
 #  Base class that everything else will inherit
@@ -129,9 +129,9 @@ class DotNotationBaseModel(BaseModel):
         # Navigate to the deepest level
         for part in parts[:-1]:
             if not hasattr(current, part):
-                # Skip attributes that don't exist on nested paths
-                # This handles metadata that may reference fields that don't exist
-                return
+                raise AttributeError(
+                    f"'{type(current).__name__}' has no attribute '{part}'"
+                )
             current = getattr(current, part)
 
         # Set the final attribute
