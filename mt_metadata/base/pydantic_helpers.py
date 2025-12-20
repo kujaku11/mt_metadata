@@ -41,18 +41,20 @@ Notes
 
 from __future__ import annotations
 
+from pathlib import Path
 import enum
 import json
 import hashlib
 import os
+import sys
 from threading import RLock
-from typing import Any, Dict, Union, get_args, get_origin, Annotated, Literal
+from typing import Any, Dict, Union, get_args, get_origin, Annotated, Literal, Optional
 
-try:
-    # Optional dependency for platform-aware cache directory
-    from platformdirs import user_cache_dir
-except Exception:  # pragma: no cover - optional
-    user_cache_dir = None  # Fallback handled below
+# try:
+#     # Optional dependency for platform-aware cache directory
+#     from platformdirs import user_cache_dir
+# except Exception:  # pragma: no cover - optional
+#     user_cache_dir = None  # Fallback handled below
 
 from pydantic import BaseModel
 from pydantic import __version__ as _PYDANTIC_VERSION
@@ -621,24 +623,81 @@ def _collect_field_validator_map(model_cls: type[BaseModel]) -> Dict[str, bool]:
 
 def _cache_dir() -> str:
     """
-    Resolve a user-specific cache directory for the application.
+    Resolve a user-specific cache directory for the application using only the stdlib.
+
+    Priority
+    --------
+    1. Environment variable override: MT_METADATA_CACHE_DIR
+    2. OS-specific conventional cache directories:
+       - Linux: $XDG_CACHE_HOME or ~/.cache/<APP_NAME>
+       - macOS: ~/Library/Caches/<APP_NAME>
+       - Windows: %LOCALAPPDATA%\\<APP_NAME> or ~/AppData/Local/<APP_NAME>
 
     Returns
     -------
     str
-        The path to the cache directory.
+        Absolute path to the cache directory. The directory is created if it does not exist.
 
     Notes
     -----
-    - Uses `platformdirs.user_cache_dir(APP_NAME)` if available; otherwise
-      falls back to `~/.cache/<APP_NAME>`.
+    - Uses only Python's standard library (no external dependencies).
+    - Provides a portable behavior that aligns with common platform conventions.
     """
-    if user_cache_dir is not None:
-        path = user_cache_dir(APP_NAME)
+    # 1) Explicit override
+    override = os.environ.get("MT_METADATA_CACHE_DIR")
+    if override:
+        path = Path(override).expanduser().resolve()
+        path.mkdir(parents=True, exist_ok=True)
+        return str(path)
+
+    # 2) Platform-specific default
+    plat = sys.platform
+    home = Path.home()
+
+    if plat.startswith("linux"):
+        base = Path(os.environ.get("XDG_CACHE_HOME", home / ".cache"))
+        path = base / APP_NAME
+
+    elif plat == "darwin":
+        # macOS: ~/Library/Caches/<APP_NAME>
+        path = home / "Library" / "Caches" / APP_NAME
+
+    elif plat.startswith("win"):
+        # Windows: %LOCALAPPDATA% preferred, else fallback
+        local_appdata = os.environ.get("LOCALAPPDATA")
+        if local_appdata:
+            path = Path(local_appdata) / APP_NAME
+        else:
+            path = home / "AppData" / "Local" / APP_NAME
+
     else:
-        path = os.path.join(os.path.expanduser("~"), ".cache", APP_NAME)
-    os.makedirs(path, exist_ok=True)
-    return path
+        # Fallback for unknown platforms
+        path = home / ".cache" / APP_NAME
+
+    path.mkdir(parents=True, exist_ok=True)
+    return str(path)
+
+
+# def _cache_dir() -> str:
+#     """
+#     Resolve a user-specific cache directory for the application.
+
+#     Returns
+#     -------
+#     str
+#         The path to the cache directory.
+
+#     Notes
+#     -----
+#     - Uses `platformdirs.user_cache_dir(APP_NAME)` if available; otherwise
+#       falls back to `~/.cache/<APP_NAME>`.
+#     """
+#     if user_cache_dir is not None:
+#         path = user_cache_dir(APP_NAME)
+#     else:
+#         path = os.path.join(os.path.expanduser("~"), ".cache", APP_NAME)
+#     os.makedirs(path, exist_ok=True)
+#     return path
 
 
 def _model_fingerprint(model_cls: type[BaseModel]) -> str:
