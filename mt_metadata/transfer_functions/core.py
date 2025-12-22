@@ -2437,7 +2437,7 @@ class TF:
         self._transfer_function["transfer_function"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
         ] = zmm_obj.dataset.transfer_function.loc[
-            dict(input=zmm_obj.inputChannels, output=zmm_obj.outputChannels)
+            dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
         ]
         self._transfer_function["inverse_signal_power"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
