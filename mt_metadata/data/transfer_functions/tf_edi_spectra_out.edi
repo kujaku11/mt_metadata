@@ -20,7 +20,7 @@
 >INFO
 	original_file.date=2001-01-31
     MAXLINES=1000
-    transfer_function.coordinate_system = geopgraphic
+    transfer_function.coordinate_system = geographic
     transfer_function.id = SAGE_2005
     transfer_function.remote_references = []
     transfer_function.runs_processed = ['SAGE_2005a']
