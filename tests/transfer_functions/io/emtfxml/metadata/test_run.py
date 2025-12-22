@@ -445,17 +445,12 @@ class TestRunSerialization(TestRunFixtures):
         for key in dump1.keys():
             assert dump1[key] == dump2[key]
 
-    @pytest.mark.skip(reason="XML serialization has known issues with MTime fields")
     def test_xml_serialization(self, populated_run):
         """Test XML serialization."""
-        try:
-            xml_result = populated_run.to_xml(string=True)
-            assert isinstance(xml_result, str)
-            assert "field_notes" in xml_result  # Expected root element
-        except Exception as e:
-            pytest.skip(f"XML serialization failed: {e}")
+        xml_result = populated_run.to_xml(string=True)
+        assert isinstance(xml_result, str)
+        assert "field_notes" in xml_result  # Expected root element
 
-    @pytest.mark.skip(reason="to_dict method may not be available")
     def test_dict_serialization(self, populated_run):
         """Test dict serialization via to_dict method."""
         try:

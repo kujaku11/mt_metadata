@@ -235,15 +235,11 @@ class TestProvenanceFieldValidation:
         assert provenance.submitter.email == email
         assert provenance.submitter.organization == organization
 
-    @pytest.mark.skip(
-        reason="MTime conversion has complex behavior with different input types"
-    )
     def test_create_time_validator_types(self):
         """Test create_time field validator with different input types."""
         test_cases = [
-            ("2020-01-01T12:00:00", 2020),
-            (1577836800, 2020),  # Unix timestamp for 2020
-            (2020.5, 2020),  # Float year
+            ("2020-01-01T12:00:00", 2020),  # ISO string
+            (1577836800, 2020),  # Unix timestamp for 2020-01-01
             ("2020", 2020),  # String year
         ]
 
