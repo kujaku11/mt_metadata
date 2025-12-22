@@ -44,7 +44,10 @@ def default_ch():
 
 @pytest.fixture(scope="class")
 def populated_ch():
-    """Create a CH instance with all fields populated."""
+    """Create a CH instance with all fields populated.
+
+    Note: Comma-separated values are automatically converted to lists by the validator.
+    """
     return CH(  # type: ignore
         a_d_card_s_n="6545BAC6,BE380864",
         gdp_box="18,15",
@@ -65,7 +68,10 @@ def partial_ch():
 
 @pytest.fixture(scope="class")
 def ch_dict_full():
-    """Create a dictionary representation of full CH metadata."""
+    """Create a dictionary representation of full CH metadata.
+
+    Note: When creating CH from this dict, comma-separated strings will be converted to lists.
+    """
     return {
         "a_d_card_s_n": "6545BAC6,BE380864",
         "gdp_box": "18,15",
@@ -87,14 +93,16 @@ def ch_dict_partial():
 @pytest.fixture(
     params=[
         {"a_d_card_s_n": 123},  # Integer instead of string
-        {"gdp_box": []},  # List instead of string
-        {"stn": {}},  # Dict instead of string
+        {"stn": {}},  # Dict instead of string (lists are now valid)
         {"number": True},  # Boolean instead of string
         {"cmp": 45.6},  # Float instead of string
     ]
 )
 def invalid_ch_params(request):
-    """Provide invalid CH parameters for validation testing."""
+    """Provide invalid CH parameters for validation testing.
+
+    Note: Lists are now valid (removed from invalid params).
+    """
     return request.param
 
 
@@ -149,16 +157,19 @@ class TestChCustomValues:
     """Test CH class with custom initialization values."""
 
     def test_populated_ch_values(self, populated_ch, subtests):
-        """Test CH with all fields populated."""
+        """Test CH with all fields populated.
+
+        Note: Fields with commas are automatically split into lists.
+        """
         expected_values = {
-            "a_d_card_s_n": "6545BAC6,BE380864",
-            "gdp_box": "18,15",
-            "stn": "1,2",
-            "number": "1, 2284",
-            "cmp": "ex,hy",
-            "c_res": "0,0",
-            "azimuth": "12.1,12.1",
-            "incl": "335754.685:4263553.435:1650.2",
+            "a_d_card_s_n": ["6545BAC6", "BE380864"],  # Comma-separated -> list
+            "gdp_box": ["18", "15"],  # Comma-separated -> list
+            "stn": ["1", "2"],  # Comma-separated -> list
+            "number": ["1", "2284"],  # Comma-separated -> list
+            "cmp": ["ex", "hy"],  # Comma-separated -> list
+            "c_res": ["0", "0"],  # Comma-separated -> list
+            "azimuth": ["12.1", "12.1"],  # Comma-separated -> list
+            "incl": "335754.685:4263553.435:1650.2",  # No comma -> string
         }
 
         for field_name, expected_value in expected_values.items():
@@ -214,6 +225,23 @@ class TestChCustomValues:
 class TestChValidation:
     """Test CH class field validation and error handling."""
 
+    def test_comma_separated_values(self, subtests):
+        """Test automatic comma-separated value splitting."""
+        test_cases = [
+            ("a,b", ["a", "b"]),  # Two values
+            ("a,b,c", ["a", "b", "c"]),  # Three values
+            ("1,2", ["1", "2"]),  # Numeric strings
+            ("test, value", ["test", "value"]),  # With spaces
+            (",", None),  # Just comma -> None
+            ("", ""),  # Empty string remains empty
+            ("single", "single"),  # No comma remains string
+        ]
+
+        for input_val, expected_val in test_cases:
+            with subtests.test(msg=f"comma split {repr(input_val)}"):
+                ch_obj = CH(a_d_card_s_n=input_val)  # type: ignore
+                assert ch_obj.a_d_card_s_n == expected_val
+
     def test_invalid_field_types(self, invalid_ch_params):
         """Test CH class handles invalid field types appropriately."""
         # Note: Pydantic may convert some types automatically
@@ -222,8 +250,8 @@ class TestChValidation:
             # If no exception, check that conversion happened appropriately
             for field_name, value in invalid_ch_params.items():
                 result_value = getattr(ch_obj, field_name)
-                # Should be converted to string or raise validation error
-                assert isinstance(result_value, (str, type(None)))
+                # Should be converted to string, list, or raise validation error
+                assert isinstance(result_value, (str, list, type(None)))
         except (ValidationError, ValueError, TypeError):
             # This is also acceptable - validation should catch invalid types
             pass
@@ -282,18 +310,21 @@ class TestChSerialization:
                 assert ch_dict[field_name] is None
 
     def test_model_dump_populated(self, populated_ch, subtests):
-        """Test dictionary conversion for populated CH."""
+        """Test dictionary conversion for populated CH.
+
+        Note: Comma-separated values are stored as lists.
+        """
         ch_dict = populated_ch.model_dump()
 
         expected_values = {
-            "a_d_card_s_n": "6545BAC6,BE380864",
-            "gdp_box": "18,15",
-            "stn": "1,2",
-            "number": "1, 2284",
-            "cmp": "ex,hy",
-            "c_res": "0,0",
-            "azimuth": "12.1,12.1",
-            "incl": "335754.685:4263553.435:1650.2",
+            "a_d_card_s_n": ["6545BAC6", "BE380864"],  # Comma-separated -> list
+            "gdp_box": ["18", "15"],  # Comma-separated -> list
+            "stn": ["1", "2"],  # Comma-separated -> list
+            "number": ["1", "2284"],  # Comma-separated -> list
+            "cmp": ["ex", "hy"],  # Comma-separated -> list
+            "c_res": ["0", "0"],  # Comma-separated -> list
+            "azimuth": ["12.1", "12.1"],  # Comma-separated -> list
+            "incl": "335754.685:4263553.435:1650.2",  # No comma -> string
         }
 
         with subtests.test(msg="dict structure"):
@@ -304,17 +335,25 @@ class TestChSerialization:
                 assert ch_dict[field_name] == expected_value
 
     def test_from_dict_creation(self, ch_dict_full, ch_dict_partial, subtests):
-        """Test CH creation from dictionary."""
-        test_cases = [
-            (ch_dict_full, "full dict"),
-            (ch_dict_partial, "partial dict"),
-        ]
+        """Test CH creation from dictionary.
 
-        for test_dict, desc in test_cases:
-            with subtests.test(msg=f"{desc}"):
-                ch_obj = CH(**test_dict)
-                for field_name, expected_value in test_dict.items():
-                    assert getattr(ch_obj, field_name) == expected_value
+        Note: Comma-separated strings are converted to lists during validation.
+        """
+        # For partial dict (no commas), values remain as strings
+        with subtests.test(msg="partial dict"):
+            ch_obj = CH(**ch_dict_partial)
+            for field_name, expected_value in ch_dict_partial.items():
+                assert getattr(ch_obj, field_name) == expected_value
+
+        # For full dict (with commas), values are converted to lists
+        with subtests.test(msg="full dict - comma handling"):
+            ch_obj = CH(**ch_dict_full)
+            # Check that comma-separated values became lists
+            assert isinstance(ch_obj.a_d_card_s_n, list)
+            assert isinstance(ch_obj.gdp_box, list)
+            assert isinstance(ch_obj.stn, list)
+            # Check that non-comma value remained a string
+            assert isinstance(ch_obj.incl, str)
 
     def test_json_serialization(self, populated_ch, default_ch, subtests):
         """Test JSON serialization and deserialization."""
@@ -496,9 +535,12 @@ class TestChEdgeCases:
                 assert getattr(ch_obj, field_name) == long_string
 
     def test_special_characters(self, subtests):
-        """Test handling of special characters in string values."""
+        """Test handling of special characters in string values.
+
+        Note: Commas trigger automatic splitting into lists.
+        """
+        # Test strings without commas (should remain as strings)
         special_strings = [
-            "test,with,commas",
             "test:with:colons",
             "test with spaces",
             "test\nwith\nnewlines",
@@ -513,6 +555,11 @@ class TestChEdgeCases:
             with subtests.test(msg=f"special chars {repr(special_string)}"):
                 ch_obj = CH(a_d_card_s_n=special_string)  # type: ignore
                 assert ch_obj.a_d_card_s_n == special_string
+
+        # Test comma-separated strings (should become lists)
+        with subtests.test(msg="comma-separated string becomes list"):
+            ch_obj = CH(a_d_card_s_n="test,with,commas")  # type: ignore
+            assert ch_obj.a_d_card_s_n == ["test", "with", "commas"]
 
     def test_unicode_strings(self, subtests):
         """Test handling of unicode strings."""
