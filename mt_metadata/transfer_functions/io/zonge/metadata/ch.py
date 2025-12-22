@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 
@@ -11,7 +11,7 @@ from mt_metadata.base import MetadataBase
 # =====================================================
 class CH(MetadataBase):
     a_d_card_s_n: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="serial number of ad card for local and remote stations",
@@ -25,7 +25,7 @@ class CH(MetadataBase):
     ]
 
     gdp_box: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="Box number for local and remote stations",
@@ -39,7 +39,7 @@ class CH(MetadataBase):
     ]
 
     stn: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="station number of local and remote",
@@ -53,7 +53,7 @@ class CH(MetadataBase):
     ]
 
     number: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="channel number for local and coil number of remote",
@@ -67,7 +67,7 @@ class CH(MetadataBase):
     ]
 
     cmp: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="component of local and remote stations",
@@ -81,7 +81,7 @@ class CH(MetadataBase):
     ]
 
     c_res: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="contact resistance for local and remote sensors",
@@ -95,7 +95,7 @@ class CH(MetadataBase):
     ]
 
     azimuth: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="azimuth for local and remote sensors",
@@ -109,7 +109,7 @@ class CH(MetadataBase):
     ]
 
     incl: Annotated[
-        str | None,
+        str | list[str] | None,
         Field(
             default=None,
             description="Inclination ",
@@ -121,3 +121,33 @@ class CH(MetadataBase):
             },
         ),
     ]
+
+    @field_validator(
+        "a_d_card_s_n",
+        "gdp_box",
+        "stn",
+        "number",
+        "cmp",
+        "c_res",
+        "azimuth",
+        "incl",
+        mode="before",
+    )
+    @classmethod
+    def validate_comma_separated_fields(cls, v):
+        """
+        Validate fields that may contain comma-separated values.
+        Returns a list when commas are found, otherwise returns the string as-is.
+        """
+        if v is None:
+            return None
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            # If the value contains a comma, split into a list
+            if "," in v:
+                parts = [part.strip() for part in v.split(",") if part.strip()]
+                # Return list if we have multiple parts, otherwise return single string
+                return parts if len(parts) > 1 else (parts[0] if parts else None)
+            return v
+        return str(v)
