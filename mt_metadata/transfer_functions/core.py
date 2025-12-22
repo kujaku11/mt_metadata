@@ -48,6 +48,9 @@ class TF:
 
     """
 
+    # Class-level template cache
+    _template_cache = {}
+
     def __init__(self, fn: str | Path | None = None, **kwargs):
         # set metadata for the station
         self._survey_metadata = self._initialize_metadata()
@@ -473,87 +476,98 @@ class TF:
 
             self._survey_metadata.stations[0].runs = runs
 
+    def _get_template_key(self):
+        """Generate a cache key based on channel nomenclature"""
+        return tuple(sorted(self.channel_nomenclature.items()))
+
     def _initialize_transfer_function(self, periods=[1]):
         """
-        create an empty x array for the data.  For now this accommodates
-        a single processed station.
-
-
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Create transfer function dataset efficiently using a cached template.
         """
-        # create an empty array for the transfer function
-        tf = xr.DataArray(
-            data=0.0 + 0j,
-            dims=["period", "output", "input"],
-            coords={
-                "period": periods,
-                "output": self._ch_output_dict["all"],
-                "input": self._ch_input_dict["all"],
-            },
-            name="transfer_function",
-        )
+        template_key = self._get_template_key()
 
-        tf_err = xr.DataArray(
-            data=0.0,
-            dims=["period", "output", "input"],
-            coords={
-                "period": periods,
-                "output": self._ch_output_dict["all"],
-                "input": self._ch_input_dict["all"],
-            },
-            name="transfer_function_error",
-        )
+        # Create template if not cached
+        if template_key not in self._template_cache:
+            tf = xr.DataArray(
+                data=0.0 + 0j,
+                dims=["period", "output", "input"],
+                coords={
+                    "period": [1],  # Single period for template
+                    "output": self._ch_output_dict["all"],
+                    "input": self._ch_input_dict["all"],
+                },
+                name="transfer_function",
+            )
 
-        tf_model_err = xr.DataArray(
-            data=0.0,
-            dims=["period", "output", "input"],
-            coords={
-                "period": periods,
-                "output": self._ch_output_dict["all"],
-                "input": self._ch_input_dict["all"],
-            },
-            name="transfer_function_model_error",
-        )
+            tf_err = xr.DataArray(
+                data=0.0,
+                dims=["period", "output", "input"],
+                coords={
+                    "period": [1],
+                    "output": self._ch_output_dict["all"],
+                    "input": self._ch_input_dict["all"],
+                },
+                name="transfer_function_error",
+            )
 
-        inv_signal_power = xr.DataArray(
-            data=0.0 + 0j,
-            dims=["period", "output", "input"],
-            coords={
-                "period": periods,
-                "output": self._ch_output_dict["all"],
-                "input": self._ch_input_dict["all"],
-            },
-            name="inverse_signal_power",
-        )
+            tf_model_err = xr.DataArray(
+                data=0.0,
+                dims=["period", "output", "input"],
+                coords={
+                    "period": [1],
+                    "output": self._ch_output_dict["all"],
+                    "input": self._ch_input_dict["all"],
+                },
+                name="transfer_function_model_error",
+            )
 
-        residual_covariance = xr.DataArray(
-            data=0.0 + 0j,
-            dims=["period", "output", "input"],
-            coords={
-                "period": periods,
-                "output": self._ch_output_dict["all"],
-                "input": self._ch_input_dict["all"],
-            },
-            name="residual_covariance",
-        )
+            inv_signal_power = xr.DataArray(
+                data=0.0 + 0j,
+                dims=["period", "output", "input"],
+                coords={
+                    "period": [1],
+                    "output": self._ch_output_dict["all"],
+                    "input": self._ch_input_dict["all"],
+                },
+                name="inverse_signal_power",
+            )
 
-        # will need to add in covariance in some fashion
-        return xr.Dataset(
-            {
-                tf.name: tf,
-                tf_err.name: tf_err,
-                tf_model_err.name: tf_model_err,
-                inv_signal_power.name: inv_signal_power,
-                residual_covariance.name: residual_covariance,
-            },
-            coords={
-                "period": periods,
-                "output": self._ch_output_dict["all"],
-                "input": self._ch_input_dict["all"],
-            },
-        )
+            residual_covariance = xr.DataArray(
+                data=0.0 + 0j,
+                dims=["period", "output", "input"],
+                coords={
+                    "period": [1],
+                    "output": self._ch_output_dict["all"],
+                    "input": self._ch_input_dict["all"],
+                },
+                name="residual_covariance",
+            )
+
+            # will need to add in covariance in some fashion
+            template = xr.Dataset(
+                {
+                    tf.name: tf,
+                    tf_err.name: tf_err,
+                    tf_model_err.name: tf_model_err,
+                    inv_signal_power.name: inv_signal_power,
+                    residual_covariance.name: residual_covariance,
+                },
+                coords={
+                    "period": [1],
+                    "output": self._ch_output_dict["all"],
+                    "input": self._ch_input_dict["all"],
+                },
+            )
+            self._template_cache[template_key] = template
+
+        # Copy template and adjust periods
+        dataset = self._template_cache[template_key].copy(deep=True)
+
+        if len(periods) != 1 or periods[0] != 1:
+            # Expand/adjust to match requested periods
+            dataset = dataset.reindex(period=periods, fill_value=0.0)
+
+        return dataset
 
     # ==========================================================================
     # Properties
@@ -2296,6 +2310,7 @@ class TF:
         ----------
         zmm_obj: ZMM
             A ZMM that will be written to file, that needs a run associated.
+
         number_dict: dict
             Mapping between hexy keys and integers, needed for emtf z-files,
             e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
@@ -2422,7 +2437,7 @@ class TF:
         self._transfer_function["transfer_function"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
         ] = zmm_obj.dataset.transfer_function.loc[
-            dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
+            dict(input=zmm_obj.inputChannels, output=zmm_obj.outputChannels)
         ]
         self._transfer_function["inverse_signal_power"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
