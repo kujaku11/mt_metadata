@@ -722,19 +722,18 @@ class TestFieldNotesEdgeCases(TestFieldNotesFixtures):
                         "manufacturer": "TestCorp",
                         "type": "sensor",
                     },
-                    # Missing some fields
+                    "sampling_rate": 1.0,  # Required field
+                    "errors": "",  # Required field (string)
+                    # Missing some optional fields like comments, magnetometer, dipole
                     "start": "2020-01-01T12:00:00",
                     "end": "2020-01-01T18:00:00",
                 }
             ]
         }
 
-        try:
-            basic_field_notes.read_dict(test_dict)
-            assert len(basic_field_notes._run_list) == 1
-            assert basic_field_notes._run_list[0].run == "partial_test"
-        except Exception as e:
-            pytest.skip(f"Partial data not supported: {e}")
+        basic_field_notes.read_dict(test_dict)
+        assert len(basic_field_notes._run_list) == 1
+        assert basic_field_notes._run_list[0].run == "partial_test"
 
     def test_read_dict_with_none_values(self, basic_field_notes):
         """Test read_dict with None values in data."""
