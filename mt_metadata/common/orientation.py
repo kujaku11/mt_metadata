@@ -35,8 +35,8 @@ class Orientation(MetadataBase):
     reference_frame: Annotated[
         GeographicReferenceFrameEnum,
         Field(
-            default="geographic",
-            description='"Reference frame for station layout.  There are only 2 options geographic and geomagnetic.  Both assume a right-handed coordinate system with North=0 E=90 and vertical positive downward"',
+            default=GeographicReferenceFrameEnum.geographic,
+            description="Reference frame for station layout.  There are only 2 options geographic and geomagnetic.  Both assume a right-handed coordinate system with North=0 E=90 and vertical positive downward",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -51,7 +51,7 @@ class Orientation(MetadataBase):
         float | None,
         Field(
             default=None,
-            description='"Angle to rotate the data to align with geographic north. If this number is 0 then it is assumed the data are aligned with geographic north in a right handed coordinate system."',
+            description="Angle to rotate the data to align with geographic north. If this number is 0 then it is assumed the data are aligned with geographic north in a right handed coordinate system.",
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -65,8 +65,8 @@ class Orientation(MetadataBase):
     value: Annotated[
         ChannelOrientationEnum | None,
         Field(
-            default="orthogonal",
-            description='"Channel orientation relative to each other"',
+            default=ChannelOrientationEnum.orthogonal,
+            description="Channel orientation relative to each other",
             alias=None,
             json_schema_extra={
                 "units": None,
