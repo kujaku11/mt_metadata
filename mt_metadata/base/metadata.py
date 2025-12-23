@@ -343,7 +343,11 @@ class MetadataBase(DotNotationBaseModel):
 
         equals = True
         for key, value in home_dict.items():
-            if key in self._skip_equals:
+            skip_key_bool = False
+            for skip_key in self._skip_equals:
+                if skip_key in key:
+                    skip_key_bool = True
+            if skip_key_bool:
                 continue
             try:
                 other_value = other_dict[key]
