@@ -77,9 +77,9 @@ class TestJFileBasics:
         assert header.longitude == 0.0
         assert header.elevation == 0.0
         assert header.datum == "WGS 84"
-        assert header.x is None
-        assert header.y is None
-        assert header.z is None
+        assert header.x == 0.0
+        assert header.y == 0.0
+        assert header.z == 0.0
 
     def test_header_basic_fields(self):
         """Test that header has basic JFile fields."""

@@ -101,35 +101,35 @@ def test_location_default_values(default_location, subtests):
     with subtests.test("elevation default is 0.0"):
         assert location.elevation == 0.0
 
-    with subtests.test("latitude_uncertainty default is None"):
-        assert location.latitude_uncertainty is None
+    with subtests.test("latitude_uncertainty default is 0.0"):
+        assert location.latitude_uncertainty == 0.0
 
-    with subtests.test("longitude_uncertainty default is None"):
-        assert location.longitude_uncertainty is None
+    with subtests.test("longitude_uncertainty default is 0.0"):
+        assert location.longitude_uncertainty == 0.0
 
-    with subtests.test("elevation_uncertainty default is None"):
-        assert location.elevation_uncertainty is None
+    with subtests.test("elevation_uncertainty default is 0.0"):
+        assert location.elevation_uncertainty == 0.0
 
     with subtests.test("datum default is WGS 84"):
         assert location.datum == "WGS 84"
 
-    with subtests.test("x default is None"):
-        assert location.x is None
+    with subtests.test("x default is 0.0"):
+        assert location.x == 0.0
 
-    with subtests.test("y default is None"):
-        assert location.y is None
+    with subtests.test("y default is 0.0"):
+        assert location.y == 0.0
 
-    with subtests.test("z default is None"):
-        assert location.z is None
+    with subtests.test("z default is 0.0"):
+        assert location.z == 0.0
 
-    with subtests.test("x_uncertainty default is None"):
-        assert location.x_uncertainty is None
+    with subtests.test("x_uncertainty default is 0.0"):
+        assert location.x_uncertainty == 0.0
 
-    with subtests.test("y_uncertainty default is None"):
-        assert location.y_uncertainty is None
+    with subtests.test("y_uncertainty default is 0.0"):
+        assert location.y_uncertainty == 0.0
 
-    with subtests.test("z_uncertainty default is None"):
-        assert location.z_uncertainty is None
+    with subtests.test("z_uncertainty default is 0.0"):
+        assert location.z_uncertainty == 0.0
 
 
 def test_location_custom_values(subtests):
@@ -295,14 +295,14 @@ def test_location_partial_values(subtests):
     with subtests.test("datum has default value"):
         assert location.datum == "WGS 84"
 
-    with subtests.test("latitude_uncertainty is None"):
-        assert location.latitude_uncertainty is None
+    with subtests.test("latitude_uncertainty is 0.0"):
+        assert location.latitude_uncertainty == 0.0
 
-    with subtests.test("longitude_uncertainty is None"):
-        assert location.longitude_uncertainty is None
+    with subtests.test("longitude_uncertainty is 0.0"):
+        assert location.longitude_uncertainty == 0.0
 
-    with subtests.test("elevation_uncertainty is None"):
-        assert location.elevation_uncertainty is None
+    with subtests.test("elevation_uncertainty is 0.0"):
+        assert location.elevation_uncertainty == 0.0
 
 
 def test_location_validate_position(subtests):
@@ -340,7 +340,7 @@ def test_station_location_default_values(default_station_location, subtests):
         assert location.declination.value == 0.0
 
     with subtests.test("declination_epoch default is None"):
-        assert location.declination.epoch == None
+        assert location.declination.epoch is None
 
 
 def test_station_location_custom_values(subtests):

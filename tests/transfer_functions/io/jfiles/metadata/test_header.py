@@ -873,9 +873,9 @@ class TestLocationInheritance:
         assert header.elevation == 0.0
         # Test inherited fields from BasicLocation
         assert header.datum == "WGS 84"
-        assert header.x is None
-        assert header.y is None
-        assert header.z is None
+        assert header.x == 0.0
+        assert header.y == 0.0
+        assert header.z == 0.0
 
     @pytest.mark.parametrize(
         "field_name,test_value",

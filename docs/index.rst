@@ -58,41 +58,20 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     usage
 
 .. toctree::
-    :maxdepth: 1
-    :caption: Base Metadata Object
+    :maxdepth: 3
+    :caption: Metadata References
 
     source/base_index
-.. toctree::
-    :maxdepth: 1
-    :caption: Common Metadata Objects
-
     source/common_index
-.. toctree::
-    :maxdepth: 1
-    :caption: Feature Metadata
-
     source/features_index
     source/weights_index
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Processing Metadata
-
     source/processing_index
     source/processing_aurora_index
     source/processing_fcs_index
-.. toctree::
-    :maxdepth: 1
-    :caption: Time Series Metadata
-
     source/ts_index
     source/ts_filter_index
     source/stationxml_index
     source/notebooks/filters_example.ipynb
-.. toctree::
-    :maxdepth: 1
-    :caption: Transfer Functions
-    
     source/tf_index
     source/tf_base_index
     source/tf_emtfxml_index
