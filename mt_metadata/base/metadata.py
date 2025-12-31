@@ -17,7 +17,7 @@ from enum import Enum
 # =============================================================================
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Union
+from typing import Any, Mapping
 from xml.etree import cElementTree as et
 
 import numpy as np
@@ -52,9 +52,26 @@ class Base:
 
 
 class DotNotationBaseModel(BaseModel):
-    """Base model that supports dot notation for setting nested attributes."""
+    """
+    Base model that supports dot notation for setting nested attributes.
 
-    def __init__(self, **data):
+    This model extends Pydantic's BaseModel to allow setting nested attributes
+    using dot notation (e.g., 'location.latitude' or 'time_period.start').
+    It automatically handles both flat and nested dictionary structures.
+
+    Parameters
+    ----------
+    **data : Any
+        Keyword arguments representing field values. Supports both flat keys
+        and dot-notation keys for nested attributes.
+
+    Examples
+    --------
+    >>> model = DotNotationBaseModel(**{"location.latitude": 45.0})
+    >>> model = DotNotationBaseModel(**{"location": {"latitude": 45.0}})
+    """
+
+    def __init__(self, **data: Any) -> None:
         # Process dot notation fields first
         flat_data = {}
         nested_data = {}
@@ -89,12 +106,25 @@ class DotNotationBaseModel(BaseModel):
         super().__init__(**flat_data)
 
     def _set_nested_attribute(
-        self, data_dict: Dict, dotted_key: str, value: Any
+        self, data_dict: dict[str, Any], dotted_key: str, value: Any
     ) -> None:
         """
         Set a nested attribute in data_dict based on dotted key notation.
 
-        Example: time_period.start => {"time_period": {"start": value}}
+        Parameters
+        ----------
+        data_dict : dict[str, Any]
+            Dictionary to populate with nested structure
+        dotted_key : str
+            Dot-separated key path (e.g., 'time_period.start')
+        value : Any
+            Value to set at the nested location
+
+        Examples
+        --------
+        >>> data = {}
+        >>> model._set_nested_attribute(data, "time_period.start", "2020-01-01")
+        >>> # Results in: {"time_period": {"start": "2020-01-01"}}
         """
         parts = dotted_key.split(".")
         current = data_dict
@@ -115,7 +145,23 @@ class DotNotationBaseModel(BaseModel):
         """
         Update a nested attribute using dot notation.
 
-        Example: update_attribute("time_period.start", "2020-01-01")
+        Parameters
+        ----------
+        attr_name : str
+            Name of the attribute to update, supports dot notation for
+            nested attributes (e.g., 'time_period.start')
+        attr_value : Any
+            New value for the attribute
+
+        Raises
+        ------
+        AttributeError
+            If the attribute path does not exist
+
+        Examples
+        --------
+        >>> model.update_attribute("time_period.start", "2020-01-01")
+        >>> model.update_attribute("latitude", 45.0)
         """
         if "." not in attr_name:
             # Directly set the attribute
@@ -141,13 +187,26 @@ class DotNotationBaseModel(BaseModel):
 
 class MetadataBase(DotNotationBaseModel):
     """
-    MetadataBase is the base class for all metadata objects.  `pydantic.BaseModel`
-    is inherited, thus Pydantic takes care of all the validating accoring to the
-    metadata given.
+    Base class for all metadata objects with Pydantic validation.
 
-    Functionality of pydantic.BaseModel are extended including ingesting more than
-    just a dictionary.
+    MetadataBase extends DotNotationBaseModel (which inherits from Pydantic's
+    BaseModel) to provide automatic validation according to metadata standards.
+    It adds functionality beyond dictionaries, supporting JSON, XML, pandas
+    Series, and other formats for metadata interchange.
 
+    Attributes
+    ----------
+    _skip_equals : list[str]
+        Private attribute listing fields to skip in equality comparisons
+    _fields : dict[str, Any]
+        Private attribute caching field information
+
+    Notes
+    -----
+    - All field assignments are validated automatically via Pydantic
+    - None values are converted to appropriate defaults (empty string or 0.0)
+    - Supports nested attribute access via dot notation
+    - Thread-safe for read operations after initialization
     """
 
     model_config = ConfigDict(
@@ -159,7 +218,7 @@ class MetadataBase(DotNotationBaseModel):
         coerce_numbers_to_str=True,
     )
 
-    _skip_equals: List[str] = PrivateAttr(["processed_date", "creation_time"])
+    _skip_equals: list[str] = PrivateAttr(["processed_date", "creation_time"])
     _fields: dict[str, Any] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="before")
@@ -192,14 +251,31 @@ class MetadataBase(DotNotationBaseModel):
 
     @field_validator("*", mode="before")
     @classmethod
-    def validate_none_on_assignment(cls, value, info):
+    def validate_none_on_assignment(cls, value: Any, info: Any) -> Any:
         """
-        Convert None values to appropriate defaults when attributes are set after instantiation.
-        This validator runs for all fields due to 'validate_assignment=True' in model config.
-        Works generically for string and numeric fields without subclass-specific validators.
+        Convert None values to appropriate defaults when attributes are set.
 
-        For complex types, this validator skips conversion and lets Pydantic handle validation normally.
-        Does NOT convert None if the field explicitly has None as its default.
+        This validator runs for all fields due to 'validate_assignment=True' in
+        model config. It works generically for string and numeric fields without
+        requiring subclass-specific validators.
+
+        Parameters
+        ----------
+        value : Any
+            The value being assigned to the field
+        info : Any
+            Pydantic validation info containing field name and metadata
+
+        Returns
+        -------
+        Any
+            Converted value (empty string for str, 0.0 for numeric) or original value
+
+        Notes
+        -----
+        - For complex types, skips conversion and lets Pydantic handle validation
+        - Does NOT convert None if the field explicitly has None as its default
+        - Conversion rules: str -> '', float/int -> 0.0
         """
         if value is None:
             field_name = info.field_name
@@ -245,12 +321,33 @@ class MetadataBase(DotNotationBaseModel):
         return self.to_json()
 
     def __eq__(
-        self, other: Union["MetadataBase", dict, str, pd.Series, et.Element]
+        self, other: "MetadataBase" | dict | str | pd.Series | et.Element
     ) -> bool:
         """
-           create a self.load that will take in a dict, str, pd.Series, xml, etc
-           which will create a MetadataBase object.  Then Pydantic will deal
-           with the __eq__:
+        Compare this metadata object with another for equality.
+
+        This method supports comparison with various types by converting them
+        to MetadataBase objects first. Uses Pydantic's equality comparison after
+        loading the other object.
+
+        Parameters
+        ----------
+        other : MetadataBase | dict | str | pd.Series | et.Element
+            Object to compare with. Can be:
+            - Another MetadataBase instance
+            - Dictionary with metadata
+            - JSON string
+            - Pandas Series
+            - XML Element
+
+        Returns
+        -------
+        bool
+            True if objects are equal, False otherwise
+
+        Notes
+        -----
+        The following Pydantic equality logic is used:
 
            if isinstance(other, BaseModel):
             # When comparing instances of generic types for equality, as long as all field values are equal,
@@ -397,36 +494,63 @@ class MetadataBase(DotNotationBaseModel):
 
         return equals
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __len__(self):
-        return len(self.get_attribute_list())
-
-    def load(
-        self, other: Union["MetadataBase", dict, str, pd.Series, et.Element]
-    ) -> None:
+    def __ne__(
+        self, other: "MetadataBase" | dict | str | pd.Series | et.Element
+    ) -> bool:
         """
-        Load in an other object and populate attributes.  The other object
-        should have the same attributes as the current object.  If there are
-        attributes different than the current object validation will not be
-        accurate.  Consider making a new model if you want a different object.
-
-        Excepted types are:
-
-         - MetadataBase
-         - Dict
-         - JSON string
-         - Pandas Series
-         - XML element
+        Compare this metadata object with another for inequality.
 
         Parameters
         ----------
-        other : Union[MetadataBase, Dict, str, pd.Series, et.Element]
-            other object from which to fill attributes with.  Must have the
-            same attribute names as the current object.
-            If a different object is passed in validation will not be
-            accurate.
+        other : MetadataBase | dict | str | pd.Series | et.Element
+            Object to compare with
+
+        Returns
+        -------
+        bool
+            True if objects are not equal, False otherwise
+        """
+        return not self.__eq__(other)
+
+    def __len__(self) -> int:
+        """
+        Return the number of attributes in this metadata object.
+
+        Returns
+        -------
+        int
+            Number of attributes (including nested attributes)
+        """
+        return len(self.get_attribute_list())
+
+    def load(self, other: "MetadataBase" | dict | str | pd.Series | et.Element) -> None:
+        """
+        Load metadata from various formats and populate attributes.
+
+        The other object should have the same attributes as the current object.
+        If there are different attributes, validation may not be accurate.
+        Consider making a new model if you need a different object structure.
+
+        Parameters
+        ----------
+        other : MetadataBase | dict | str | pd.Series | et.Element
+            Source object from which to fill attributes. Supported types:
+            - MetadataBase: Another metadata instance
+            - dict: Dictionary with metadata
+            - str: JSON string representation
+            - pd.Series: Pandas Series with metadata
+            - et.Element: XML Element with metadata
+
+        Raises
+        ------
+        MTSchemaError
+            If the input type is not supported
+
+        Examples
+        --------
+        >>> metadata = MetadataBase()
+        >>> metadata.load({"latitude": 45.0, "longitude": -120.0})
+        >>> metadata.load('{"latitude": 45.0}')
         """
         if isinstance(other, MetadataBase):
             self.update(other)
@@ -489,29 +613,40 @@ class MetadataBase(DotNotationBaseModel):
         self, update: Mapping[str, Any] | None = None, deep: bool = True
     ) -> "MetadataBase":
         """
-        Create a copy of the current object.  This is a wrapper around the
-        pydantic copy method. If the object contains non-copyable objects
-        this will remove them from the copy.  If you want to preserve
-        these objects, you will need to implement a custom copy method.
+        Create a copy of the current metadata object.
 
-        The main attribute that causes issues is the HDF5 reference.
-        This attribute cannot be deep copied and will be set to None in
-        the copied object.
+        This is a wrapper around Pydantic's copy method with special handling
+        for non-copyable objects like HDF5 references. Non-copyable objects
+        are set to None in the copied object.
 
         Parameters
         ----------
-        update : Mapping[str, Any]
-            Values to change/add in the new model.
-            Note: the data is not validated before creating the new model.
-            You should trust this data.
-
+        update : Mapping[str, Any] | None, optional
+            Values to change/add in the new model. Note: the data is not
+            validated before creating the new model, so ensure it's trustworthy.
+            Default is None.
         deep : bool, optional
-            If True, create a deep copy of the object. The default is True.
+            If True, create a deep copy of the object. Default is True.
 
         Returns
         -------
         MetadataBase
-            A copy of the current object.
+            A copy of the current object with updates applied
+
+        Raises
+        ------
+        TypeError
+            If the object contains non-copyable objects and fallback fails
+
+        Notes
+        -----
+        - HDF5 references cannot be deep copied and will be set to None
+        - If deep copy fails, falls back to dictionary-based copying
+
+        Examples
+        --------
+        >>> original = MetadataBase(latitude=45.0)
+        >>> copy = original.copy(update={"latitude": 46.0})
         """
 
         # Handle HDF5 references and other non-copyable objects
@@ -590,17 +725,21 @@ class MetadataBase(DotNotationBaseModel):
     @property
     def _required_fields(self) -> list[str]:
         """
-        Get a list of required fields, here required is defined
-        from the metadata standards.  There is a difference
-        between required in Pydantic, in that required means
-        it needs to be defined on instantiation.  The metadata
-        required means that the field needs to be in the standard
-        even though the value may be None.
+        Get a list of required fields according to metadata standards.
+
+        There is a distinction between "required" in Pydantic (must be defined
+        on instantiation) and "required" in metadata standards (must be present
+        in the standard even if the value is None).
 
         Returns
         -------
-        List[str]
-            List of required fields in the metadata standards.
+        list[str]
+            List of required field names in the metadata standards
+
+        Notes
+        -----
+        Required fields are determined by the 'required' flag in field metadata,
+        not by Pydantic's required_on_init behavior.
         """
         required_fields = []
         for name, field_dict in self.get_all_fields().items():
@@ -612,20 +751,24 @@ class MetadataBase(DotNotationBaseModel):
 
     def _field_info_to_string(self, name: str, field_dict: dict[str, Any]) -> str:
         """
-        Create a string from a FieldInfo object for pretty printing
+        Create a formatted string from field information for pretty printing.
 
         Parameters
         ----------
         name : str
-            name of the Field
-
-        field_info : FieldInfo
-            _description_
+            Name of the field
+        field_dict : dict[str, Any]
+            Dictionary containing field metadata (type, description, units, etc.)
 
         Returns
         -------
         str
-            _description_
+            Formatted string representation of the field information
+
+        Examples
+        --------
+        >>> info = {"type": "float", "description": "Latitude", "units": "degrees"}
+        >>> result = obj._field_info_to_string("latitude", info)
         """
 
         line = [f"{name}:"]
@@ -637,18 +780,26 @@ class MetadataBase(DotNotationBaseModel):
 
     def attribute_information(self, name: str | None = None) -> None:
         """
-        return a descriptive string of the attribute if none returns for all
+        Print descriptive information about attributes.
+
+        If name is provided, prints information for that specific attribute.
+        Otherwise, prints information for all attributes.
 
         Parameters
         ----------
-        name : str | None
-            attribute name for a specifice attribute, defaults to None
+        name : str | None, optional
+            Attribute name for a specific attribute. If None, prints information
+            for all attributes. Default is None.
 
-        Returns
-        -------
-        str
-            description of the attributes or specific attribute if asked
+        Raises
+        ------
+        MTSchemaError
+            If the specified attribute name is not found
 
+        Examples
+        --------
+        >>> metadata.attribute_information("latitude")
+        >>> metadata.attribute_information()  # Print all attributes
         """
         attr_dict = self.get_all_fields()
         lines = []
@@ -669,39 +820,38 @@ class MetadataBase(DotNotationBaseModel):
 
     def get_attr_from_name(self, name: str) -> Any:
         """
-        Access attribute from the given name.
+        Access attribute from the given name, supporting dot notation.
 
-        The name can contain the name of an object which must be separated
-        by a '.' for  e.g. {object_name}.{name} --> location.latitude
-
-        .. note:: this is a helper function for names with '.' in the name for
-         easier getting when reading from dictionary.
+        The name can contain nested object references separated by dots,
+        e.g., 'location.latitude' or 'time_period.start'.
 
         Parameters
         ----------
         name : str
-            name of attribute to get.
+            Name of attribute to get, may include dots for nested attributes
+
         Returns
         -------
         Any
-            attribute value
+            The attribute value
+
         Raises
         ------
         KeyError
             If the attribute is not found
         AttributeError
-            If the attribute is not found
-        TypeError
-            If the attribute is of the wrong type
-        ValueError
-            If the attribute is of the wrong value
+            If the attribute path is invalid
 
-        :Example:
+        Examples
+        --------
+        >>> metadata = MetadataBase(**{'location.latitude': 45.0})
+        >>> metadata.get_attr_from_name('location.latitude')
+        45.0
 
-        >>> b = Base(**{'category.test_attr':10})
-        >>> b.get_attr_from_name('category.test_attr')
-        10
-
+        Notes
+        -----
+        This is a helper function for names with '.' for easier access when
+        reading from dictionaries or other flat structures.
         """
         value, _ = helpers.recursive_split_getattr(self, name)
         return value
@@ -801,24 +951,40 @@ class MetadataBase(DotNotationBaseModel):
             **all_fields,
         )
 
-    def to_dict(self, nested=False, single=False, required=True) -> dict[str, Any]:
+    def to_dict(
+        self, nested: bool = False, single: bool = False, required: bool = True
+    ) -> dict[str, Any]:
         """
-        make a dictionary from attributes, makes dictionary from _attr_list.
+        Convert metadata to a dictionary representation.
 
         Parameters
         ----------
-        nested : bool
-            make the returned dictionary nested
-        single : bool
-            return just metadata dictionary -> meta_dict[class_name]
-        required : bool
-            return just the required elements and any elements with non-None values
+        nested : bool, optional
+            If True, return a nested dictionary structure. If False, use
+            dot-notation for nested keys. Default is False.
+        single : bool, optional
+            If True, return just the metadata dictionary without the class name
+            wrapper (meta_dict[class_name]). Default is False.
+        required : bool, optional
+            If True, return only required elements and elements with non-None
+            values. If False, include all fields. Default is True.
 
         Returns
         -------
         dict[str, Any]
-            A dictionary representation of the metadata.
+            Dictionary representation of the metadata
 
+        Notes
+        -----
+        - Comment objects are converted to simple strings for backward compatibility
+          when they only contain a value (no author or custom timestamp)
+        - Numpy arrays, Enums, and nested MetadataBase objects are handled specially
+        - Required fields are always included even if None
+
+        Examples
+        --------
+        >>> metadata.to_dict(nested=True, single=True)
+        >>> metadata.to_dict(required=False)  # Include all fields
         """
 
         meta_dict = {}
@@ -993,21 +1159,29 @@ class MetadataBase(DotNotationBaseModel):
 
     def from_dict(self, meta_dict: dict, skip_none: bool = False) -> None:
         """
-        fill attributes from a dictionary
+        Fill attributes from a dictionary.
+
+        The dictionary can be nested or flat with dot-notation keys. If the
+        dictionary has a single key matching the class name, it will be
+        unwrapped automatically.
 
         Parameters
         ----------
         meta_dict : dict
-            dictionary with keys equal to metadata.Base attributes
-        skip_none : bool
-            whether to skip attributes with None values
+            Dictionary with keys equal to metadata attribute names. Supports
+            both nested dictionaries and flat dictionaries with dot-notation keys.
+        skip_none : bool, optional
+            If True, skip attributes with None values. Default is False.
 
         Raises
         ------
         MTSchemaError
-            If the input dictionary is not valid.
+            If the input is not a valid dictionary
 
-
+        Examples
+        --------
+        >>> metadata.from_dict({"latitude": 45.0, "longitude": -120.0})
+        >>> metadata.from_dict({"location": {"latitude": 45.0}})
         """
         if not isinstance(meta_dict, (dict, OrderedDict)):
             msg = f"Input must be a dictionary not {type(meta_dict)}"
@@ -1100,18 +1274,29 @@ class MetadataBase(DotNotationBaseModel):
 
     def from_series(self, pd_series: pd.Series) -> None:
         """
-        Fill attributes from a Pandas series
-
-        .. note:: Currently, the series must be single layered with key names
-                  separated by dots. (location.latitude)
+        Fill attributes from a Pandas Series.
 
         Parameters
         ----------
-        pd_series : pandas.Series
-            Series containing metadata information
+        pd_series : pd.Series
+            Series containing metadata information. The series must be single
+            layered with key names separated by dots for nested attributes
+            (e.g., 'location.latitude').
 
-        .. todo:: Force types in series
+        Raises
+        ------
+        MTSchemaError
+            If the input is not a Pandas Series
 
+        Examples
+        --------
+        >>> series = pd.Series({"latitude": 45.0, "longitude": -120.0})
+        >>> metadata.from_series(series)
+
+        Notes
+        -----
+        Types are not currently enforced from the series - validation occurs
+        via Pydantic after assignment.
         """
         if not isinstance(pd_series, pd.Series):
             msg = f"Input must be a Pandas.Series not type {type(pd_series)}"
@@ -1143,21 +1328,28 @@ class MetadataBase(DotNotationBaseModel):
 
     def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
-        make an xml element for the attribute that will add types and
-        units.
+        Convert metadata to an XML representation.
+
+        Creates an XML element with type and unit information for each attribute.
 
         Parameters
         ----------
-        string : bool
-            output a string instead of an XML element
-        required : bool
-            return just the required elements and any elements with non-None values
+        string : bool, optional
+            If True, return XML as a string. If False, return an XML Element.
+            Default is False.
+        required : bool, optional
+            If True, include only required elements and elements with non-None
+            values. If False, include all elements. Default is True.
 
         Returns
         -------
         str | et.Element
-            XML element or string
+            XML Element object if string=False, otherwise XML string
 
+        Examples
+        --------
+        >>> xml_elem = metadata.to_xml()
+        >>> xml_str = metadata.to_xml(string=True)
         """
         attr_dict = self.get_all_fields()
         element = helpers.dict_to_xml(
@@ -1170,18 +1362,25 @@ class MetadataBase(DotNotationBaseModel):
 
     def from_xml(self, xml_element: et.Element) -> None:
         """
-        Fill attributes from an XML element
+        Fill attributes from an XML element.
 
         Parameters
         ----------
-        xml_element : etree.Element
-            XML element from which to fill attributes
+        xml_element : et.Element
+            XML element from which to fill attributes. The element structure
+            should match the metadata schema.
 
-        Returns
-        -------
-        None
-            Fills attributes accordingly
+        Examples
+        --------
+        >>> import xml.etree.ElementTree as et
+        >>> xml_str = '<metadata><latitude>45.0</latitude></metadata>'
+        >>> elem = et.fromstring(xml_str)
+        >>> metadata.from_xml(elem)
 
+        Notes
+        -----
+        The XML element is converted to a dictionary first, then loaded
+        via the from_dict method.
         """
 
         self.from_dict(helpers.element_to_dict(xml_element))
