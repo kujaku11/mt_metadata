@@ -20,16 +20,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Channel number on the data logger.            | 1              |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -46,18 +43,15 @@ ChannelBase
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channel_id**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | channel id given by the user or data logger   | 1001.11        |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | channel id given by the user or data logger   | 1001.11        |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -76,16 +70,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -104,16 +95,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -132,16 +120,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of the component measured, can be        | ex             |
        |                                              | uppercase and/or lowercase.  For now electric |                |
-       | **Units**: None                              | channels should start with an 'e' and         |                |
+       | **Type**: <class 'str'>                      | channels should start with an 'e' and         |                |
        |                                              | magnetic channels start with an 'h', followed |                |
-       | **Type**: <class 'str'>                      | by the component. If there are multiples of   |                |
+       | **Units**: None                              | by the component. If there are multiples of   |                |
        |                                              | the same channel the name could include an    |                |
        |                                              | integer.  {type}{component}{number} --> Ex01. |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -188,16 +170,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Horizontal azimuth of the channel in          | 0.0            |
        |                                              | measurement coordinate system spcified in     |                |
-       | **Units**: degrees                           | station.orientation.reference_frame.  Default |                |
+       | **Type**: <class 'float'>                    | station.orientation.reference_frame.  Default |                |
        |                                              | reference frame is a geographic right-handed  |                |
-       | **Type**: <class 'float'>                    | coordinate system with north=0, east=90,      |                |
+       | **Units**: degrees                           | coordinate system with north=0, east=90,      |                |
        |                                              | vertical=+ downward.                          |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -216,16 +195,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Vertical tilt of the channel in measurement   | 0              |
        |                                              | coordinate system specified in                |                |
-       | **Units**: degrees                           | station.orientation.reference_frame.  Default |                |
+       | **Type**: <class 'float'>                    | station.orientation.reference_frame.  Default |                |
        |                                              | reference frame is a geographic right-handed  |                |
-       | **Type**: <class 'float'>                    | coordinate system with north=0, east=90,      |                |
+       | **Units**: degrees                           | coordinate system with north=0, east=90,      |                |
        |                                              | vertical=+ downward.                          |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -244,16 +220,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Digital sample rate                           | 8.0            |
        |                                              |                                               |                |
-       | **Units**: samples per second                |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -270,18 +243,15 @@ ChannelBase
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **translated_azimuth**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Horizontal azimuth of the channel in          | 0.0            |
+       | **Required**: :blue:`False`                  | Horizontal azimuth of the channel in          | 0.0            |
        |                                              | translated coordinate system, this should     |                |
-       | **Units**: degrees                           | only be used for derived product.  For        |                |
+       | **Type**: float | None                       | only be used for derived product.  For        |                |
        |                                              | instance if you collected your data in        |                |
-       | **Type**: float | None                       | geomagnetic coordinates and then translated   |                |
+       | **Units**: degrees                           | geomagnetic coordinates and then translated   |                |
        |                                              | them to geographic coordinates you would set  |                |
        |                                              | measurement_azimuth=0,                        |                |
        |                                              | translated_azimuth=-12.5 for a declination    |                |
        |                                              | angle of N12.5E.                              |                |
-       |                                              |                                               |                |
-       |                                              | angle of N12.5E.                              |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -298,18 +268,15 @@ ChannelBase
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **translated_tilt**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Tilt of channel in translated coordinate      | 0.0            |
+       | **Required**: :blue:`False`                  | Tilt of channel in translated coordinate      | 0.0            |
        |                                              | system, this should only be used for derived  |                |
-       | **Units**: degrees                           | product.  For instance if you collected your  |                |
+       | **Type**: float | None                       | product.  For instance if you collected your  |                |
        |                                              | data using a tripod you would set             |                |
-       | **Type**: float | None                       | measurement_tilt=45, translated_tilt=0 for a  |                |
+       | **Units**: degrees                           | measurement_tilt=45, translated_tilt=0 for a  |                |
        |                                              | vertical component.                           |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -328,16 +295,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Data type for the channel, should be a        | temperature    |
        |                                              | descriptive word that a user can understand.  |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: base                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -356,16 +320,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Units of the data, should be in SI units and  | celsius        |
        |                                              | represented as the full name of the unit all  |                |
-       | **Units**: None                              | lowercase.  If a complex unit use 'per' and   |                |
+       | **Type**: <class 'str'>                      | lowercase.  If a complex unit use 'per' and   |                |
        |                                              | '-'.                                          |                |
-       | **Type**: <class 'str'>                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -384,16 +345,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | any warnings about the data that should be    | periodic       |
        |                                              | noted                                         | pipeline noise |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -412,16 +370,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Data are good for periods larger than this    | 0.01           |
        |                                              | number                                        |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -440,16 +395,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Data are good for periods smaller than this   | 1000           |
        |                                              | number                                        |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -468,16 +420,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Flag for data quality                         | 0              |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: int | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -496,16 +445,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -524,16 +470,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -552,16 +495,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -580,16 +520,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Author of who rated the data.                 | gradstudent ace|
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -608,16 +545,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | The method used to rate the data.             | standard       |
        |                                              |                                               | deviation      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -636,16 +570,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | A rating from 1-5 where 1 is bad and 5 is     | 4              |
        |                                              | good and 0 if unrated.                        |                |
+       | **Type**: int | None | str                   |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: int | None                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -664,16 +595,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Filter data for the channel.                  | AppliedFilter(n|
        |                                              |                                               | ame='filter_nam|
-       | **Units**: None                              |                                               | e',            |
-       |                                              |                                               | applied=True,  |
-       | **Type**: list[mt_metadata.timeseries.filtere|                                               | stage=1)       |
-       | d.AppliedFilter]                             |                                               |                |
+       | **Type**: list[mt_metadata.timeseries.filtere|                                               | e',            |
+       | d.AppliedFilter]                             |                                               | applied=True,  |
+       | **Units**: None                              |                                               | stage=1)       |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -692,16 +620,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
        |                                              |                                               | 04T16:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -720,16 +645,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
        |                                              |                                               | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -748,16 +670,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -776,16 +695,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Given two character FDSN archive network      | EM             |
        |                                              | code. Needs to be 2 alpha numeric characters. |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -804,16 +720,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Three character FDSN channel code.            | LQN            |
        |                                              | http://docs.fdsn.org/projects/source-         |                |
-       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       | **Type**: str | None                         | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
-       | **Type**: str | None                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -832,16 +745,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Boolean telling if a new epoch needs to be    | False          |
        |                                              | created or not.                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: bool | None                        |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -860,16 +770,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Alternate Code                                | _INT-NON_FDSN  |
        |                                              |                                               | .UNRESTRICTED  |
-       | **Units**: None                              |                                               | _US-ALL _US-MT |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
        |                                              |                                               | _US-MT-TA      |
-       | **Type**: str | None                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -888,16 +795,13 @@ ChannelBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Alternate Network Code                        | _INT-NON_FDSN  |
        |                                              |                                               | .UNRESTRICTED  |
-       | **Units**: None                              |                                               | _US-ALL _US-MT |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
        |                                              |                                               | _US-MT-TA      |
-       | **Type**: str | None                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

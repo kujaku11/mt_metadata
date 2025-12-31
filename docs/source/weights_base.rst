@@ -20,16 +20,13 @@ Base
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of weighting kernel (e.g., monotonic,    | monotonic      |
        |                                              | learned, spatial).                            |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'WeightTypeEnum'>            |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: WeightTypeEnum.monotonic        |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -46,18 +43,15 @@ Base
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **description**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Human-readable description of what this       | This kernel    |
+       | **Required**: :blue:`False`                  | Human-readable description of what this       | This kernel    |
        |                                              | kernel is for.                                | smoothly       |
-       | **Units**: None                              |                                               | transitions    |
+       | **Type**: str | None                         |                                               | transitions    |
        |                                              |                                               | between 0 and 1|
-       | **Type**: str | None                         |                                               | in a monotonic |
+       | **Units**: None                              |                                               | in a monotonic |
        |                                              |                                               | way            |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ Base
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **active**                                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | If false, this kernel will be skipped during  | false          |
+       | **Required**: :blue:`False`                  | If false, this kernel will be skipped during  | false          |
        |                                              | weighting.                                    |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: bool | None                        |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

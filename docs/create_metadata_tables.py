@@ -24,38 +24,192 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.base.helpers import write_block
+from mt_metadata.base.helpers import wrap_description
 
 
 FN_PATH = Path(__file__).parent.joinpath("source")
 # =============================================================================
 
 
-def to_caps(name):
+def write_block_from_dict(
+    key: str,
+    field_dict: dict[str, str | bool | None],
+    c1: int = 45,
+    c2: int = 45,
+    c3: int = 15,
+) -> list[str]:
     """
-    convert class name into mixed upper case
+    Write a documentation block for a metadata field from its serializable dictionary.
 
-    :param name: DESCRIPTION
-    :type name: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Creates a reStructuredText formatted table block for a single metadata field,
+    including its description, type information, units, examples, and required status.
 
+    Parameters
+    ----------
+    key : str
+        The field name/key to document.
+    field_dict : dict[str, str | bool | None]
+        Serializable field information dictionary containing keys:
+        - 'type': Type annotation string
+        - 'description': Field description text
+        - 'examples': Example values
+        - 'required': Whether field is required (bool)
+        - 'units': Unit of measurement
+    c1 : int, optional
+        Column 1 width in characters, by default 45.
+    c2 : int, optional
+        Column 2 (description) width in characters, by default 45.
+    c3 : int, optional
+        Column 3 (examples) width in characters, by default 15.
+
+    Returns
+    -------
+    list[str]
+        List of formatted reStructuredText lines for the field documentation block.
+    """
+    if len(key) > c1 - 4:
+        c1 = len(key) + 6
+
+    line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
+    hline = "       +{0}+{1}+{2}+".format(
+        "-" * (c1 + 1), "-" * (c2 + 2), "-" * (c3 + 1)
+    )
+    mline = "       +{0}+{1}+{2}+".format(
+        "=" * (c1 + 1), "=" * (c2 + 2), "=" * (c3 + 1)
+    )
+    section = f":navy:`{key}`"
+
+    lines = [
+        section,
+        "~" * len(section),
+        "",
+        ".. container::",
+        "",
+        "   .. table::",
+        "       :class: tight-table",
+        f"       :widths: {c1} {c2} {c3}",
+        "",
+        hline,
+        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
+        mline,
+    ]
+
+    # Extract field info from the serializable dictionary
+    type_str = field_dict.get("type", "")
+    description = field_dict.get("description", "")
+    examples = field_dict.get("examples", "")
+    required = field_dict.get("required", "False")
+    units = field_dict.get("units", "")
+
+    # Wrap text for columns
+    t_lines = wrap_description(type_str, c1 - 10)
+    d_lines = wrap_description(description, c2)
+    e_lines = wrap_description(examples, c3)
+
+    # line 1 is with the entry
+    lines.append(
+        line.format(
+            f"**Required**: {required}",
+            c1,
+            d_lines[0],
+            c2,
+            e_lines[0],
+            c3,
+        )
+    )
+    # line 2 skip an entry in the first column
+    lines.append(line.format("", c1, d_lines[1], c2, e_lines[1], c3))
+    # line 3 with type
+    lines.append(
+        line.format(
+            f"**Type**: {t_lines[0]}",
+            c1,
+            d_lines[2],
+            c2,
+            e_lines[2],
+            c3,
+        )
+    )
+    # line 4 skip type
+    lines.append(line.format(t_lines[1], c1, d_lines[3], c2, e_lines[3], c3))
+
+    # line 5 with units
+    lines.append(
+        line.format(
+            f"**Units**: {units}",
+            c1,
+            d_lines[4],
+            c2,
+            e_lines[4],
+            c3,
+        )
+    )
+    # fill up the rest of the description
+    for ii, d_line in enumerate(d_lines[5:], 5):
+        try:
+            lines.append(line.format("", c1, d_line, c2, e_lines[ii], c3))
+        except IndexError:
+            lines.append(line.format("", c1, d_line, c2, "", c3))
+    lines.append(hline)
+    lines.append("")
+
+    return lines
+
+
+# =============================================================================
+
+
+def to_caps(name: str) -> str:
+    """
+    Convert a class name to title case with spaces removed.
+
+    Replaces underscores with spaces, converts to title case, then removes
+    all spaces to create a CamelCase string.
+
+    Parameters
+    ----------
+    name : str
+        The class name to convert (e.g., 'my_class_name').
+
+    Returns
+    -------
+    str
+        Title-cased name with spaces removed (e.g., 'MyClassName').
+
+    Examples
+    --------
+    >>> to_caps('my_metadata_class')
+    'MyMetadataClass'
     """
 
     return "".join(name.replace("_", " ").title().split())
 
 
-def write_attribute_table_file(obj, stem):
+def write_attribute_table_file(obj: MetadataBase, stem: str) -> Path:
     """
-    Write an attribute table for the given metadata class
+    Write a reStructuredText file documenting all attributes of a metadata class.
 
-    :param level: DESCRIPTION
-    :type level: TYPE
-    :param stem: DESCRIPTION
-    :type stem: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Creates a .rst file containing formatted documentation tables for all fields
+    in the provided metadata object. The output file is named using the pattern:
+    {stem}_{obj._class_name}.rst
 
+    Parameters
+    ----------
+    obj : MetadataBase
+        An instance of a metadata class to document. The instance's fields will
+        be extracted using `get_all_fields()`.
+    stem : str
+        File name prefix/stem for the output file (e.g., 'base', 'ts', 'tf').
+
+    Returns
+    -------
+    Path
+        Path to the written .rst documentation file.
+
+    Notes
+    -----
+    - Required fields are marked with red 'True', optional fields with blue 'False'
+    - Output files are written to the FN_PATH directory (docs/source)
     """
 
     lines = [".. role:: red", ".. role:: blue", ".. role:: navy", ""]
@@ -64,12 +218,16 @@ def write_attribute_table_file(obj, stem):
     lines += ["=" * len(lines[-1])]
     lines += ["", ""]
 
-    for key, k_field in obj.get_all_fields().items():
-        if k_field.json_schema_extra["required"]:
-            k_field.json_schema_extra["required"] = ":red:`True`"
+    for key, field_dict in obj.get_all_fields().items():
+        # field_dict is now a serializable dictionary, not a FieldInfo object
+        # Convert required flag to colored text
+        required = field_dict.get("required", False)
+        if required:
+            field_dict["required"] = ":red:`True`"
         else:
-            k_field.json_schema_extra["required"] = ":blue:`False`"
-        lines += write_block(key, k_field)
+            field_dict["required"] = ":blue:`False`"
+
+        lines += write_block_from_dict(key, field_dict)
 
     fn = FN_PATH.joinpath(f"{stem}_{obj._class_name}.rst")
     with fn.open(mode="w") as fid:
@@ -78,17 +236,30 @@ def write_attribute_table_file(obj, stem):
     return fn
 
 
-def write_metadata_standards(module_name, stem):
+def write_metadata_standards(module_name: str, stem: str) -> list[Path]:
     """
-    write a file for each metadata class in module
+    Generate documentation files for all MetadataBase classes in a module.
 
-    :param module_name: DESCRIPTION
-    :type module_name: TYPE
-    :param stem: DESCRIPTION
-    :type stem: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Discovers all classes in the specified module, instantiates those that are
+    MetadataBase subclasses, and generates .rst documentation files for each.
 
+    Parameters
+    ----------
+    module_name : str
+        Fully qualified module name to scan (e.g., 'mt_metadata.timeseries').
+    stem : str
+        File name prefix for generated documentation files.
+
+    Returns
+    -------
+    list[Path]
+        List of Path objects for all successfully written documentation files.
+
+    Notes
+    -----
+    - Classes requiring constructor arguments are skipped with a message
+    - Only classes that are instances of MetadataBase are documented
+    - Handles ValidationError exceptions from pydantic models
     """
     mod = importlib.import_module(module_name)
 
@@ -105,15 +276,32 @@ def write_metadata_standards(module_name, stem):
     return fn_list
 
 
-def update_main_index_rst(generated_index_files):
+def update_main_index_rst(generated_index_files: list[str]) -> None:
     """
-    Update the main index.rst file to ensure all generated _index files
-    are present in their appropriate toctree sections.
+    Update the main index.rst to include all generated documentation index files.
+
+    Ensures that all generated *_index.rst files are properly referenced in the
+    appropriate toctree sections of the main documentation index. Adds missing
+    references while preserving existing structure.
 
     Parameters
     ----------
-    generated_index_files : list
-        List of generated index file stems (without .rst extension)
+    generated_index_files : list[str]
+        List of generated index file stems without .rst extension
+        (e.g., ['base_index', 'ts_index', 'tf_index']).
+
+    Notes
+    -----
+    - Modifies docs/index.rst in place if changes are needed
+    - Maps index files to appropriate documentation sections:
+      * Base Metadata Object
+      * Common Metadata Objects
+      * Feature Metadata
+      * Processing Metadata
+      * Time Series Metadata
+      * Transfer Functions
+    - Prints summary of changes made and validation results
+    - Does not modify file if all references already exist
     """
     main_index_path = Path(__file__).parent.joinpath("index.rst")
 

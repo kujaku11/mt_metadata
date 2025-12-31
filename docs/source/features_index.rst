@@ -12,3 +12,4 @@ Features
     features_feature_decimation_channel
     features_feature_f_c_run
     features_feature_t_s_run
+    features_striding_window_coherence

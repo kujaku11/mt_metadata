@@ -18,18 +18,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.doi**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | full url of the doi number                    | http://doi.### |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | full url of the doi number                    | http://doi.### |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.HttpUrl | str |  |                                               |                |
        | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -46,18 +43,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.authors**                         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | author names                                  | M.Tee A. Roura |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | author names                                  | M.Tee A. Roura |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.title**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Full title of the citation                    | Paper Title    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Full title of the citation                    | Paper Title    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -102,18 +93,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.year**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Year of citation                              | 2020           |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Year of citation                              | 2020           |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -130,18 +118,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.volume**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Journal volume of the citation                | 12             |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Journal volume of the citation                | 12             |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -158,18 +143,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.pages**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Page numbers of the citation                  | 10-15          |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Page numbers of the citation                  | 10-15          |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -186,18 +168,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.journal**                         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Journal title of citation                     | Journal of     |
+       | **Required**: :blue:`False`                  | Journal title of citation                     | Journal of     |
        |                                              |                                               | Geophysical    |
-       | **Units**: None                              |                                               | Research       |
+       | **Type**: str | None                         |                                               | Research       |
        |                                              |                                               |                |
-       | **Type**: str | None                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -214,18 +193,15 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation.survey_d_o_i**                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | doi number of the survey                      | ###/###        |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | doi number of the survey                      | ###/###        |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.HttpUrl | str |  |                                               |                |
        | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -244,16 +220,13 @@ Copyright
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Any publications that use this data           | my paper       |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -272,16 +245,13 @@ Copyright
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | the release status of the data                | Unrestricted   |
        |                                              |                                               | release        |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'ReleaseStatusEnum'>         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: Unrestricted Release            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -300,31 +270,15 @@ Copyright
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Any notes on conditions of use                | Cite data upon |
        |                                              |                                               | usage.         |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**:                                 |                                               |                |
-       | All data and metadata for this survey are    |                                               |                |
-       | available free of charge and may be copied   |                                               |                |
-       | provided this data set is cited as the       |                                               |                |
-       | reference. While the author(s) strive to     |                                               |                |
-       | provide data and metadata of best possible   |                                               |                |
-       | quality, neither the author(s) of this data  |                                               |                |
-       | set, not IRIS make any claims, promises, or  |                                               |                |
-       | guarantees about the accuracy, completeness, |                                               |                |
-       | or adequacy of this information, and         |                                               |                |
-       | expressly disclaim liability for errors and  |                                               |                |
-       | omissions in the contents of this file.      |                                               |                |
-       | Guidelines about the quality or limitations  |                                               |                |
-       | of the data and metadata, as obtained from   |                                               |                |
-       | the author(s), are included for informational|                                               |                |
-       | purposes only.                               |                                               |                |
+       |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`acknowledgement`
@@ -341,16 +295,13 @@ Copyright
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | any acknowledgments the transfer function     | This project   |
        |                                              | should have.                                  | was funded by  |
-       | **Units**: None                              |                                               | x.             |
+       | **Type**: str | None                         |                                               | x.             |
        |                                              |                                               |                |
-       | **Type**: str | None                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -369,16 +320,13 @@ Copyright
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | any additional information about the data.    | This purpose of|
        |                                              |                                               | this project is|
-       | **Units**: None                              |                                               | ...            |
+       | **Type**: str | None                         |                                               | ...            |
        |                                              |                                               |                |
-       | **Type**: str | None                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

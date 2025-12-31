@@ -20,16 +20,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "lowpass_magnet|
        |                                              | more than one filter input as a comma         | ic"            |
-       | **Units**: None                              | separated list.                               |                |
+       | **Type**: <class 'str'>                      | separated list.                               |                |
        |                                              |                                               |                |
-       | **Type**: <class 'str'>                      |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -76,16 +70,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -104,16 +95,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -132,16 +120,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of filter, must be one of the available  | fap_table      |
        |                                              | filters.                                      |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: base                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of the input units to the filter. Should | count          |
        |                                              | be all lowercase and separated with an        |                |
-       | **Units**: None                              | underscore, use 'per' if units are divided    |                |
+       | **Type**: <class 'str'>                      | underscore, use 'per' if units are divided    |                |
        |                                              | and '-' if units are multiplied.              |                |
-       | **Type**: <class 'str'>                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -188,16 +170,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of the output units.  Should be all      | millivolt      |
        |                                              | lowercase and separated with an underscore,   |                |
-       | **Units**: None                              | use 'per' if units are divided and '-' if     |                |
+       | **Type**: <class 'str'>                      | use 'per' if units are divided and '-' if     |                |
        |                                              | units are multiplied.                         |                |
-       | **Type**: <class 'str'>                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -216,16 +195,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Most recent date of filter calibration in ISO | 2020-01-01     |
        |                                              | format of YYY-MM-DD.                          |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp | None              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -244,16 +220,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | scalar gain of the filter across all          | 1.0            |
        |                                              | frequencies, producted with any frequency     |                |
-       | **Units**: None                              | depenendent terms                             |                |
+       | **Type**: <class 'float'>                    | depenendent terms                             |                |
        |                                              |                                               |                |
-       | **Type**: <class 'float'>                    |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -272,16 +245,13 @@ FilterBase
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Sequence number of the filter in the          | 1              |
        |                                              | processing chain.                             |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

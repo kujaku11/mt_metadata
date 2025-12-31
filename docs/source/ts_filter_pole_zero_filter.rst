@@ -20,16 +20,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "lowpass_magnet|
        |                                              | more than one filter input as a comma         | ic"            |
-       | **Units**: None                              | separated list.                               |                |
+       | **Type**: <class 'str'>                      | separated list.                               |                |
        |                                              |                                               |                |
-       | **Type**: <class 'str'>                      |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -46,18 +43,15 @@ PoleZeroFilter
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ PoleZeroFilter
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.time_stamp**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -102,18 +93,15 @@ PoleZeroFilter
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.value**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -132,16 +120,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of filter.  Must be 'zpk'                | zpk            |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: zpk                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of the input units to the filter. Should | count          |
        |                                              | be all lowercase and separated with an        |                |
-       | **Units**: None                              | underscore, use 'per' if units are divided    |                |
+       | **Type**: <class 'str'>                      | underscore, use 'per' if units are divided    |                |
        |                                              | and '-' if units are multiplied.              |                |
-       | **Type**: <class 'str'>                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -188,16 +170,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of the output units.  Should be all      | millivolt      |
        |                                              | lowercase and separated with an underscore,   |                |
-       | **Units**: None                              | use 'per' if units are divided and '-' if     |                |
+       | **Type**: <class 'str'>                      | use 'per' if units are divided and '-' if     |                |
        |                                              | units are multiplied.                         |                |
-       | **Type**: <class 'str'>                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -214,18 +193,15 @@ PoleZeroFilter
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **calibration_date**                         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Most recent date of filter calibration in ISO | 2020-01-01     |
+       | **Required**: :blue:`False`                  | Most recent date of filter calibration in ISO | 2020-01-01     |
        |                                              | format of YYY-MM-DD.                          |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp | None              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -244,16 +220,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | scalar gain of the filter across all          | 1.0            |
        |                                              | frequencies, producted with any frequency     |                |
-       | **Units**: None                              | depenendent terms                             |                |
+       | **Type**: <class 'float'>                    | depenendent terms                             |                |
        |                                              |                                               |                |
-       | **Type**: <class 'float'>                    |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -272,16 +245,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Sequence number of the filter in the          | 1              |
        |                                              | processing chain.                             |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -300,16 +270,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | The complex-valued poles associated with the  | "[-1/4.,       |
        |                                              | filter response.                              | -0.1+j*0.3,    |
-       | **Units**: None                              |                                               | -0.1-j*0.3]"   |
-       |                                              |                                               |                |
-       | **Type**: numpy.ndarray | list[complex] |    |                                               |                |
+       | **Type**: numpy.ndarray | list[complex] |    |                                               | -0.1-j*0.3]"   |
        | complex                                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ndarray                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -328,16 +295,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | The complex-valued zeros associated with the  | "[0.0, ]"      |
        |                                              | filter response.                              |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: numpy.ndarray | list[complex] |    |                                               |                |
        | complex                                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ndarray                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -356,16 +320,13 @@ PoleZeroFilter
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | The scale factor to apply to the monic        | "[-1000.1]"    |
        |                                              | response.                                     |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

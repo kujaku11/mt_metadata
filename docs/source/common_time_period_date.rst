@@ -20,16 +20,13 @@ TimePeriodDate
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04     |
        |                                              |                                               |                |
+       | **Type**: str | float | int |                |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | mt_metadata.common.mttime.MDate              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MDate                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ TimePeriodDate
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01     |
        |                                              |                                               |                |
+       | **Type**: str | float | int |                |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | mt_metadata.common.mttime.MDate              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MDate                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

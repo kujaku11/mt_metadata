@@ -20,16 +20,13 @@ FeatureTSRun
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Suggested Run ID should be sample rate        | 001            |
        |                                              | followed by a number or character.            |                |
-       | **Units**: None                              | Characters should only be used if the run     |                |
+       | **Type**: <class 'str'>                      | Characters should only be used if the run     |                |
        |                                              | number is small, if the run number is high    |                |
-       | **Type**: <class 'str'>                      | consider using digits with zeros.  For        |                |
+       | **Units**: None                              | consider using digits with zeros.  For        |                |
        |                                              | example if you have 100 runs the run ID could |                |
        |                                              | be 001 or sr{sample_rate}_001. Should be the  |                |
        |                                              | same as the time series run ID.               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ FeatureTSRun
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Digital sample rate for the run               | 100            |
        |                                              |                                               |                |
-       | **Units**: samples per second                |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ FeatureTSRun
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -102,18 +93,15 @@ FeatureTSRun
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.time_stamp**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -130,18 +118,15 @@ FeatureTSRun
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.value**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ FeatureTSRun
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
        |                                              |                                               | 04T16:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -188,16 +170,13 @@ FeatureTSRun
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
        |                                              |                                               | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

@@ -20,16 +20,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | List of harmonics indices kept, if all use -1 | [0, 4, 8]      |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: typing.Union[int, list[int],       |                                               |                |
        | NoneType]                                    |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Fourier transform method                      | fft            |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'MethodEnum'>                |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: MethodEnum.fft                  |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -76,16 +70,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | How many FFT windows must be available for    | 4              |
        |                                              | the time series to valid for STFT.            |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -104,16 +95,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Additional detrending applied per window.     | linear         |
        |                                              | Not available for standard scipy spectrogram  |                |
-       | **Units**: None                              | -- placholder for ARMA prewhitening.          |                |
+       | **Type**: <enum 'PerWindowDetrendTypeEnum'>  | -- placholder for ARMA prewhitening.          |                |
        |                                              |                                               |                |
-       | **Type**: <enum 'PerWindowDetrendTypeEnum'>  |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: PerWindowDetrendTypeEnum.null   |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -132,16 +120,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Pre FFT detrend method to be applied          | linear         |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'PreFftDetrendTypeEnum'>     |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: PreFftDetrendTypeEnum.linear    |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,17 +145,14 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Prewhitening method to be applied             | first          |
        |                                              |                                               | difference     |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'PrewhiteningTypeEnum'>      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**:                                 |                                               |                |
-       | PrewhiteningTypeEnum.first_difference        |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
@@ -188,16 +170,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Whether the data are recolored [True] or not  | True           |
        |                                              | [False].                                      |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'bool'>                     |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: True                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -216,16 +195,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Number of samples in a single window          | 256            |
        |                                              |                                               |                |
-       | **Units**: samples                           |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 256                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -244,16 +220,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Number of samples overlapped by adjacent      | 32             |
        |                                              | windows                                       |                |
-       | **Units**: samples                           |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'int'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 32                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -272,16 +245,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | name of the window type                       | hamming        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'TypeEnum'>                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: TypeEnum.boxcar                 |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -300,16 +270,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | how the clock-zero is specified               | user specified |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'ClockZeroTypeEnum'>         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ClockZeroTypeEnum.ignore        |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -328,16 +295,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Start date and time of the first data window  | 2020-02-       |
        |                                              |                                               | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               | 670+00:00      |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp | None              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -356,16 +320,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | True if the window shall be normalized so the | False          |
        |                                              | sum of the coefficients is 1                  |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'bool'>                     |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: True                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -384,16 +345,13 @@ ShortTimeFourierTransform
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Additional arguments for the window function  | {'param':      |
        |                                              |                                               | 'value'}       |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'dict'>                     |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: dict                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

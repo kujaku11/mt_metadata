@@ -20,22 +20,19 @@ FeatureWeightSpec
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | The name of the feature to evaluate (e.g.,    | coherence      |
        |                                              | coherence, impedance_ratio).                  |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'FeatureNameEnum'>           |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`feature`
-~~~~~~~~~~~~~~~
+:navy:`feature.name`
+~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -44,20 +41,167 @@ FeatureWeightSpec
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **feature**                                  | **Description**                               | **Example**    |
+       | **feature.name**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | The feature specification.                    | {'type':       |
-       |                                              |                                               | 'coherence'}   |
+       | **Required**: :red:`True`                    | Name of the feature.                          | simple         |
+       |                                              |                                               | coherence      |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: dict | mt_metadata.features.feature|                                               |                |
-       | .Feature | mt_metadata.features.coh          |                                               |                |
-       | erence.Coherence | mt_metadata.feat          |                                               |                |
-       | ures.fc_coherence.FCCoherence                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: Feature                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`feature.description`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **feature.description**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | A full description of what the feature        | Simple         |
+       |                                              | estimates.                                    | coherence      |
+       | **Type**: <class 'str'>                      |                                               | measures the   |
+       |                                              |                                               | coherence      |
+       | **Units**: None                              |                                               | between        |
+       |                                              |                                               | measured       |
+       |                                              |                                               | electric and   |
+       |                                              |                                               | magnetic       |
+       |                                              |                                               | fields.        |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`feature.domain`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **feature.domain**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Temporal domain the feature is estimated in [ | frequency      |
+       |                                              | 'frequency' | 'time' ]                        |                |
+       | **Type**: <enum 'DomainEnum'>                |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`feature.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **feature.comments.author**                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`feature.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **feature.comments.time_stamp**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`feature.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **feature.comments.value**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`feature.data`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **feature.data**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | The data associated with the feature.         | path/to/datafil|
+       |                                              |                                               | e.nc           |
+       | **Type**: xarray.core.dataarray.DataArray |  |                                               |                |
+       | xarray.core.dataset.Dataset |                |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -76,16 +220,13 @@ FeatureWeightSpec
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | List of weight kernel specification.          | {'type':       |
        |                                              |                                               | 'monotonic'}   |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[mt_metadata.features.weights.m|                                               |                |
        | onotonic_weight_kernel.MonotonicWei          |                                               |                |
-       | ghtKernel | mt_metadata.features.we          |                                               |                |
-       | ights.taper_monotonic_weight_kernel          |                                               |                |
-       | .TaperMonotonicWeightKernel | mt_me          |                                               |                |
-       | tadata.features.weights.activation_          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

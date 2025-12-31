@@ -20,16 +20,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of weighting kernel (e.g., monotonic,    | monotonic      |
        |                                              | learned, spatial).                            |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'WeightTypeEnum'>            |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: WeightTypeEnum.monotonic        |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -46,18 +43,15 @@ ThresholdWeightKernel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **description**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Human-readable description of what this       | This kernel    |
+       | **Required**: :blue:`False`                  | Human-readable description of what this       | This kernel    |
        |                                              | kernel is for.                                | smoothly       |
-       | **Units**: None                              |                                               | transitions    |
+       | **Type**: str | None                         |                                               | transitions    |
        |                                              |                                               | between 0 and 1|
-       | **Type**: str | None                         |                                               | in a monotonic |
+       | **Units**: None                              |                                               | in a monotonic |
        |                                              |                                               | way            |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ ThresholdWeightKernel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **active**                                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | If false, this kernel will be skipped during  | false          |
+       | **Required**: :blue:`False`                  | If false, this kernel will be skipped during  | false          |
        |                                              | weighting.                                    |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: bool | None                        |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -104,16 +95,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Which side of a threshold should be           | low cut        |
        |                                              | downweighted.                                 |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'ThresholdEnum'>             |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ThresholdEnum.low_cut           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -132,16 +120,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Tapering/activation function to use between   | activation     |
        |                                              | transition bounds.                            |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'StyleEnum'>                 |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: StyleEnum.taper                 |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Start of the taper region (weight begins to   | -inf           |
        |                                              | change).                                      |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: -1000000000.0                   |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -188,16 +170,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | End of the taper region (weight finishes      | +inf           |
        |                                              | changing).                                    |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1000000000.0                    |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -216,16 +195,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Tapering/activation function to use between   | hann           |
        |                                              | transition bounds.                            |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'HalfWindowStyleEnum'>       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: HalfWindowStyleEnum.rectangle   |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -244,16 +220,13 @@ ThresholdWeightKernel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Which side of a threshold should be           | low cut        |
        |                                              | downweighted.                                 |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: low cut                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

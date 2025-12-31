@@ -20,16 +20,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Name of channel                               | ex             |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Highest frequency present in the sprectrogam  | 77.0           |
        |                                              | data.                                         |                |
-       | **Units**: samples per second                |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -76,16 +70,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Lowest frequency present in the sprectrogam   | 99.0           |
        |                                              | data.                                         |                |
-       | **Units**: samples per second                |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -104,16 +95,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Sample rate of the time series that was       | 60             |
        |                                              | Fourier transformed to generate the FC        |                |
-       | **Units**: samples per second                | decimation level.                             |                |
+       | **Type**: <class 'float'>                    | decimation level.                             |                |
        |                                              |                                               |                |
-       | **Type**: <class 'float'>                    |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -132,16 +120,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Sample rate of the windows.                   | 4              |
        |                                              |                                               |                |
-       | **Units**: samples per second                |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Units of the channel                          | milliVolts     |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: count                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -188,16 +170,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
        |                                              |                                               | 04T16:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -216,16 +195,13 @@ FeatureDecimationChannel
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
        |                                              |                                               | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

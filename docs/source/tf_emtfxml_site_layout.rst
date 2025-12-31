@@ -20,16 +20,13 @@ SiteLayout
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of input channels for transfer function  | [Magnetic(hx), |
        |                                              | estimation                                    | Magnetic(hy)]  |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[mt_metadata.transfer_functions|                                               |                |
        | .io.emtfxml.metadata.electric.Elect          |                                               |                |
-       | ric | mt_metadata.transfer_function          |                                               |                |
-       | s.io.emtfxml.metadata.magnetic.Magn          |                                               |                |
-       | etic | str]                                  |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ SiteLayout
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of output channels for transfer function | [Electric(ex), |
        |                                              | estimation                                    | Electric(ey),  |
-       | **Units**: None                              |                                               | Magnetic(hz)]  |
-       |                                              |                                               |                |
-       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | **Type**: list[mt_metadata.transfer_functions|                                               | Magnetic(hz)]  |
        | .io.emtfxml.metadata.electric.Elect          |                                               |                |
-       | ric | mt_metadata.transfer_function          |                                               |                |
-       | s.io.emtfxml.metadata.magnetic.Magn          |                                               |                |
-       | etic | str]                                  |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

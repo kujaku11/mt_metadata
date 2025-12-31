@@ -2,12 +2,12 @@
 .. role:: blue
 .. role:: navy
 
-Auto
-====
+Information
+===========
 
 
-:navy:`phase_flip`
-~~~~~~~~~~~~~~~~~~
+:navy:`info_dict`
+~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -16,11 +16,11 @@ Auto
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **phase_flip**                               | **Description**                               | **Example**    |
+       | **info_dict**                                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Was phase automatically flipped in processing | yes            |
-       |                                              |                                               |                |
-       | **Type**: <enum 'YesNoEnum'>                 |                                               |                |
+       | **Required**: :blue:`False`                  | Dictionary of information lines from the info | None           |
+       |                                              | section                                       |                |
+       | **Type**: dict[str, str | list | None]       |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |

@@ -18,18 +18,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channel_layout**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | How the station channels were laid out.       | X              |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | How the station channels were laid out.       | X              |
        |                                              |                                               |                |
        | **Type**: <enum 'ChannelLayoutEnum'>         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ChannelLayoutEnum.X             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | List of components recorded by the station.   | "[ Ex, Ey, Hx, |
        |                                              | Should be a summary of all channels recorded. | Hy, Hz, T]"    |
-       | **Units**: None                              | Dropped channels will be recorded in Run      |                |
+       | **Type**: list[str]                          | Dropped channels will be recorded in Run      |                |
        |                                              | metadata.                                     |                |
-       | **Type**: list[str]                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -102,18 +93,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.time_stamp**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -130,18 +118,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments.value**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -160,16 +145,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of data recorded. If multiple types      | BBMT           |
        |                                              | input as a comma separated list.              |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'DataTypeEnum'>              |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: BBMT                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -186,18 +168,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.id**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Given FDSN archive ID name.                   | MT001          |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -214,18 +193,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.network**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Given two character FDSN archive network      | EM             |
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
        |                                              | code. Needs to be 2 alpha numeric characters. |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -242,18 +218,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.channel_code**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Three character FDSN channel code.            | LQN            |
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
        |                                              | http://docs.fdsn.org/projects/source-         |                |
-       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       | **Type**: str | None                         | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
-       | **Type**: str | None                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -270,18 +243,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Boolean telling if a new epoch needs to be    | False          |
+       | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
        |                                              | created or not.                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: bool | None                        |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -298,18 +268,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Alternate Code                                | _INT-NON_FDSN  |
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN  |
        |                                              |                                               | .UNRESTRICTED  |
-       | **Units**: None                              |                                               | _US-ALL _US-MT |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
        |                                              |                                               | _US-MT-TA      |
-       | **Type**: str | None                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -326,18 +293,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Alternate Network Code                        | _INT-NON_FDSN  |
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN  |
        |                                              |                                               | .UNRESTRICTED  |
-       | **Units**: None                              |                                               | _US-ALL _US-MT |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
        |                                              |                                               | _US-MT-TA      |
-       | **Type**: str | None                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -356,16 +320,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Closest geographic name to the station,       | Whitehorse, YK |
        |                                              | usually a city, but could be another common   |                |
-       | **Units**: None                              | geographic location.                          |                |
+       | **Type**: <class 'str'>                      | geographic location.                          |                |
        |                                              |                                               |                |
-       | **Type**: <class 'str'>                      |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -384,16 +345,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Station ID name.  This should be an alpha     | MT001          |
        |                                              | numeric name that is typically 5-6 characters |                |
-       | **Units**: None                              | long.  Commonly the project name in 2 or 3    |                |
+       | **Type**: <class 'str'>                      | long.  Commonly the project name in 2 or 3    |                |
        |                                              | letters and the station number.               |                |
-       | **Type**: <class 'str'>                      |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -412,16 +370,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | List of runs recorded by the station. Should  | [ mt001a,      |
        |                                              | be a summary of all runs recorded.            | mt001b, mt001c |
-       | **Units**: None                              |                                               | ]              |
+       | **Type**: list[str]                          |                                               | ]              |
        |                                              |                                               |                |
-       | **Type**: list[str]                          |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -438,18 +393,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.latitude**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Latitude of the location.                     | 12.324         |
-       |                                              |                                               |                |
-       | **Units**: degrees                           |                                               |                |
+       | **Required**: :blue:`False`                  | Latitude of the location.                     | 12.324         |
        |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -466,18 +418,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.longitude**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Longitude of the location.                    | 12.324         |
-       |                                              |                                               |                |
-       | **Units**: degrees                           |                                               |                |
+       | **Required**: :blue:`False`                  | Longitude of the location.                    | 12.324         |
        |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -494,18 +443,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.elevation**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Elevation of the location.                    | 1234.0         |
-       |                                              |                                               |                |
-       | **Units**: meters                            |                                               |                |
+       | **Required**: :blue:`False`                  | Elevation of the location.                    | 1234.0         |
        |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -522,18 +468,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.datum**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Datum of the location values.  Usually a well | WGS 84         |
+       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS 84         |
        |                                              | known datum like WGS84.                       |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | int                          |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: WGS 84                          |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -550,18 +493,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.x**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -578,18 +518,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.y**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -606,18 +543,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.z**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative elevation to the center of the       | 10.0           |
+       | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -634,18 +568,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.latitude_uncertainty**            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in latitude estimation in degrees | 0.01           |
-       |                                              |                                               |                |
-       | **Units**: degrees                           |                                               |                |
+       | **Required**: :blue:`False`                  | uncertainty in latitude estimation in degrees | 0.01           |
        |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -662,18 +593,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.longitude_uncertainty**           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | degrees                                       |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -690,18 +618,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.elevation_uncertainty**           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in elevation estimation           | 0.01           |
-       |                                              |                                               |                |
-       | **Units**: meters                            |                                               |                |
+       | **Required**: :blue:`False`                  | uncertainty in elevation estimation           | 0.01           |
        |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -718,18 +643,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.x2**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -746,18 +668,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.y2**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -774,18 +693,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.z2**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative elevation to the center of the       | 10.0           |
+       | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -802,18 +718,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.x_uncertainty**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | x-direction                                   |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -830,18 +743,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.y_uncertainty**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | y-direction                                   |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -858,18 +768,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.z_uncertainty**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | z-direction                                   |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
        | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -886,18 +793,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.declination.comments.author**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -914,18 +818,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.declination.comments.time_stamp** | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -942,18 +843,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.declination.comments.value**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -972,16 +870,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | geomagnetic reference model used to calculate | WMM            |
        |                                              | declination                                   |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'GeomagneticModelEnum'>      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: IGRF                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -998,18 +893,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.declination.epoch**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Epoch for which declination was approximated  | 2020           |
+       | **Required**: :blue:`False`                  | Epoch for which declination was approximated  | 2020           |
        |                                              | in.                                           |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1028,16 +920,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | declination angle relative to geographic      | 12.5           |
        |                                              | north positive clockwise                      |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1054,18 +943,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.country**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Country of the geographic location, should be | United States  |
+       | **Required**: :blue:`False`                  | Country of the geographic location, should be | United States  |
        |                                              | spelled out in full. Can be a list of         | of America     |
-       | **Units**: None                              | countries.                                    |                |
+       | **Type**: str | list[str] | None             | countries.                                    |                |
        |                                              |                                               |                |
-       | **Type**: str | list[str] | None             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1082,18 +968,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.state**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | State or province of the geographic location, | [Colorado,     |
+       | **Required**: :blue:`False`                  | State or province of the geographic location, | [Colorado,     |
        |                                              | should be spelled out in full. Can be a list  | Utah]          |
-       | **Units**: None                              | of states or provinces.                       |                |
+       | **Type**: str | list[str] | None             | of states or provinces.                       |                |
        |                                              |                                               |                |
-       | **Type**: str | list[str] | None             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1110,18 +993,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.county**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | County of the geographic location, should be  | [Douglass,     |
+       | **Required**: :blue:`False`                  | County of the geographic location, should be  | [Douglass,     |
        |                                              | spelled out in full. Can be a list of         | Fayet]         |
-       | **Units**: None                              | counties.                                     |                |
+       | **Type**: str | list[str] | None             | counties.                                     |                |
        |                                              |                                               |                |
-       | **Type**: str | list[str] | None             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1138,18 +1018,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.township**    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Township or city name or code.                | 090            |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Township or city name or code.                | 090            |
        |                                              |                                               |                |
        | **Type**: str | list[str] | None             |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1166,18 +1043,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.section**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Section name or code.                         | 012            |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Section name or code.                         | 012            |
        |                                              |                                               |                |
        | **Type**: str | list[str] | None             |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1194,18 +1068,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.quarter**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Quarter section code.                         | 400            |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Quarter section code.                         | 400            |
        |                                              |                                               |                |
        | **Type**: str | list[str] | None             |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1222,18 +1093,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.geographic_location.parcel**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Land parcel ID.                               | 46b29a         |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Land parcel ID.                               | 46b29a         |
        |                                              |                                               |                |
        | **Type**: str | list[str] | None             |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1252,16 +1120,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | method for orienting station layout           | compass        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'OrientationMethodEnum'>     |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: compass                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1280,16 +1145,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | "Reference frame for station layout.  There   | geomagnetic    |
        |                                              | are only 2 options geographic and             |                |
-       | **Units**: None                              | geomagnetic.  Both assume a right-handed      |                |
-       |                                              | coordinate system with North=0 E=90 and       |                |
-       | **Type**: <enum                              | vertical positive downward"                   |                |
-       | 'GeographicReferenceFrameEnum'>              |                                               |                |
+       | **Type**: <enum                              | geomagnetic.  Both assume a right-handed      |                |
+       | 'GeographicReferenceFrameEnum'>              | coordinate system with North=0 E=90 and       |                |
+       | **Units**: None                              | vertical positive downward"                   |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: geographic                      |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1306,18 +1168,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **orientation.angle_to_geographic_north**    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | "Angle to rotate the data to align with       | geomagnetic    |
+       | **Required**: :blue:`False`                  | "Angle to rotate the data to align with       | geomagnetic    |
        |                                              | geographic north. If this number is 0 then it |                |
-       | **Units**: degrees                           | is assumed the data are aligned with          |                |
+       | **Type**: float | None                       | is assumed the data are aligned with          |                |
        |                                              | geographic north in a right handed coordinate |                |
-       | **Type**: float | None                       | system."                                      |                |
+       | **Units**: degrees                           | system."                                      |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1334,18 +1193,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **orientation.value**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | "Channel orientation relative to each other"  | orthogonal     |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | "Channel orientation relative to each other"  | orthogonal     |
        |                                              |                                               |                |
        | **Type**: mt_metadata.common.enumerations.Cha|                                               |                |
        | nnelOrientationEnum | None                   |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: orthogonal                      |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1362,18 +1218,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **acquired_by.organization**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1390,18 +1243,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **acquired_by.email**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1418,18 +1268,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **acquired_by.url**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
        | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1446,18 +1293,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **acquired_by.comments.author**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1474,18 +1318,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **acquired_by.comments.time_stamp**          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1502,18 +1343,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **acquired_by.comments.value**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1532,16 +1370,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1560,16 +1395,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Date and time the file was created.           | 2020-02-       |
        |                                              |                                               | 08T12:23:40.324|
-       | **Units**: None                              |                                               | 600+00:00      |
-       |                                              |                                               |                |
-       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               | 600+00:00      |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp                     |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1586,18 +1418,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.comments.author**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1614,18 +1443,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.comments.time_stamp**           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1642,18 +1468,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.comments.value**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1670,18 +1493,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.log**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | A history of changes made to the data.        | 2020-02-       |
+       | **Required**: :blue:`False`                  | A history of changes made to the data.        | 2020-02-       |
        |                                              |                                               | 10T14:24:45+00:|
-       | **Units**: None                              |                                               | 00 updated     |
+       | **Type**: str | None                         |                                               | 00 updated     |
        |                                              |                                               | metadata       |
-       | **Type**: str | None                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1698,18 +1518,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.organization**          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1726,18 +1543,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.email**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1754,18 +1568,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.url**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
        | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1782,18 +1593,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.comments.author**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1810,18 +1618,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.comments.time_stamp**   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1838,18 +1643,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.comments.value**        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1868,16 +1670,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1894,18 +1693,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.organization**        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1922,18 +1718,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.email**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1950,18 +1743,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.url**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
        | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1978,18 +1768,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.comments.author**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2006,18 +1793,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.comments.time_stamp** | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2034,18 +1818,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.comments.value**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2064,16 +1845,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2090,18 +1868,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.organization**          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2118,18 +1893,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.email**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2146,18 +1918,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.url**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
        | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2174,18 +1943,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.comments.author**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2202,18 +1968,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.comments.time_stamp**   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                              | made.                                         | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
        | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime |            |                                               |                |
-       | None                                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2230,18 +1993,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.comments.value**        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
        |                                              |                                               | midnight.      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | list | None                  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2260,16 +2020,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2288,16 +2045,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Author of the software                        | Neo            |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2316,16 +2070,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Software version                              | 12.01a         |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2342,18 +2093,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.software.last_updated**         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Most recent date the software was updated.    | 2020-01-01     |
+       | **Required**: :blue:`False`                  | Most recent date the software was updated.    | 2020-01-01     |
        |                                              | Prefer to use version, but this works for     |                |
-       | **Units**: None                              | non-versioned software.                       |                |
-       |                                              |                                               |                |
-       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  | non-versioned software.                       |                |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp | None              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2372,16 +2120,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Software name                                 | mtrules        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2400,16 +2145,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
        |                                              |                                               | 04T16:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2428,16 +2170,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
        |                                              |                                               | 01T09:23:45.453|
-       | **Units**: None                              |                                               | 670+00:00      |
-       |                                              |                                               |                |
-       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
-       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
-       | amp | str |                                  |                                               |                |
-       | mt_metadata.common.mttime.MTime              |                                               |                |
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2454,18 +2193,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **runs**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | List of runs recorded by the station.         | [Run(id='mt001a|
+       | **Required**: :blue:`False`                  | List of runs recorded by the station.         | [Run(id='mt001a|
        |                                              |                                               | '), Run(id='mt0|
-       | **Units**: None                              |                                               | 01b'), Run(id='|
-       |                                              |                                               | mt001c')]      |
-       | **Type**: mt_metadata.common.list_dict.ListDi|                                               |                |
-       | ct | list | dict |                           |                                               |                |
-       | collections.OrderedDict | tuple              |                                               |                |
+       | **Type**: mt_metadata.common.list_dict.ListDi|                                               | 01b'), Run(id='|
+       | ct | list | dict |                           |                                               | mt001c')]      |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: ListDict                        |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2484,16 +2220,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | transfer function id                          | mt01_256       |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2512,16 +2245,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | sign of the transfer function estimates       | +              |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'SignConventionEnum'>        |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: +                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2540,17 +2270,14 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | units of the impedance tensor estimates       | milliVolt per  |
        |                                              |                                               | kilometer per  |
-       | **Units**: None                              |                                               | nanoTesla      |
+       | **Type**: <class 'str'>                      |                                               | nanoTesla      |
        |                                              |                                               |                |
-       | **Type**: <class 'str'>                      |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**:                                 |                                               |                |
-       | milliVolt per kilometer per nanoTesla        |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
@@ -2568,16 +2295,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of runs used in the processing           | ['MT001a',     |
        |                                              |                                               | 'MT001c']      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: <class 'list'>                  |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2596,16 +2320,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of remote references                     | ['MT002b',     |
        |                                              |                                               | 'MT002c']      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2624,16 +2345,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | date the data were processed                  | 2020-01-       |
        |                                              |                                               | 01T12:00:00    |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp                     |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2652,16 +2370,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of processing parameters with structure  | ['nfft=4096',  |
        |                                              | name = value                                  | 'n_windows=16']|
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2678,18 +2393,15 @@ Station
        +--------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.processed_by.organization**  | **Description**                               | **Example**    |
        +==================================================+===============================================+================+
-       | **Required**: :red:`True`                        | Organization full name                        | mt gurus       |
-       |                                                  |                                               |                |
-       | **Units**: None                                  |                                               |                |
+       | **Required**: :blue:`False`                      | Organization full name                        | mt gurus       |
        |                                                  |                                               |                |
        | **Type**: str | None                             |                                               |                |
        |                                                  |                                               |                |
+       | **Units**: None                                  |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
-       |                                                  |                                               |                |
-       | **Default**: None                                |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
        +--------------------------------------------------+-----------------------------------------------+----------------+
@@ -2706,18 +2418,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.processed_by.email**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2734,18 +2443,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.processed_by.url**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
        | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2762,18 +2468,15 @@ Station
        +-----------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.processed_by.comments.author**  | **Description**                               | **Example**    |
        +=====================================================+===============================================+================+
-       | **Required**: :red:`True`                           | person who authored the comment               | J. Pedantic    |
-       |                                                     |                                               |                |
-       | **Units**: None                                     |                                               |                |
+       | **Required**: :blue:`False`                         | person who authored the comment               | J. Pedantic    |
        |                                                     |                                               |                |
        | **Type**: str | None                                |                                               |                |
        |                                                     |                                               |                |
+       | **Units**: None                                     |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
-       |                                                     |                                               |                |
-       | **Default**: None                                   |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
        +-----------------------------------------------------+-----------------------------------------------+----------------+
@@ -2790,18 +2493,15 @@ Station
        +---------------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.processed_by.comments.time_stamp**  | **Description**                               | **Example**    |
        +=========================================================+===============================================+================+
-       | **Required**: :red:`True`                               | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                             | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                                         | made.                                         | 01T09:23:45.453|
-       | **Units**: None                                         |                                               | 670+00:00      |
-       |                                                         |                                               |                |
-       | **Type**: float | int | numpy.datetime64 |              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 |              |                                               | 670+00:00      |
        | pandas._libs.tslibs.timestamps.Timestamp | str          |                                               |                |
-       | | mt_metadata.common.mttime.MTime | None                |                                               |                |
+       | **Units**: None                                         |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
-       | **Default**: MTime                                      |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
        +---------------------------------------------------------+-----------------------------------------------+----------------+
@@ -2818,18 +2518,15 @@ Station
        +----------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.processed_by.comments.value**  | **Description**                               | **Example**    |
        +====================================================+===============================================+================+
-       | **Required**: :red:`True`                          | comment string                                | failure at     |
+       | **Required**: :blue:`False`                        | comment string                                | failure at     |
        |                                                    |                                               | midnight.      |
-       | **Units**: None                                    |                                               |                |
-       |                                                    |                                               |                |
        | **Type**: str | list | None                        |                                               |                |
        |                                                    |                                               |                |
+       | **Units**: None                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
-       |                                                    |                                               |                |
-       | **Default**: None                                  |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        +----------------------------------------------------+-----------------------------------------------+----------------+
@@ -2848,16 +2545,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2876,16 +2570,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of processing                            | robust remote  |
        |                                              |                                               | reference      |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2904,16 +2595,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Author of the software                        | Neo            |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2932,16 +2620,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Software version                              | 12.01a         |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2958,18 +2643,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.software.last_updated**  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Most recent date the software was updated.    | 2020-01-01     |
+       | **Required**: :blue:`False`                  | Most recent date the software was updated.    | 2020-01-01     |
        |                                              | Prefer to use version, but this works for     |                |
-       | **Units**: None                              | non-versioned software.                       |                |
-       |                                              |                                               |                |
-       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  | non-versioned software.                       |                |
        | str | float | int |                          |                                               |                |
-       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
-       | ibs.timestamps.Timestamp | None              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -2988,16 +2670,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Software name                                 | mtrules        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -3014,18 +2693,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.warnings**  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | any warnings about the data that should be    | periodic       |
+       | **Required**: :blue:`False`                  | any warnings about the data that should be    | periodic       |
        |                                              | noted                                         | pipeline noise |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -3042,18 +2718,15 @@ Station
        +------------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.good_from_period**  | **Description**                               | **Example**    |
        +======================================================+===============================================+================+
-       | **Required**: :red:`True`                            | Data are good for periods larger than this    | 0.01           |
+       | **Required**: :blue:`False`                          | Data are good for periods larger than this    | 0.01           |
        |                                                      | number                                        |                |
-       | **Units**: None                                      |                                               |                |
-       |                                                      |                                               |                |
        | **Type**: float | None                               |                                               |                |
        |                                                      |                                               |                |
+       | **Units**: None                                      |                                               |                |
        |                                                      |                                               |                |
        |                                                      |                                               |                |
        |                                                      |                                               |                |
        |                                                      |                                               |                |
-       |                                                      |                                               |                |
-       | **Default**: None                                    |                                               |                |
        |                                                      |                                               |                |
        |                                                      |                                               |                |
        +------------------------------------------------------+-----------------------------------------------+----------------+
@@ -3070,18 +2743,15 @@ Station
        +----------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.good_to_period**  | **Description**                               | **Example**    |
        +====================================================+===============================================+================+
-       | **Required**: :red:`True`                          | Data are good for periods smaller than this   | 1000           |
+       | **Required**: :blue:`False`                        | Data are good for periods smaller than this   | 1000           |
        |                                                    | number                                        |                |
-       | **Units**: None                                    |                                               |                |
-       |                                                    |                                               |                |
        | **Type**: float | None                             |                                               |                |
        |                                                    |                                               |                |
+       | **Units**: None                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
-       |                                                    |                                               |                |
-       | **Default**: None                                  |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        +----------------------------------------------------+-----------------------------------------------+----------------+
@@ -3098,18 +2768,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.flag**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Flag for data quality                         | 0              |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Flag for data quality                         | 0              |
        |                                              |                                               |                |
        | **Type**: int | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -3126,18 +2793,15 @@ Station
        +-----------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.comments.author**  | **Description**                               | **Example**    |
        +=====================================================+===============================================+================+
-       | **Required**: :red:`True`                           | person who authored the comment               | J. Pedantic    |
-       |                                                     |                                               |                |
-       | **Units**: None                                     |                                               |                |
+       | **Required**: :blue:`False`                         | person who authored the comment               | J. Pedantic    |
        |                                                     |                                               |                |
        | **Type**: str | None                                |                                               |                |
        |                                                     |                                               |                |
+       | **Units**: None                                     |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
-       |                                                     |                                               |                |
-       | **Default**: None                                   |                                               |                |
        |                                                     |                                               |                |
        |                                                     |                                               |                |
        +-----------------------------------------------------+-----------------------------------------------+----------------+
@@ -3154,18 +2818,15 @@ Station
        +---------------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.comments.time_stamp**  | **Description**                               | **Example**    |
        +=========================================================+===============================================+================+
-       | **Required**: :red:`True`                               | Date and time of in UTC of when comment was   | 2020-02-       |
+       | **Required**: :blue:`False`                             | Date and time of in UTC of when comment was   | 2020-02-       |
        |                                                         | made.                                         | 01T09:23:45.453|
-       | **Units**: None                                         |                                               | 670+00:00      |
-       |                                                         |                                               |                |
-       | **Type**: float | int | numpy.datetime64 |              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 |              |                                               | 670+00:00      |
        | pandas._libs.tslibs.timestamps.Timestamp | str          |                                               |                |
-       | | mt_metadata.common.mttime.MTime | None                |                                               |                |
+       | **Units**: None                                         |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
-       | **Default**: MTime                                      |                                               |                |
        |                                                         |                                               |                |
        |                                                         |                                               |                |
        +---------------------------------------------------------+-----------------------------------------------+----------------+
@@ -3182,18 +2843,15 @@ Station
        +----------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.comments.value**  | **Description**                               | **Example**    |
        +====================================================+===============================================+================+
-       | **Required**: :red:`True`                          | comment string                                | failure at     |
+       | **Required**: :blue:`False`                        | comment string                                | failure at     |
        |                                                    |                                               | midnight.      |
-       | **Units**: None                                    |                                               |                |
-       |                                                    |                                               |                |
        | **Type**: str | list | None                        |                                               |                |
        |                                                    |                                               |                |
+       | **Units**: None                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
-       |                                                    |                                               |                |
-       | **Default**: None                                  |                                               |                |
        |                                                    |                                               |                |
        |                                                    |                                               |                |
        +----------------------------------------------------+-----------------------------------------------+----------------+
@@ -3210,18 +2868,15 @@ Station
        +---------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.rating.author**  | **Description**                               | **Example**    |
        +===================================================+===============================================+================+
-       | **Required**: :red:`True`                         | Author of who rated the data.                 | gradstudent ace|
-       |                                                   |                                               |                |
-       | **Units**: None                                   |                                               |                |
+       | **Required**: :blue:`False`                       | Author of who rated the data.                 | gradstudent ace|
        |                                                   |                                               |                |
        | **Type**: str | None                              |                                               |                |
        |                                                   |                                               |                |
+       | **Units**: None                                   |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
-       |                                                   |                                               |                |
-       | **Default**: None                                 |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
        +---------------------------------------------------+-----------------------------------------------+----------------+
@@ -3238,18 +2893,15 @@ Station
        +---------------------------------------------------+-----------------------------------------------+----------------+
        | **transfer_function.data_quality.rating.method**  | **Description**                               | **Example**    |
        +===================================================+===============================================+================+
-       | **Required**: :red:`True`                         | The method used to rate the data.             | standard       |
+       | **Required**: :blue:`False`                       | The method used to rate the data.             | standard       |
        |                                                   |                                               | deviation      |
-       | **Units**: None                                   |                                               |                |
-       |                                                   |                                               |                |
        | **Type**: str | None                              |                                               |                |
        |                                                   |                                               |                |
+       | **Units**: None                                   |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
-       |                                                   |                                               |                |
-       | **Default**: None                                 |                                               |                |
        |                                                   |                                               |                |
        |                                                   |                                               |                |
        +---------------------------------------------------+-----------------------------------------------+----------------+
@@ -3268,16 +2920,13 @@ Station
        +==================================================+===============================================+================+
        | **Required**: :red:`True`                        | A rating from 1-5 where 1 is bad and 5 is     | 4              |
        |                                                  | good and 0 if unrated.                        |                |
+       | **Type**: int | None | str                       |                                               |                |
+       |                                                  |                                               |                |
        | **Units**: None                                  |                                               |                |
        |                                                  |                                               |                |
-       | **Type**: int | None                             |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
-       |                                                  |                                               |                |
-       |                                                  |                                               |                |
-       |                                                  |                                               |                |
-       | **Default**: None                                |                                               |                |
        |                                                  |                                               |                |
        |                                                  |                                               |                |
        +--------------------------------------------------+-----------------------------------------------+----------------+
@@ -3296,16 +2945,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | coordinate system that the transfer function  | geographic     |
        |                                              | is in.  It is strongly recommended that the   |                |
-       | **Units**: None                              | transfer functions be rotated to align with   |                |
-       |                                              | geographic coordinates with geographic north  |                |
-       | **Type**: <enum                              | as 0 and east as 90.                          |                |
-       | 'GeographicReferenceFrameEnum'>              |                                               |                |
+       | **Type**: <enum                              | transfer functions be rotated to align with   |                |
+       | 'GeographicReferenceFrameEnum'>              | geographic coordinates with geographic north  |                |
+       | **Units**: None                              | as 0 and east as 90.                          |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: geographic                      |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -3324,16 +2970,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | processing configuration                      | aurora.processi|
        |                                              |                                               | ng             |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

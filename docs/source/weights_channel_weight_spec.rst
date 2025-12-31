@@ -20,16 +20,13 @@ ChannelWeightSpec
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | How to combine multiple feature weights.      | multiplication |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'CombinationStyleEnum'>      |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: multiplication                  |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -48,16 +45,13 @@ ChannelWeightSpec
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of tf ouput channels for which this      | [ ex ey hz ]   |
        |                                              | weighting scheme will be applied              |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[str]                          |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -76,16 +70,13 @@ ChannelWeightSpec
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | List of feature weighting schemes to use for  | []             |
        |                                              | TF processing.                                |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: list[mt_metadata.features.weights.f|                                               |                |
        | eature_weight_spec.FeatureWeightSpe          |                                               |                |
-       | c]                                           |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -104,16 +95,13 @@ ChannelWeightSpec
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Weights computed for this channel weight      | null           |
        |                                              | spec. Should be set after evaluation.         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: xarray.core.dataarray.DataArray |  |                                               |                |
        | xarray.core.dataset.Dataset |                |                                               |                |
-       | numpy.ndarray | None                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

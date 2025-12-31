@@ -20,16 +20,13 @@ Orientation
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | method for orienting station layout           | compass        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
        | **Type**: <enum 'OrientationMethodEnum'>     |                                               |                |
        |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: compass                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -46,18 +43,15 @@ Orientation
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **reference_frame**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | "Reference frame for station layout.  There   | geomagnetic    |
+       | **Required**: :red:`True`                    | Reference frame for station layout.  There    | geomagnetic    |
        |                                              | are only 2 options geographic and             |                |
-       | **Units**: None                              | geomagnetic.  Both assume a right-handed      |                |
-       |                                              | coordinate system with North=0 E=90 and       |                |
-       | **Type**: <enum                              | vertical positive downward"                   |                |
-       | 'GeographicReferenceFrameEnum'>              |                                               |                |
+       | **Type**: <enum                              | geomagnetic.  Both assume a right-handed      |                |
+       | 'GeographicReferenceFrameEnum'>              | coordinate system with North=0 E=90 and       |                |
+       | **Units**: None                              | vertical positive downward                    |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: geographic                      |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -74,18 +68,15 @@ Orientation
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **angle_to_geographic_north**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | "Angle to rotate the data to align with       | geomagnetic    |
+       | **Required**: :blue:`False`                  | Angle to rotate the data to align with        | geomagnetic    |
        |                                              | geographic north. If this number is 0 then it |                |
-       | **Units**: degrees                           | is assumed the data are aligned with          |                |
+       | **Type**: float | None                       | is assumed the data are aligned with          |                |
        |                                              | geographic north in a right handed coordinate |                |
-       | **Type**: float | None                       | system."                                      |                |
+       | **Units**: degrees                           | system.                                       |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -102,18 +93,15 @@ Orientation
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **value**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | "Channel orientation relative to each other"  | orthogonal     |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Channel orientation relative to each other    | orthogonal     |
        |                                              |                                               |                |
        | **Type**: mt_metadata.common.enumerations.Cha|                                               |                |
        | nnelOrientationEnum | None                   |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: orthogonal                      |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

@@ -11,7 +11,6 @@ Aurora Processing
     processing_aurora_band
     processing_aurora_channel
     processing_aurora_channel_nomenclature
-    processing_aurora_channel_weight_spec
     processing_aurora_decimation_level
     processing_aurora_estimator
     processing_aurora_processing

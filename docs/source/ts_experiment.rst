@@ -20,16 +20,13 @@ Experiment
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | List of surveys in the experiment             | {'id':         |
        |                                              |                                               | 'survey_1'}    |
-       | **Units**: None                              |                                               | {'id':         |
-       |                                              |                                               | 'survey_2'}    |
-       | **Type**: mt_metadata.common.list_dict.ListDi|                                               |                |
-       | ct | list | dict |                           |                                               |                |
-       | collections.OrderedDict                      |                                               |                |
+       | **Type**: mt_metadata.common.list_dict.ListDi|                                               | {'id':         |
+       | ct | list | dict |                           |                                               | 'survey_2'}    |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: ListDict                        |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
