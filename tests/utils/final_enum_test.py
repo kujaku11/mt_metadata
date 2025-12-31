@@ -81,7 +81,7 @@ def test_enum_handling():
     print(
         f"\nOverall Result: {'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}"
     )
-    return all_passed
+    assert all_passed, "Some enum handling tests failed"
 
 
 if __name__ == "__main__":

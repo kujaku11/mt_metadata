@@ -12,7 +12,7 @@ from mt_metadata.common.enumerations import DataTypeEnum
 
 
 # Create a test class that uses enums in various contexts
-class TestComplexMetadata(MetadataBase):
+class ComplexMetadata(MetadataBase):
     single_enum: DataTypeEnum = Field(
         default=DataTypeEnum.RMT, description="Single enum field"
     )
@@ -25,7 +25,7 @@ class TestComplexMetadata(MetadataBase):
 
 
 # Test comprehensive enum handling
-test_obj = TestComplexMetadata()
+test_obj = ComplexMetadata()
 test_obj.single_enum = DataTypeEnum.LPMT
 test_obj.enum_list = [DataTypeEnum.MT, DataTypeEnum.BB, DataTypeEnum.WB]
 test_obj.mixed_list = ["test", DataTypeEnum.MT_TF, 100, True]

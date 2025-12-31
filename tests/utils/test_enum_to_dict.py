@@ -10,7 +10,7 @@ from mt_metadata.common.enumerations import DataTypeEnum
 
 
 # Create a test class that uses enums
-class TestMetadata(MetadataBase):
+class SampleMetadata(MetadataBase):
     data_type: DataTypeEnum = Field(
         default=DataTypeEnum.RMT, description="Test data type enum"
     )
@@ -18,7 +18,7 @@ class TestMetadata(MetadataBase):
 
 
 # Test the enum handling
-test_obj = TestMetadata()
+test_obj = SampleMetadata()
 test_obj.data_type = DataTypeEnum.AMT
 test_obj.normal_string = "updated_string"
 
