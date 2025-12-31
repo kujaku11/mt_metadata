@@ -1,6 +1,7 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
+
 Common Metadata Objects
 ==============================
 

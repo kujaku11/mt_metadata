@@ -1,7 +1,8 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-EMTF XML
+
+EMTFXML
 ==============================
 
 .. toctree::

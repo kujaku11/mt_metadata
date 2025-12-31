@@ -8,6 +8,8 @@ Created on Wed Dec 23 20:41:16 2020
 :license: MIT
 
 """
+from __future__ import annotations
+
 import json
 from collections import OrderedDict
 from enum import Enum

@@ -1,7 +1,8 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-Transfer Function Base
+
+Transfer Functions Base
 ==============================
 
 .. toctree::

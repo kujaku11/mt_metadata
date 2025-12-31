@@ -27,7 +27,7 @@ Welcome to MT Metadata documentation!
 
 MT Metadata is meant to be a tool to standardize both time series and transfer function metadata for magnetotelluric data.
 
-The base metadata object is structured in a flexible way to accommodate any type of metadata, you just need to formulate the standards following the format described in the documentation.  See :ref:`ref_structure` and :ref:`ref-usage` for more details. 
+The base metadata object is structured in a flexible way to accommodate any type of metadata, you just need to formulate the standards following the format described in the documentation.  See :ref:`ref-usage` for more details. 
 
 Examples
 -------------
@@ -55,7 +55,7 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     :caption: Basics of Metadata Structure
     :name: ref-structure
     
-    source/base/structure
+    usage
 
 .. toctree::
     :maxdepth: 1
@@ -105,7 +105,7 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     :maxdepth: 1
     :caption: API Reference
     
-    source/modules
+    source/api/modules
     
 
 Indices and tables

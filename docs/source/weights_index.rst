@@ -1,6 +1,7 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
+
 Weights and Weighting Specifications
 ==============================
 

@@ -28,14 +28,6 @@ mt\_metadata.transfer\_functions.io.emtfxml.metadata.citation module
    :undoc-members:
    :show-inheritance:
 
-mt\_metadata.transfer\_functions.io.emtfxml.metadata.comment module
--------------------------------------------------------------------
-
-.. automodule:: mt_metadata.transfer_functions.io.emtfxml.metadata.comment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 mt\_metadata.transfer\_functions.io.emtfxml.metadata.copyright module
 ---------------------------------------------------------------------
 
