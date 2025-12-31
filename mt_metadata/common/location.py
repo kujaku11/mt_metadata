@@ -84,9 +84,9 @@ class BasicLocation(BasicLocationNoDatum):
     ]
 
     x: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="relative distance to the center of the station",
             validation_alias=AliasChoices("x", "easting", "east"),
             json_schema_extra={
@@ -98,9 +98,9 @@ class BasicLocation(BasicLocationNoDatum):
     ]
 
     y: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="relative distance to the center of the station",
             validation_alias=AliasChoices("y", "north", "northing"),
             json_schema_extra={
@@ -112,9 +112,9 @@ class BasicLocation(BasicLocationNoDatum):
     ]
 
     z: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="relative elevation to the center of the station",
             alias=None,
             json_schema_extra={
@@ -146,9 +146,9 @@ class Location(BasicLocation):
     """
 
     latitude_uncertainty: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="uncertainty in latitude estimation in degrees",
             alias=None,
             json_schema_extra={
@@ -160,9 +160,9 @@ class Location(BasicLocation):
     ]
 
     longitude_uncertainty: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="uncertainty in longitude estimation in degrees",
             alias=None,
             json_schema_extra={
@@ -174,9 +174,9 @@ class Location(BasicLocation):
     ]
 
     elevation_uncertainty: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="uncertainty in elevation estimation",
             alias=None,
             json_schema_extra={
@@ -188,9 +188,9 @@ class Location(BasicLocation):
     ]
 
     x2: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="relative distance to the center of the station",
             validation_alias=AliasChoices("x2", "east", "easting"),
             json_schema_extra={
@@ -202,9 +202,9 @@ class Location(BasicLocation):
     ]
 
     y2: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="relative distance to the center of the station",
             validation_alias=AliasChoices("y2", "north", "northing"),
             json_schema_extra={
@@ -216,9 +216,9 @@ class Location(BasicLocation):
     ]
 
     z2: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="relative elevation to the center of the station",
             alias=None,
             json_schema_extra={
@@ -230,9 +230,9 @@ class Location(BasicLocation):
     ]
 
     x_uncertainty: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="uncertainty in longitude estimation in x-direction",
             alias=None,
             json_schema_extra={
@@ -244,9 +244,9 @@ class Location(BasicLocation):
     ]
 
     y_uncertainty: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="uncertainty in longitude estimation in y-direction",
             alias=None,
             json_schema_extra={
@@ -258,9 +258,9 @@ class Location(BasicLocation):
     ]
 
     z_uncertainty: Annotated[
-        float | None,
+        float,
         Field(
-            default=None,
+            default=0.0,
             description="uncertainty in longitude estimation in z-direction",
             alias=None,
             json_schema_extra={

@@ -159,7 +159,7 @@ class MetadataBase(DotNotationBaseModel):
         coerce_numbers_to_str=True,
     )
 
-    _skip_equals: List[str] = PrivateAttr(["processed_date"])
+    _skip_equals: List[str] = PrivateAttr(["processed_date", "creation_time"])
     _fields: dict[str, Any] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="before")
