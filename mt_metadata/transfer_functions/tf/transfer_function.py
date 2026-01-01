@@ -180,7 +180,7 @@ class TransferFunction(MetadataBase):
     coordinate_system: Annotated[
         GeographicReferenceFrameEnum,
         Field(
-            default="geographic",
+            default=GeographicReferenceFrameEnum.geographic,
             description="coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
             alias=None,
             json_schema_extra={
