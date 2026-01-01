@@ -57,21 +57,49 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     
     usage
 
+Metadata Reference
+--------------------
+
 .. toctree::
-    :maxdepth: 3
-    :caption: Metadata References
+    :maxdepth: 2
+    :caption: MetadataBase
 
     source/base_index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Common Metadata
+    
     source/common_index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Features and Weights
+
     source/features_index
     source/weights_index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Processing and Fourier Coefficients
+
     source/processing_index
     source/processing_aurora_index
     source/processing_fcs_index
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Time Series and Filters
+
     source/ts_index
     source/ts_filter_index
     source/stationxml_index
     source/notebooks/filters_example.ipynb
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Transfer Functions
+    
     source/tf_index
     source/tf_base_index
     source/tf_emtfxml_index
@@ -81,7 +109,7 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     source/tf_zonge_index
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 6
     :caption: API Reference
     
     source/api/modules

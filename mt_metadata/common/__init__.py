@@ -1,26 +1,51 @@
-# # -*- coding: utf-8 -*-
-# """
-# ======================
-# common metadata
-# ======================
+# -*- coding: utf-8 -*-
+"""
+======================
+common metadata
+======================
 
-# This module deals with metadata as defined by the MT metadata standards.
-# `metadata documentation
-# <https://github.com/kujaku11/MTarchive/blob/tables/docs/mt_metadata_guide.pdf>`_.
+There are multiple containers for each type of metadata, named appropriately.
+These are common metadata containers. They all inherit from MetadataBase.
 
-# There are multiple containers for each type of metadata, named appropriately.
-# These are common metadata containers. They all inherit from MetadataBase.
+MetadataBase Objects
+--------------------
+* MTime - Time representation with validation
+* Comment - Structured comment metadata
+* ListDict - Dictionary of lists for multi-valued attributes
+* MinMaxRange - Numeric range with min/max values
+* StartEndRange - Time or value range with start/end
+* Declination - Magnetic declination information
+* GeographicLocation - Geographic coordinates and location data
+* Orientation - Sensor orientation parameters
+* Instrument - Instrument specifications and metadata
+* Fdsn - FDSN (International Federation of Digital Seismograph Networks) metadata
+* Rating - Data quality rating information
+* DataQuality - Comprehensive data quality metrics
+* Citation - Publication and citation information
+* Copyright - Copyright and licensing details
+* Person - Person contact information
+* AuthorPerson - Author-specific metadata
+* FundingSource - Funding agency and grant information
+* Software - Software and processing tool metadata
+* TimePeriod - Time period with start/end times
+* TimePeriodDate - Time period using dates
+* Provenance - Data provenance and processing history
+* BasicLocation - Basic location without datum
+* BasicLocationNoDatum - Minimal location information
+* Location - Full location with datum and projection
+* StationLocation - Station-specific location metadata
+* Band - Frequency band definition
 
-# Created on Sun Apr 24 20:50:41 2020
+Created on Sun Apr 24 20:50:41 2020
 
-# :copyright:
-#     Jared Peacock (jpeacock@usgs.gov)
+:copyright:
+    Jared Peacock (jpeacock@usgs.gov)
 
-# :license:
-#     MIT
+:license:
+    MIT
 
 
-# """
+"""
 # isort:skip_file
 # fmt: off
 
