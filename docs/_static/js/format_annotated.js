@@ -19,35 +19,38 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if this contains an Annotated field
         if (!fullText.includes('Annotated[')) return;
         
+        // Skip if the entry appears to be truncated (ends with "default=" without a value)
+        if (fullText.match(/default=\s*$/)) {
+            console.log('Skipping truncated field:', fullText.substring(0, 50));
+            return;
+        }
+        
         // More flexible regex to handle variations in Sphinx's HTML generation
         // Pattern: fieldname (Annotated[...])
-        const match = fullText.match(/^(\w+)\s+\(Annotated\[(.+)\]\)$/);
+        let match = fullText.match(/^(\w+)\s+\(Annotated\[(.+)\]\)$/);
+        
+        let fieldName, annotatedContent, hasClosing = true;
+        
         if (!match) {
             // Try alternative pattern without closing paren-bracket
             const altMatch = fullText.match(/^(\w+)\s+\(Annotated\[(.+)$/);
             if (!altMatch) return;
             
-            const fieldName = altMatch[1];
-            const annotatedContent = altMatch[2];
-            
-            // Find where the Field/FieldInfo starts
-            const fieldMatch = annotatedContent.match(/^(.*?),\s*(Field(?:Info)?\(.*)$/);
-            if (!fieldMatch) return;
-            
-            const type = fieldMatch[1].trim();
-            const field = fieldMatch[2].trim();
-            
-            rebuildSpans(codeElement, fieldName, type, field, false);
-            return;
+            fieldName = altMatch[1];
+            annotatedContent = altMatch[2];
+            hasClosing = false;
+        } else {
+            fieldName = match[1];
+            annotatedContent = match[2];
         }
         
-        const fieldName = match[1];
-        const annotatedContent = match[2];
-        
         // Split the content on the first comma that's not inside brackets/parens
+        // Look for either "Field(" or "FieldInfo(" as the delimiter
         const { type, field } = splitAnnotatedContent(annotatedContent);
         
-        rebuildSpans(codeElement, fieldName, type, field, true);
+        if (!type || !field) return; // Skip if parsing failed
+        
+        rebuildSpans(codeElement, fieldName, type, field, hasClosing);
     });
 });
 

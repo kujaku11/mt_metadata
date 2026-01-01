@@ -107,6 +107,34 @@ dl.pydantic_field > dt.sig-object em.property:first-of-type::before {
     font-weight: 500;
 }
 
+/* Style for truncated/incomplete field entries (those without <a> wrapper and ending in "default=") */
+/* Normal fields have structure: <p><a><code>...</code></a></p> */
+/* Truncated fields have: <p><code>...</code></p> (no <a> wrapper) */
+.field-odd ul.simple li p > code.xref.py.py-obj {
+    background-color: #fff3cd;
+    border-left: 3px solid #ffc107;
+    padding: 0.3em 0.5em;
+    display: block;
+}
+
+.field-odd ul.simple li p > code.xref.py.py-obj::after {
+    content: " ⚠️ (Incomplete Documentation - Sphinx could not resolve the enum, refer to the source code.)";
+    color: #856404;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+/* Remove warning styling from properly wrapped fields */
+.field-odd ul.simple li p > a > code.xref.py.py-obj {
+    background-color: transparent !important;
+    border-left: none !important;
+    padding: 0 !important;
+}
+
+.field-odd ul.simple li p > a > code.xref.py.py-obj::after {
+    content: none !important;
+}
+
 /* Make field name stand out */
 .field-odd code.docutils.literal span.pre:first-child {
     font-weight: bold;
