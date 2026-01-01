@@ -1,8 +1,5 @@
-mt\_metadata.data.stationxml package
-====================================
-
-Module contents
----------------
+mt_metadata.data.stationxml package
+===================================
 
 .. automodule:: mt_metadata.data.stationxml
    :members:

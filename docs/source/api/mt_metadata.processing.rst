@@ -1,11 +1,16 @@
-mt\_metadata.processing package
-===============================
+mt_metadata.processing package
+==============================
+
+.. automodule:: mt_metadata.processing
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.processing.aurora
    mt_metadata.processing.fourier_coefficients
@@ -13,42 +18,10 @@ Subpackages
 Submodules
 ----------
 
-mt\_metadata.processing.short\_time\_fourier\_transform module
---------------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.processing.short_time_fourier_transform
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt\_metadata.processing.time\_series\_decimation module
--------------------------------------------------------
-
-.. automodule:: mt_metadata.processing.time_series_decimation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt\_metadata.processing.time\_series\_decimation\_basemodel module
-------------------------------------------------------------------
-
-.. automodule:: mt_metadata.processing.time_series_decimation_basemodel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt\_metadata.processing.window module
--------------------------------------
-
-.. automodule:: mt_metadata.processing.window
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.processing
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.processing.short_time_fourier_transform
+   mt_metadata.processing.time_series_decimation
+   mt_metadata.processing.time_series_decimation_basemodel
+   mt_metadata.processing.window

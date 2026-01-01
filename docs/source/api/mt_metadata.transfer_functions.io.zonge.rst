@@ -1,29 +1,23 @@
-mt\_metadata.transfer\_functions.io.zonge package
-=================================================
+mt_metadata.transfer_functions.io.zonge package
+===============================================
+
+.. automodule:: mt_metadata.transfer_functions.io.zonge
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.transfer_functions.io.zonge.metadata
 
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.io.zonge.zonge module
-------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.transfer_functions.io.zonge.zonge
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.transfer_functions.io.zonge
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.transfer_functions.io.zonge.zonge

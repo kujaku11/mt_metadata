@@ -1,29 +1,23 @@
-mt\_metadata.transfer\_functions.io.edi package
-===============================================
+mt_metadata.transfer_functions.io.edi package
+=============================================
+
+.. automodule:: mt_metadata.transfer_functions.io.edi
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.transfer_functions.io.edi.metadata
 
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.io.edi.edi module
---------------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.transfer_functions.io.edi.edi
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.transfer_functions.io.edi
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.transfer_functions.io.edi.edi

@@ -1,11 +1,16 @@
-mt\_metadata package
-====================
+mt_metadata package
+===================
+
+.. automodule:: mt_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.base
    mt_metadata.common
@@ -19,18 +24,7 @@ Subpackages
 Submodules
 ----------
 
-mt\_metadata.helper\_functions module
--------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.helper_functions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.helper_functions

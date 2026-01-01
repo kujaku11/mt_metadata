@@ -1,11 +1,16 @@
-mt\_metadata.transfer\_functions package
-========================================
+mt_metadata.transfer_functions package
+======================================
+
+.. automodule:: mt_metadata.transfer_functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.transfer_functions.io
    mt_metadata.transfer_functions.tf
@@ -13,18 +18,7 @@ Subpackages
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.core module
---------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.transfer_functions.core
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.transfer_functions
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.transfer_functions.core

@@ -23,6 +23,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath("../"))
+sys.path.insert(0, os.path.abspath("_ext"))
 
 import mt_metadata
 
@@ -47,6 +48,8 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "nbsphinx",
+    "sphinxcontrib.autodoc_pydantic",  # Better display of Pydantic Annotated fields
+    "format_annotated",  # Custom formatting for Annotated field signatures
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -117,9 +120,37 @@ html_theme_options = {
     "display_version": True,
 }
 
+# Autodoc configuration for better type hint display
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
+autodoc_type_aliases = {}
+autosummary_generate = True
+
+# Pydantic autodoc configuration for cleaner Annotated field display
+autodoc_pydantic_model_show_json = (
+    False  # Disable JSON schema (causes errors with some models)
+)
+autodoc_pydantic_model_show_config_summary = False
+autodoc_pydantic_model_show_config_member = False
+autodoc_pydantic_model_show_validator_members = False
+autodoc_pydantic_model_show_validator_summary = False
+autodoc_pydantic_field_list_validators = False
+autodoc_pydantic_field_show_constraints = True
+autodoc_pydantic_field_show_alias = False
+autodoc_pydantic_field_show_default = True
+autodoc_pydantic_field_signature_prefix = ""
+autodoc_pydantic_model_signature_prefix = "class"
+autodoc_pydantic_model_members = True
+autodoc_pydantic_model_undoc_members = True
+
+# Prevent signature truncation for better Annotated field display
+maximum_signature_line_length = None  # Don't truncate long signatures
+python_maximum_signature_line_length = None
+
 
 def setup(app):
     app.add_css_file("css/custom.css")
+    app.add_js_file("js/format_annotated.js")
 
 
 # -- Options for HTMLHelp output ---------------------------------------

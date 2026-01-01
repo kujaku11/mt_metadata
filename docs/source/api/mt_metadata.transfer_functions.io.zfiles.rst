@@ -1,29 +1,23 @@
-mt\_metadata.transfer\_functions.io.zfiles package
-==================================================
+mt_metadata.transfer_functions.io.zfiles package
+================================================
+
+.. automodule:: mt_metadata.transfer_functions.io.zfiles
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.transfer_functions.io.zfiles.metadata
 
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.io.zfiles.zmm module
------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.transfer_functions.io.zfiles.zmm
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.transfer_functions.io.zfiles
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.transfer_functions.io.zfiles.zmm

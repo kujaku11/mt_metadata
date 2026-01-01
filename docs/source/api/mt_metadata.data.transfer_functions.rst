@@ -1,8 +1,5 @@
-mt\_metadata.data.transfer\_functions package
-=============================================
-
-Module contents
----------------
+mt_metadata.data.transfer_functions package
+===========================================
 
 .. automodule:: mt_metadata.data.transfer_functions
    :members:

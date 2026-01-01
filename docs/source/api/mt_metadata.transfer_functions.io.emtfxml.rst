@@ -1,29 +1,23 @@
-mt\_metadata.transfer\_functions.io.emtfxml package
-===================================================
+mt_metadata.transfer_functions.io.emtfxml package
+=================================================
+
+.. automodule:: mt_metadata.transfer_functions.io.emtfxml
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.transfer_functions.io.emtfxml.metadata
 
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.io.emtfxml.emtfxml module
-----------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.transfer_functions.io.emtfxml.emtfxml
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.transfer_functions.io.emtfxml
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.transfer_functions.io.emtfxml.emtfxml

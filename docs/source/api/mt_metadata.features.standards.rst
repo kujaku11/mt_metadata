@@ -1,8 +1,5 @@
-mt\_metadata.features.standards package
-=======================================
-
-Module contents
----------------
+mt_metadata.features.standards package
+======================================
 
 .. automodule:: mt_metadata.features.standards
    :members:

@@ -1,29 +1,23 @@
-mt\_metadata.transfer\_functions.io.jfiles package
-==================================================
+mt_metadata.transfer_functions.io.jfiles package
+================================================
+
+.. automodule:: mt_metadata.transfer_functions.io.jfiles
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    mt_metadata.transfer_functions.io.jfiles.metadata
 
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.io.jfiles.jfile module
--------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: mt_metadata.transfer_functions.io.jfiles.jfile
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mt_metadata.transfer_functions.io.jfiles
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   mt_metadata.transfer_functions.io.jfiles.jfile

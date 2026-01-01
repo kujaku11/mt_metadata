@@ -1,8 +1,5 @@
-mt\_metadata.data.mt\_xml package
-=================================
-
-Module contents
----------------
+mt_metadata.data.mt_xml package
+===============================
 
 .. automodule:: mt_metadata.data.mt_xml
    :members:
