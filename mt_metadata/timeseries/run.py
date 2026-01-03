@@ -481,7 +481,7 @@ class Run(MetadataBase):
             logger.error(msg)
             raise TypeError(msg)
 
-    def update(self, other: Run, match: list[str] | None = None) -> None:
+    def update(self, other: Run, match: list[str] | None = []) -> None:
         """
         Update attribute values from another Run object.
 
