@@ -1,6 +1,8 @@
 # =====================================================
 # Imports
 # =====================================================
+from __future__ import annotations
+
 from collections import OrderedDict
 from typing import Annotated
 
@@ -347,17 +349,53 @@ class Run(MetadataBase):
 
         return channels
 
-    def _empty_channels_recorded(self):
+    def _empty_channels_recorded(self) -> None:
         """
-        Empty the channels recorded lists.
+        Clear all channels recorded lists.
+
+        Removes all entries from the auxiliary, electric, and magnetic
+        channels recorded lists. This is typically called before updating
+        the lists based on current channel contents.
+
+        See Also
+        --------
+        _update_channels_recorded : Update channels recorded lists from current channels
+
         """
         self.channels_recorded_auxiliary.clear()
         self.channels_recorded_electric.clear()
         self.channels_recorded_magnetic.clear()
 
-    def _update_channels_recorded(self):
+    def _update_channels_recorded(self) -> None:
         """
-        Update the channels recorded lists based on the channels in the run.
+        Update channels recorded lists based on current channels.
+
+        Scans all channels in the run and populates the appropriate
+        channels_recorded lists (auxiliary, electric, magnetic) based on
+        channel types and components. Excludes default/None components.
+
+        Notes
+        -----
+        This method is automatically called when channels are added or removed.
+        The lists are sorted alphabetically.
+
+        Excluded components:
+
+        - Auxiliary: None, 'auxiliary_default'
+        - Electric: None, 'e_default'
+        - Magnetic: None, 'h_default'
+
+        Examples
+        --------
+        >>> run = Run(id='001')
+        >>> run.add_channel(Electric(component='ex'))
+        >>> run.add_channel(Magnetic(component='hx'))
+        >>> # _update_channels_recorded is called automatically
+        >>> print(run.channels_recorded_electric)
+        ['ex']
+        >>> print(run.channels_recorded_magnetic)
+        ['hx']
+
         """
         self._empty_channels_recorded()
         aux_components = [
@@ -383,7 +421,54 @@ class Run(MetadataBase):
     # def __len__(self):
     #     return len(self.channels)
 
-    def merge(self, other, inplace=True):
+    def merge(self, other: Run, inplace: bool = True) -> Run | None:
+        """
+        Merge channels from another Run into this run.
+
+        Combines channels from two runs and updates the channels recorded lists
+        and time period.
+
+        Parameters
+        ----------
+        other : Run
+            Another Run object whose channels will be merged into this run.
+        inplace : bool, optional
+            If True, update this run and update time period. If False, return
+            a copy of the merged run (default is True).
+
+        Returns
+        -------
+        Run | None
+            If inplace is False, returns a copy of the merged Run. Otherwise None.
+
+        Raises
+        ------
+        TypeError
+            If other is not a Run object.
+
+        Examples
+        --------
+        Merge runs in place:
+
+        >>> run1 = Run(id='001')
+        >>> run1.add_channel(Electric(component='ex'))
+        >>> run2 = Run(id='002')
+        >>> run2.add_channel(Magnetic(component='hx'))
+        >>> run1.merge(run2, inplace=True)
+        >>> print(run1.channels_recorded_all)
+        ['ex', 'hx']
+
+        Merge and return new run:
+
+        >>> merged_run = run1.merge(run2, inplace=False)
+        >>> print(merged_run.channels_recorded_all)
+        ['ex', 'hx']
+
+        See Also
+        --------
+        update : Update metadata from another run
+
+        """
         if isinstance(other, Run):
             self.channels.extend(other.channels)
             self._update_channels_recorded()
@@ -396,14 +481,69 @@ class Run(MetadataBase):
             logger.error(msg)
             raise TypeError(msg)
 
-    def update(self, other, match=[]):
+    def update(self, other: Run, match: list[str] | None = None) -> None:
         """
-        Update attribute values from another like element, skipping None
+        Update attribute values from another Run object.
 
-        :param other: DESCRIPTION
-        :type other: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Copies non-None, non-default attribute values from another Run object
+        to this one. Skips empty values like None, 0.0, [], empty strings,
+        and default timestamps.
+
+        Parameters
+        ----------
+        other : Run
+            Another Run object to copy attributes from.
+        match : list[str] | None, optional
+            List of attribute names that must match between runs before updating.
+            If any don't match, raises ValueError. Typically used for 'id' to
+            ensure runs are compatible (default is None).
+
+        Raises
+        ------
+        ValueError
+            If any attributes in match list don't have equal values.
+        TypeError
+            If other is not a compatible Run type.
+
+        Examples
+        --------
+        Basic update:
+
+        >>> run1 = Run(id='001', sample_rate=256.0)
+        >>> run2 = Run(id='001', sample_rate=0.0)
+        >>> run2.acquired_by.author = 'J. Doe'
+        >>> run1.update(run2)
+        >>> print(run1.acquired_by.author)
+        'J. Doe'
+        >>> print(run1.sample_rate)  # Not updated (run2 has default 0.0)
+        256.0
+
+        Update with matching check:
+
+        >>> run1 = Run(id='001')
+        >>> run2 = Run(id='002')
+        >>> try:
+        ...     run1.update(run2, match=['id'])
+        ... except ValueError as e:
+        ...     print("IDs don't match!")
+        IDs don't match!
+
+        Notes
+        -----
+        Channel metadata is also updated. For each channel in other, if the
+        channel exists in this run, it's updated; if not, it's added.
+
+        Skipped values:
+
+        - None
+        - 0.0
+        - Empty lists []
+        - Empty strings ''
+        - Default timestamp '1980-01-01T00:00:00+00:00'
+
+        See Also
+        --------
+        merge : Merge channels from another run
 
         """
         # Check if other is a compatible Run type (handles dynamically created classes)
@@ -434,14 +574,33 @@ class Run(MetadataBase):
         for ch in other.channels:
             self.add_channel(ch)
 
-    def has_channel(self, component):
+    def has_channel(self, component: str) -> bool:
         """
-        Check to see if the channel already exists
+        Check if a channel with the given component exists in the run.
 
-        :param component: channel component to look for
-        :type component: string
-        :return: True if found, False if not
-        :rtype: boolean
+        Parameters
+        ----------
+        component : str
+            Channel component name to search for (e.g., 'ex', 'hy').
+
+        Returns
+        -------
+        bool
+            True if channel exists, False otherwise.
+
+        Examples
+        --------
+        >>> run = Run(id='001')
+        >>> run.add_channel(Electric(component='ex'))
+        >>> print(run.has_channel('ex'))
+        True
+        >>> print(run.has_channel('ey'))
+        False
+
+        See Also
+        --------
+        get_channel : Retrieve a channel object
+        channel_index : Get the index of a channel
 
         """
 
@@ -449,43 +608,167 @@ class Run(MetadataBase):
             return True
         return False
 
-    def channel_index(self, component):
+    def channel_index(self, component: str) -> int | None:
         """
-        get index of the channel in the channel list
+        Get the index of a channel in the channels_recorded_all list.
+
+        Parameters
+        ----------
+        component : str
+            Channel component name to search for (e.g., 'ex', 'hy').
+
+        Returns
+        -------
+        int | None
+            Index of the channel if found, None otherwise.
+
+        Examples
+        --------
+        >>> run = Run(id='001')
+        >>> run.add_channel(Electric(component='ex'))
+        >>> run.add_channel(Electric(component='ey'))
+        >>> run.add_channel(Magnetic(component='hx'))
+        >>> print(run.channel_index('ey'))
+        1
+        >>> print(run.channel_index('hz'))
+        None
+
+        Notes
+        -----
+        Channels are sorted alphabetically in channels_recorded_all.
+
+        See Also
+        --------
+        has_channel : Check if channel exists
+        get_channel : Retrieve channel object
+
         """
         if self.has_channel(component):
             return self.channels_recorded_all.index(component)
         return None
 
-    def get_channel(self, component):
+    def get_channel(self, component: str) -> Electric | Magnetic | Auxiliary | None:
         """
-        Get a channel
+        Retrieve a channel object by component name.
 
-        :param component: channel component to look for
-        :type component: string
-        :return: channel object based on channel type
-        :rtype: :class:`mt_metadata.timeseries.Channel`
+        Parameters
+        ----------
+        component : str
+            Channel component name to retrieve (e.g., 'ex', 'hy').
+
+        Returns
+        -------
+        Electric | Magnetic | Auxiliary | None
+            Channel object if found, None otherwise. Return type depends on
+            the channel type.
+
+        Examples
+        --------
+        >>> run = Run(id='001')
+        >>> ex = Electric(component='ex', dipole_length=100.0)
+        >>> run.add_channel(ex)
+        >>> channel = run.get_channel('ex')
+        >>> print(type(channel).__name__)
+        'Electric'
+        >>> print(channel.dipole_length)
+        100.0
+        >>> print(run.get_channel('ey'))
+        None
+
+        See Also
+        --------
+        has_channel : Check if channel exists
+        add_channel : Add a channel to the run
 
         """
 
         if self.has_channel(component):
             return self.channels[component]
 
-    def add_channel(self, channel_obj, update=True):
+    def add_channel(
+        self,
+        channel_obj: Electric | Magnetic | Auxiliary | dict | str,
+        update: bool = True,
+    ) -> None:
         """
-        Add a channel to the run.
-        If the channel already exists, update the metadata.
-        If the channel does not exist, add it to the list.
-        If the channel is a string, create a new channel object assuming the input
-        string is the component name.
+        Add or update a channel in the run.
 
-        parameters
+        If the channel already exists (matched by component), its metadata
+        is updated. If it doesn't exist, it's added to the channels list.
+        Can accept channel objects, dictionaries, or component strings.
+
+        Parameters
         ----------
-        channel_obj: channel object to add to the run
-        update: boolean to update the time period of the run
-            if True, update the time period of the run to match the channel
-            if False, do not update the time period of the run
+        channel_obj : Electric | Magnetic | Auxiliary | dict | str
+            Channel to add. Can be:
 
+            - Channel object (Electric, Magnetic, or Auxiliary)
+            - Dictionary with channel attributes (must include 'type' or 'component')
+            - String component name (e.g., 'ex', 'hy', 'temp')
+
+            If string, channel type is inferred:
+
+            - Starts with 'e' → Electric
+            - Starts with 'h' or 'b' or equals 'magnetic' → Magnetic
+            - Otherwise → Auxiliary
+
+        update : bool, optional
+            If True, update the run's time period to include this channel's
+            time period. If False, don't update time period (default is True).
+
+        Examples
+        --------
+        Add channel objects:
+
+        >>> run = Run(id='001')
+        >>> ex = Electric(component='ex', dipole_length=100.0)
+        >>> run.add_channel(ex)
+        >>> print(run.channels_recorded_electric)
+        ['ex']
+
+        Add from string (infers type):
+
+        >>> run.add_channel('hy')
+        >>> run.add_channel('temperature')
+        >>> print(run.channels_recorded_magnetic)
+        ['hy']
+        >>> print(run.channels_recorded_auxiliary)
+        ['temperature']
+
+        Add from dictionary:
+
+        >>> channel_dict = {
+        ...     'type': 'electric',
+        ...     'component': 'ey',
+        ...     'dipole_length': 95.0
+        ... }
+        >>> run.add_channel(channel_dict)
+
+        Update existing channel:
+
+        >>> ex_updated = Electric(component='ex', dipole_length=105.0)
+        >>> run.add_channel(ex_updated)  # Updates existing 'ex'
+        >>> print(run.get_channel('ex').dipole_length)
+        105.0
+
+        Add without updating time period:
+
+        >>> run.add_channel('hz', update=False)
+
+        Notes
+        -----
+        This method automatically:
+
+        - Updates channels_recorded lists
+        - Updates run time period (if update=True)
+        - Converts string/dict inputs to proper channel objects
+        - Logs when updating existing channels
+
+        See Also
+        --------
+        remove_channel : Remove a channel from the run
+        get_channel : Retrieve a channel object
+        update_time_period : Manually update time period
 
         """
         channel_obj = self._get_correct_channel_type(channel_obj)
@@ -504,12 +787,37 @@ class Run(MetadataBase):
         if update:
             self.update_time_period()
 
-    def remove_channel(self, channel_id):
+    def remove_channel(self, channel_id: str) -> None:
         """
-        remove a run from the survey
+        Remove a channel from the run.
 
-        :param component: channel component to look for
-        :type component: string
+        Parameters
+        ----------
+        channel_id : str
+            Channel component name to remove (e.g., 'ex', 'hy').
+
+        Examples
+        --------
+        >>> run = Run(id='001')
+        >>> run.add_channel(Electric(component='ex'))
+        >>> run.add_channel(Electric(component='ey'))
+        >>> print(run.channels_recorded_electric)
+        ['ex', 'ey']
+        >>> run.remove_channel('ex')
+        >>> print(run.channels_recorded_electric)
+        ['ey']
+        >>> run.remove_channel('ez')  # Doesn't exist
+        # Logs warning: Could not find ez to remove.
+
+        Notes
+        -----
+        Automatically updates the channels_recorded lists after removal.
+        Logs a warning if the channel is not found.
+
+        See Also
+        --------
+        add_channel : Add a channel to the run
+        has_channel : Check if channel exists
 
         """
 
@@ -520,36 +828,129 @@ class Run(MetadataBase):
         else:
             logger.warning(f"Could not find {channel_id} to remove.")
 
-    def update_channel_keys(self):
+    def update_channel_keys(self) -> dict[str, str]:
         """
-        Update the keys in the channels ListDict to match current channel components.
+        Update channel dictionary keys to match current component values.
 
-        This is useful when channel components have been modified after channels were
-        added to the run, ensuring that channels can be accessed by their
+        Updates the keys in the channels ListDict to match current channel
+        components. Useful when channel components have been modified after
+        channels were added, ensuring channels can be accessed by their
         current component values.
 
-        :returns: mapping of old keys to new keys
-        :rtype: dict
+        Returns
+        -------
+        dict[str, str]
+            Mapping of old keys to new keys showing what was changed.
 
-        Example:
-            >>> run = Run()
-            >>> channel = Electric()
-            >>> channel.component = ""  # empty component initially
-            >>> run.add_channel(channel)
-            >>> channel.component = "ex"  # update the component
-            >>> key_mapping = run.update_channel_keys()
-            >>> print(key_mapping)  # {'': 'ex'}
-            >>> # Now channel can be accessed as run.channels['ex']
+        Examples
+        --------
+        Fix keys after modifying components:
+
+        >>> run = Run(id='001')
+        >>> channel = Electric(component='')
+        >>> run.add_channel(channel)
+        >>> # Channel is stored with empty string key
+        >>> channel.component = 'ex'
+        >>> key_mapping = run.update_channel_keys()
+        >>> print(key_mapping)
+        {'': 'ex'}
+        >>> # Now accessible as run.channels['ex']
+        >>> print(run.get_channel('ex').component)
+        'ex'
+
+        Multiple key updates:
+
+        >>> run = Run(id='001')
+        >>> ch1 = Electric(component='e1')
+        >>> ch2 = Magnetic(component='h1')
+        >>> run.add_channel(ch1)
+        >>> run.add_channel(ch2)
+        >>> ch1.component = 'ex'
+        >>> ch2.component = 'hx'
+        >>> mapping = run.update_channel_keys()
+        >>> print(mapping)
+        {'e1': 'ex', 'h1': 'hx'}
+
+        Notes
+        -----
+        This is typically only needed if you've directly modified channel
+        component attributes after adding them to the run. Normal usage
+        doesn't require calling this method.
+
+        See Also
+        --------
+        add_channel : Add channels to the run
+        get_channel : Access channels by component
+
         """
         return self.channels.update_keys()
 
     @property
-    def n_channels(self):
+    def n_channels(self) -> int:
+        """
+        Number of channels in the run.
+
+        Returns
+        -------
+        int
+            Count of channels currently in the run.
+
+        Examples
+        --------
+        >>> run = Run(id='001')
+        >>> print(run.n_channels)
+        0
+        >>> run.add_channel('ex')
+        >>> run.add_channel('hy')
+        >>> print(run.n_channels)
+        2
+        """
         return len(self.channels)
 
-    def update_time_period(self):
+    def update_time_period(self) -> None:
         """
-        update time period from the channels
+        Update run's time period to encompass all channel time periods.
+
+        Examines all channels in the run and updates the run's start and end
+        times to include the earliest start and latest end from all channels.
+        Ignores default timestamp '1980-01-01T00:00:00+00:00'.
+
+        Examples
+        --------
+        >>> from mt_metadata.timeseries import Run, Electric
+        >>> run = Run(id='001')
+        >>> ex = Electric(component='ex')
+        >>> ex.time_period.start = '2020-01-01T00:00:00+00:00'
+        >>> ex.time_period.end = '2020-01-01T01:00:00+00:00'
+        >>> run.add_channel(ex, update=False)
+        >>> print(run.time_period.start)
+        1980-01-01T00:00:00+00:00
+        >>> run.update_time_period()
+        >>> print(run.time_period.start)
+        2020-01-01T00:00:00+00:00
+
+        Multiple channels:
+
+        >>> ey = Electric(component='ey')
+        >>> ey.time_period.start = '2020-01-01T00:30:00+00:00'
+        >>> ey.time_period.end = '2020-01-01T02:00:00+00:00'
+        >>> run.add_channel(ey, update=True)
+        >>> print(run.time_period.start)  # Uses earliest
+        2020-01-01T00:00:00+00:00
+        >>> print(run.time_period.end)  # Uses latest
+        2020-01-01T02:00:00+00:00
+
+        Notes
+        -----
+        - Only updates if channels exist (n_channels > 0)
+        - Ignores channels with default timestamp
+        - Always expands time period, never shrinks it
+        - Automatically called by add_channel() when update=True
+
+        See Also
+        --------
+        add_channel : Add channel and optionally update time period
+
         """
         if self.n_channels > 0:
             start = []
@@ -575,14 +976,82 @@ class Run(MetadataBase):
                         self.time_period.end = max(end)
 
     @classmethod
-    def _get_correct_channel_type(self, channel_obj):
+    def _get_correct_channel_type(
+        cls, channel_obj: Electric | Magnetic | Auxiliary | dict | OrderedDict | str
+    ) -> Electric | Magnetic | Auxiliary:
         """
-        Get the correct channel type based on the input channel object.
+        Convert input to the correct channel type object.
 
-        :param channel_obj: channel object to check
-        :type channel_obj: Channel
-        :return: correct channel type
-        :rtype: Channel
+        Determines the appropriate channel type (Electric, Magnetic, or
+        Auxiliary) based on the input and returns a properly typed channel
+        object. Handles string, dict, and object inputs.
+
+        Parameters
+        ----------
+        channel_obj : Electric | Magnetic | Auxiliary | dict | OrderedDict | str
+            Input to convert to a channel object. Can be:
+
+            - Channel object: returned as-is (after validation)
+            - String: component name, type inferred from first letter
+            - Dict: must contain 'type' or 'component' key
+
+        Returns
+        -------
+        Electric | Magnetic | Auxiliary
+            Properly typed channel object.
+
+        Raises
+        ------
+        ValueError
+            If channel_obj is a channel with None component (except Auxiliary),
+            or if input type is not supported.
+        KeyError
+            If dict input doesn't contain required keys.
+
+        Examples
+        --------
+        From string:
+
+        >>> channel = Run._get_correct_channel_type('ex')
+        >>> print(type(channel).__name__)
+        'Electric'
+        >>> print(channel.component)
+        'ex'
+
+        From dict:
+
+        >>> ch_dict = {'type': 'magnetic', 'component': 'hx'}
+        >>> channel = Run._get_correct_channel_type(ch_dict)
+        >>> print(type(channel).__name__)
+        'Magnetic'
+
+        Type inference from component letter:
+
+        >>> Run._get_correct_channel_type('ey')  # 'e' → Electric
+        <Electric ...>
+        >>> Run._get_correct_channel_type('hz')  # 'h' → Magnetic
+        <Magnetic ...>
+        >>> Run._get_correct_channel_type('temp')  # other → Auxiliary
+        <Auxiliary ...>
+
+        Notes
+        -----
+        Type inference rules:
+
+        **From string component:**
+
+        - Starts with 'e' → Electric
+        - Starts with 'h', 'b', or equals 'magnetic' → Magnetic
+        - Anything else → Auxiliary
+
+        **From dict:**
+
+        - Uses 'type' key if present, otherwise first letter of 'component'
+        - Same inference rules apply
+
+        See Also
+        --------
+        add_channel : Add a channel using this type detection
 
         """
         if isinstance(channel_obj, str):
