@@ -333,4 +333,8 @@ class ListDict:
 
     def to_dict(self, single=False, nested=False, required=False) -> None:
         """ """
-        return None
+        raise NotImplementedError("to_dict method not implemented yet")
+
+    def clear(self) -> None:
+        """Clear all items from the ListDict."""
+        self._home.clear()
