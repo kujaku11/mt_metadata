@@ -332,5 +332,9 @@ class ListDict:
         return updates
 
     def to_dict(self, single=False, nested=False, required=False) -> None:
-        """ """
+        """need to implement this method"""
         return None
+
+    def clear(self) -> None:
+        """Clear all items from the ListDict."""
+        self._home.clear()
