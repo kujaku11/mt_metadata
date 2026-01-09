@@ -213,11 +213,11 @@ def _parse_string(dt_str: str) -> datetime.datetime:
                 return dtparser(dt_str, dayfirst=True)
             except ValueError:
                 msg = (
-                    "Could not parse string %s check formatting, "
+                    f"Could not parse string {dt_str} check formatting, "
                     "should be YYYY-MM-DDThh:mm:ss.ns"
                 )
-                logger.error(msg, dt_str)
-                raise ValueError(msg % dt_str)
+                logger.error(msg)
+                raise ValueError(msg)
 
 
 def _fix_out_of_bounds_time_stamp(dt):
