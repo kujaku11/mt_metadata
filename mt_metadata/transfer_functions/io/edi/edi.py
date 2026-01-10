@@ -202,8 +202,8 @@ class EDI:
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.name}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start}")
         lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
         lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
@@ -1092,9 +1092,9 @@ class EDI:
                             sm.transfer_function.remote_references.append(value)
                         elif key in ["remote_references.geographic_name"]:
                             try:
-                                sm.transfer_function.remote_references[-1] = (
-                                    f"{value}.{sm.transfer_function.remote_references[-1]}"
-                                )
+                                sm.transfer_function.remote_references[
+                                    -1
+                                ] = f"{value}.{sm.transfer_function.remote_references[-1]}"
                             except IndexError:
                                 sm.transfer_function.remote_references.append(value)
                         else:
@@ -1269,9 +1269,9 @@ class EDI:
                     if ch_key not in self._channel_skip_list:
                         if ch_value in NULL_VALUES:
                             continue
-                        self.Info.info_dict[f"{run.id}.{ch.component}.{ch_key}"] = (
-                            ch_value
-                        )
+                        self.Info.info_dict[
+                            f"{run.id}.{ch.component}.{ch_key}"
+                        ] = ch_value
                 # write station information
                 self.Measurement.from_metadata(ch)
                 # add channel id to data section
