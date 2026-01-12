@@ -620,8 +620,11 @@ class Information(MetadataBase):
                 continue
             if isinstance(value, list):
                 if len(value) > 0:
+                    # filters as a string causes an infinite loop for some reason
+                    # so skip them for now.
                     if isinstance(value[0], dict):
-                        value = str(value)
+                        continue
+                        # value = str(value)
                 value = f"[{', '.join(value)}]"
             elif isinstance(value, str):
                 value = value.strip()
