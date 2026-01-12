@@ -44,6 +44,20 @@ class Electrode(MetadataBase):
         ),
     ]
 
+    value: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="Electrode value",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["Ag-AgCl"],
+            },
+        ),
+    ]
+
     comments: Annotated[
         Comment,
         Field(
