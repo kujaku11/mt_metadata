@@ -45,9 +45,9 @@ class Electrode(MetadataBase):
     ]
 
     value: Annotated[
-        float | None,
+        str,
         Field(
-            default=None,
+            default="",
             description="Electrode value",
             alias=None,
             json_schema_extra={
