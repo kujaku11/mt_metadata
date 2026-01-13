@@ -2414,6 +2414,13 @@ class TF:
             Try to get elevation from US National Map, defaults to True
         kwargs: dict
             Keyword arguments for ZMM object
+            Can include channel_nomenclature, inverse_channel_nomenclature
+            calculate_impedance : bool, optional
+                If True, calculate impedance in the provided reference frame of the
+                channel metadata, by default True
+            use_declination : bool, optional
+                If True, rotate impedance to true north using declination value in metadata,
+                by default False
 
         """
 
@@ -2434,16 +2441,25 @@ class TF:
 
         for tf_key, j_key in k_dict.items():
             setattr(self, tf_key, getattr(zmm_obj, j_key))
+
         self._transfer_function["transfer_function"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
         ] = zmm_obj.dataset.transfer_function.loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
         ]
+
+        self._transfer_function["transfer_function_error"].loc[
+            dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
+        ] = zmm_obj.dataset.transfer_function_error.loc[
+            dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
+        ]
+
         self._transfer_function["inverse_signal_power"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
         ] = zmm_obj.dataset.inverse_signal_power.loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
         ]
+
         self._transfer_function["residual_covariance"].loc[
             dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)
         ] = zmm_obj.dataset.residual_covariance.loc[
@@ -2451,7 +2467,8 @@ class TF:
         ]
 
         self._compute_error_from_covariance()
-        self._rotation_angle = -1 * zmm_obj.declination
+        if kwargs.get("use_declination", False):
+            self._rotation_angle = -1 * zmm_obj.declination
 
     def to_zrr(self) -> ZMM:
         """

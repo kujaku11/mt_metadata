@@ -487,7 +487,7 @@ class ZMM(ZMMHeader):
                 "output": self._ch_output_dict["all"],
                 "input": self._ch_input_dict["all"],
             },
-            name="error",
+            name="transfer_function_error",
         )
 
         inv_signal_power = xr.DataArray(
@@ -557,7 +557,13 @@ class ZMM(ZMMHeader):
         #    this dimension is hard-coded
         self.sigma_s = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
 
-    def read(self, fn: str | Path | None = None, get_elevation: bool = False) -> None:
+    def read(
+        self,
+        fn: str | Path | None = None,
+        get_elevation: bool = False,
+        calculate_impedance: bool = True,
+        use_declination: bool = False,
+    ) -> None:
         """
         Read in Egbert zrr/zmm file
 
@@ -568,6 +574,14 @@ class ZMM(ZMMHeader):
 
         get_elevation : bool, optional
             If True, fetch elevation from the National Map, by default False
+
+        calculate_impedance : bool, optional
+            If True, calculate impedance in the provided reference frame of the
+            channel metadata, by default True
+
+        use_declination : bool, optional
+            If True, rotate impedance to true north using declination value in metadata,
+            by default False
 
         Raises
         ------
@@ -591,7 +605,9 @@ class ZMM(ZMMHeader):
             self._fill_tf_array_from_block(data_block["tf"], ii)
             self._fill_sig_array_from_block(data_block["sig"], ii)
             self._fill_res_array_from_block(data_block["res"], ii)
-        self._fill_dataset()
+        self._fill_dataset(
+            rotate_impedance=calculate_impedance, use_declination=use_declination
+        )
 
         self.station_metadata.id = self.station
         self.station_metadata.data_type = "MT"
@@ -831,7 +847,9 @@ class ZMM(ZMMHeader):
                     self.sigma_e[index, jj, kk] = values[kk]
                     self.sigma_e[index, kk, jj] = values[kk].conjugate()
 
-    def _fill_dataset(self) -> None:
+    def _fill_dataset(
+        self, rotate_impedance: bool = False, use_declination: bool = False
+    ) -> None:
         """
         fill the dataset
 
@@ -842,9 +860,31 @@ class ZMM(ZMMHeader):
 
         self.dataset = self._initialize_transfer_function(periods=self.periods)
 
-        self.dataset.transfer_function.loc[
-            dict(input=self.input_channels, output=self.output_channels)
-        ] = self.transfer_functions
+        if rotate_impedance:
+            if use_declination:
+                angle = self.declination
+            else:
+                angle = 0.0
+            z, z_err = self.calculate_impedance(angle=angle)
+            self.dataset.transfer_function.loc[
+                dict(input=self._hx_hy, output=self._ex_ey)
+            ] = z
+            self.dataset.transfer_function_error.loc[
+                dict(input=self._hx_hy, output=self._ex_ey)
+            ] = z_err
+
+            tipper, tipper_err = self.calculate_tippers(angle=angle)
+            self.dataset.transfer_function.loc[
+                dict(input=self._hx_hy, output=[self._hz])
+            ] = tipper
+            self.dataset.transfer_function_error.loc[
+                dict(input=self._hx_hy, output=[self._hz])
+            ] = tipper_err
+        else:
+            self.dataset.transfer_function.loc[
+                dict(input=self.input_channels, output=self.output_channels)
+            ] = self.transfer_functions
+
         self.dataset.inverse_signal_power.loc[
             dict(input=self.input_channels, output=self.input_channels)
         ] = self.sigma_s
