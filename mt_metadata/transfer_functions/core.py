@@ -2427,7 +2427,14 @@ class TF:
         if isinstance(zmm_obj, (str, Path)):
             self._fn = Path(zmm_obj)
             zmm_obj = ZMM(**kwargs)
-            zmm_obj.read(self._fn, get_elevation=get_elevation)
+            zmm_obj.read(
+                self._fn,
+                get_elevation=get_elevation,
+                rotate_to_measurement_coordinates=kwargs.get(
+                    "rotate_to_measurement_coordinates", True
+                ),
+                use_declination=kwargs.get("use_declination", False),
+            )
         if not isinstance(zmm_obj, ZMM):
             raise TypeError(f"Input must be a ZMM object not {type(zmm_obj)}")
         self.decimation_dict = zmm_obj.decimation_dict
