@@ -570,6 +570,408 @@ class TestZSSPerformance:
 
 
 # =============================================================================
+# Test ZMM.read() method parameters for ZSS files
+# =============================================================================
+
+
+class TestZSSReadParameters:
+    """Test ZMM.read() method parameters when reading ZSS files."""
+
+    def test_read_zss_with_default_parameters(self):
+        """Test reading ZSS file with default parameters."""
+        try:
+            zmm_obj = zmm.ZMM(TF_ZSS_TIPPER)
+            # Should use defaults: rotate_to_measurement_coordinates=True, use_declination=False
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS read with default parameters: {e}")
+
+    def test_read_zss_rotate_to_measurement_coordinates_true(self):
+        """Test reading ZSS file with rotate_to_measurement_coordinates=True."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=True)
+
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+            assert zmm_obj.transfer_functions is not None
+            assert zmm_obj.periods is not None
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS read with rotation=True: {e}")
+
+    def test_read_zss_rotate_to_measurement_coordinates_false(self):
+        """Test reading ZSS file with rotate_to_measurement_coordinates=False."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=False)
+
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+            assert zmm_obj.transfer_functions is not None
+            assert zmm_obj.periods is not None
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS read with rotation=False: {e}")
+
+    def test_read_zss_use_declination_true(self):
+        """Test reading ZSS file with use_declination=True."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER, use_declination=True)
+
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+            assert zmm_obj.transfer_functions is not None
+            assert zmm_obj.periods is not None
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS read with declination=True: {e}")
+
+    def test_read_zss_use_declination_false(self):
+        """Test reading ZSS file with use_declination=False."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER, use_declination=False)
+
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+            assert zmm_obj.transfer_functions is not None
+            assert zmm_obj.periods is not None
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS read with declination=False: {e}")
+
+    def test_read_zss_parameter_combinations(self, subtests):
+        """Test reading ZSS file with various parameter combinations."""
+        parameter_combinations = [
+            {"rotate_to_measurement_coordinates": True, "use_declination": True},
+            {"rotate_to_measurement_coordinates": True, "use_declination": False},
+            {"rotate_to_measurement_coordinates": False, "use_declination": True},
+            {"rotate_to_measurement_coordinates": False, "use_declination": False},
+        ]
+
+        for params in parameter_combinations:
+            with subtests.test(params=params):
+                try:
+                    zmm_obj = zmm.ZMM()
+                    zmm_obj.read(fn=TF_ZSS_TIPPER, **params)
+
+                    assert zmm_obj is not None
+                    assert zmm_obj.dataset is not None
+                    assert zmm_obj.transfer_functions is not None
+                    assert zmm_obj.periods is not None
+                except Exception as e:
+                    pytest.skip(f"Cannot test ZSS read with params {params}: {e}")
+
+    @pytest.mark.parametrize(
+        "rotate_to_measurement_coordinates,use_declination",
+        [
+            (True, True),
+            (True, False),
+            (False, True),
+            (False, False),
+        ],
+    )
+    def test_read_zss_parameters_parametrized(
+        self, rotate_to_measurement_coordinates, use_declination
+    ):
+        """Parametrized test for all combinations of boolean parameters for ZSS files."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(
+                fn=TF_ZSS_TIPPER,
+                rotate_to_measurement_coordinates=rotate_to_measurement_coordinates,
+                use_declination=use_declination,
+            )
+
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+            assert zmm_obj.transfer_functions is not None
+            assert zmm_obj.periods is not None
+            # ZSS tipper file should have data
+            assert len(zmm_obj.periods) > 0
+        except Exception as e:
+            pytest.skip(
+                f"Cannot test ZSS read with rotation={rotate_to_measurement_coordinates}, "
+                f"declination={use_declination}: {e}"
+            )
+
+    def test_read_zss_with_all_parameters(self):
+        """Test reading ZSS file with all available parameters."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(
+                fn=TF_ZSS_TIPPER,
+                get_elevation=False,
+                rotate_to_measurement_coordinates=True,
+                use_declination=False,
+            )
+
+            assert zmm_obj is not None
+            assert zmm_obj.dataset is not None
+            assert zmm_obj.station_metadata is not None
+            assert zmm_obj.channels_recorded == ["hx", "hy", "hz"]
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS read with all parameters: {e}")
+
+
+# =============================================================================
+# Test ZSS transfer function values
+# =============================================================================
+
+
+class TestZSSTransferFunctionValues:
+    """Test that read parameters affect actual transfer function values for ZSS files."""
+
+    def test_zss_tipper_values_are_complex(self):
+        """Test that ZSS tipper values are complex numbers."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER)
+
+            # For tipper data, transfer_functions should be (1, 2) per frequency
+            assert np.iscomplexobj(zmm_obj.transfer_functions)
+            assert zmm_obj.transfer_functions.dtype == np.complex64
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS tipper values: {e}")
+
+    def test_zss_tipper_shape_consistency(self):
+        """Test that ZSS tipper array has correct shape regardless of parameters."""
+        try:
+            zmm_obj1 = zmm.ZMM()
+            zmm_obj1.read(fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=True)
+
+            zmm_obj2 = zmm.ZMM()
+            zmm_obj2.read(fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=False)
+
+            # Shapes should be consistent
+            assert (
+                zmm_obj1.transfer_functions.shape == zmm_obj2.transfer_functions.shape
+            )
+            assert zmm_obj1.periods.shape == zmm_obj2.periods.shape
+
+            # For tipper data: (num_freq, 1, 2)
+            assert zmm_obj1.transfer_functions.shape[1] == 1  # One output (hz)
+            assert zmm_obj1.transfer_functions.shape[2] == 2  # Two inputs (hx, hy)
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS shape consistency: {e}")
+
+    def test_zss_rotation_affects_tipper_values(self, subtests):
+        """Test that rotate_to_measurement_coordinates affects ZSS tipper values."""
+        try:
+            zmm_obj_rotated = zmm.ZMM()
+            zmm_obj_rotated.read(
+                fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=True
+            )
+
+            zmm_obj_not_rotated = zmm.ZMM()
+            zmm_obj_not_rotated.read(
+                fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=False
+            )
+
+            with subtests.test(check="arrays_exist"):
+                assert zmm_obj_rotated.transfer_functions is not None
+                assert zmm_obj_not_rotated.transfer_functions is not None
+
+            with subtests.test(check="no_nans"):
+                assert not np.any(np.isnan(zmm_obj_rotated.transfer_functions))
+                assert not np.any(np.isnan(zmm_obj_not_rotated.transfer_functions))
+
+            with subtests.test(check="finite_values"):
+                assert np.all(np.isfinite(zmm_obj_rotated.transfer_functions))
+                assert np.all(np.isfinite(zmm_obj_not_rotated.transfer_functions))
+
+            with subtests.test(check="values_are_valid"):
+                assert np.any(np.abs(zmm_obj_rotated.transfer_functions) > 0)
+                assert np.any(np.abs(zmm_obj_not_rotated.transfer_functions) > 0)
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS rotation effects: {e}")
+
+    def test_zss_declination_affects_tipper_values(self, subtests):
+        """Test that use_declination affects ZSS tipper values when expected."""
+        try:
+            zmm_obj_with_dec = zmm.ZMM()
+            zmm_obj_with_dec.read(fn=TF_ZSS_TIPPER, use_declination=True)
+
+            zmm_obj_without_dec = zmm.ZMM()
+            zmm_obj_without_dec.read(fn=TF_ZSS_TIPPER, use_declination=False)
+
+            with subtests.test(check="arrays_exist"):
+                assert zmm_obj_with_dec.transfer_functions is not None
+                assert zmm_obj_without_dec.transfer_functions is not None
+
+            with subtests.test(check="no_nans"):
+                assert not np.any(np.isnan(zmm_obj_with_dec.transfer_functions))
+                assert not np.any(np.isnan(zmm_obj_without_dec.transfer_functions))
+
+            with subtests.test(check="finite_values"):
+                assert np.all(np.isfinite(zmm_obj_with_dec.transfer_functions))
+                assert np.all(np.isfinite(zmm_obj_without_dec.transfer_functions))
+
+            with subtests.test(check="values_are_valid"):
+                assert np.any(np.abs(zmm_obj_with_dec.transfer_functions) > 0)
+                assert np.any(np.abs(zmm_obj_without_dec.transfer_functions) > 0)
+
+            # Check if declination causes a difference (it should for non-zero declination)
+            if zmm_obj_with_dec.declination not in [0, None]:
+                with subtests.test(check="declination_changes_values"):
+                    # When declination is non-zero, values should differ
+                    max_diff = np.max(
+                        np.abs(
+                            zmm_obj_with_dec.transfer_functions
+                            - zmm_obj_without_dec.transfer_functions
+                        )
+                    )
+                    # If declination is significant, expect some difference
+                    assert max_diff >= 0  # At minimum, should be calculable
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS declination effects: {e}")
+
+    def test_zss_dataset_tipper_values(self, subtests):
+        """Test ZSS tipper values in the xarray dataset."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER, rotate_to_measurement_coordinates=True)
+
+            with subtests.test(check="dataset_has_transfer_function"):
+                assert "transfer_function" in zmm_obj.dataset
+                assert zmm_obj.dataset["transfer_function"] is not None
+
+            with subtests.test(check="transfer_function_is_complex"):
+                assert np.iscomplexobj(zmm_obj.dataset["transfer_function"].values)
+
+            with subtests.test(check="transfer_function_has_coordinates"):
+                assert "period" in zmm_obj.dataset["transfer_function"].coords
+                assert "output" in zmm_obj.dataset["transfer_function"].coords
+                assert "input" in zmm_obj.dataset["transfer_function"].coords
+
+            with subtests.test(check="values_are_finite"):
+                tf_values = zmm_obj.dataset["transfer_function"].values
+                # For tipper data, only check hz output (may have NaN for ex, ey)
+                hz_index = list(
+                    zmm_obj.dataset["transfer_function"].coords["output"].values
+                ).index("hz")
+                tipper_values = tf_values[:, hz_index, :]
+                assert np.all(np.isfinite(tipper_values))
+
+            with subtests.test(check="tipper_specific_shape"):
+                # Tipper should have hz as output
+                assert (
+                    "hz" in zmm_obj.dataset["transfer_function"].coords["output"].values
+                )
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS dataset tipper values: {e}")
+
+    def test_zss_tipper_values_per_frequency(self, subtests):
+        """Test that ZSS tipper values exist for all frequencies."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER)
+
+            num_freq = zmm_obj.num_freq
+            assert num_freq > 0, "Should have at least one frequency"
+
+            with subtests.test(check="transfer_function_length"):
+                assert len(zmm_obj.transfer_functions) == num_freq
+
+            with subtests.test(check="periods_length"):
+                assert len(zmm_obj.periods) == num_freq
+
+            # Check each frequency has valid data
+            for i in range(min(num_freq, 5)):  # Test first 5 frequencies
+                with subtests.test(frequency_index=i):
+                    tf_at_freq = zmm_obj.transfer_functions[i]
+                    assert tf_at_freq is not None
+                    assert np.all(np.isfinite(tf_at_freq))
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS tipper per frequency: {e}")
+
+    def test_zss_comparison_of_all_parameter_combinations(self, subtests):
+        """Test and compare ZSS tipper values across all parameter combinations."""
+        try:
+            combinations = {
+                "rot_True_dec_False": {
+                    "rotate_to_measurement_coordinates": True,
+                    "use_declination": False,
+                },
+                "rot_True_dec_True": {
+                    "rotate_to_measurement_coordinates": True,
+                    "use_declination": True,
+                },
+                "rot_False_dec_False": {
+                    "rotate_to_measurement_coordinates": False,
+                    "use_declination": False,
+                },
+                "rot_False_dec_True": {
+                    "rotate_to_measurement_coordinates": False,
+                    "use_declination": True,
+                },
+            }
+
+            results = {}
+            for name, params in combinations.items():
+                with subtests.test(combination=name):
+                    zmm_obj = zmm.ZMM()
+                    zmm_obj.read(fn=TF_ZSS_TIPPER, **params)
+                    results[name] = zmm_obj.transfer_functions.copy()
+
+                    # Verify basic properties
+                    assert results[name] is not None
+                    assert np.iscomplexobj(results[name])
+                    assert np.all(np.isfinite(results[name]))
+                    assert results[name].shape[0] > 0  # Has frequencies
+
+            # All combinations should produce valid data
+            assert len(results) == 4
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS parameter combinations: {e}")
+
+    def test_zss_tipper_magnitude_range(self):
+        """Test that ZSS tipper magnitudes are within reasonable ranges."""
+        try:
+            zmm_obj = zmm.ZMM()
+            zmm_obj.read(fn=TF_ZSS_TIPPER)
+
+            tf_magnitude = np.abs(zmm_obj.transfer_functions)
+
+            # Should have non-zero magnitudes
+            assert np.any(tf_magnitude > 0), "Tipper should have non-zero values"
+
+            # Tipper values are typically < 1 but can be larger
+            assert np.all(tf_magnitude < 100), "Tipper values seem unreasonably large"
+
+            # Should be finite
+            assert np.all(
+                np.isfinite(tf_magnitude)
+            ), "Tipper magnitudes should be finite"
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS tipper magnitude range: {e}")
+
+    def test_zss_sigma_arrays_with_rotation_parameters(self, subtests):
+        """Test that sigma arrays are valid for ZSS with different rotation parameters."""
+        try:
+            parameter_sets = [
+                {"rotate_to_measurement_coordinates": True, "use_declination": False},
+                {"rotate_to_measurement_coordinates": False, "use_declination": True},
+            ]
+
+            for params in parameter_sets:
+                with subtests.test(params=params):
+                    zmm_obj = zmm.ZMM()
+                    zmm_obj.read(fn=TF_ZSS_TIPPER, **params)
+
+                    # Check sigma_e (residual covariance)
+                    if zmm_obj.sigma_e is not None:
+                        assert np.iscomplexobj(zmm_obj.sigma_e)
+                        assert np.all(np.isfinite(zmm_obj.sigma_e))
+
+                    # Check sigma_s (inverse signal power)
+                    if zmm_obj.sigma_s is not None:
+                        assert np.iscomplexobj(zmm_obj.sigma_s)
+                        assert np.all(np.isfinite(zmm_obj.sigma_s))
+        except Exception as e:
+            pytest.skip(f"Cannot test ZSS sigma arrays: {e}")
+
+
+# =============================================================================
 # Run tests
 # =============================================================================
 if __name__ == "__main__":

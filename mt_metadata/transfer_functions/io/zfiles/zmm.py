@@ -487,7 +487,7 @@ class ZMM(ZMMHeader):
                 "output": self._ch_output_dict["all"],
                 "input": self._ch_input_dict["all"],
             },
-            name="error",
+            name="transfer_function_error",
         )
 
         inv_signal_power = xr.DataArray(
@@ -557,7 +557,13 @@ class ZMM(ZMMHeader):
         #    this dimension is hard-coded
         self.sigma_s = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
 
-    def read(self, fn: str | Path | None = None, get_elevation: bool = False) -> None:
+    def read(
+        self,
+        fn: str | Path | None = None,
+        get_elevation: bool = False,
+        rotate_to_measurement_coordinates: bool = True,
+        use_declination: bool = False,
+    ) -> None:
         """
         Read in Egbert zrr/zmm file
 
@@ -568,6 +574,14 @@ class ZMM(ZMMHeader):
 
         get_elevation : bool, optional
             If True, fetch elevation from the National Map, by default False
+
+        rotate_to_measurement_coordinates : bool, optional
+            If True, rotate impedance to the provided reference frame of the
+            channel metadata, by default True
+
+        use_declination : bool, optional
+            If True, rotate impedance to true north using declination value in metadata,
+            by default False
 
         Raises
         ------
@@ -591,7 +605,10 @@ class ZMM(ZMMHeader):
             self._fill_tf_array_from_block(data_block["tf"], ii)
             self._fill_sig_array_from_block(data_block["sig"], ii)
             self._fill_res_array_from_block(data_block["res"], ii)
-        self._fill_dataset()
+        self._fill_dataset(
+            rotate_to_measurement_coordinates=rotate_to_measurement_coordinates,
+            use_declination=use_declination,
+        )
 
         self.station_metadata.id = self.station
         self.station_metadata.data_type = "MT"
@@ -831,20 +848,54 @@ class ZMM(ZMMHeader):
                     self.sigma_e[index, jj, kk] = values[kk]
                     self.sigma_e[index, kk, jj] = values[kk].conjugate()
 
-    def _fill_dataset(self) -> None:
+    def _fill_dataset(
+        self,
+        rotate_to_measurement_coordinates: bool = False,
+        use_declination: bool = False,
+    ) -> None:
         """
-        fill the dataset
+        fill the xarray dataset with the transfer function data
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        rotate_to_measurement_coordinates : bool, optional
+            Whether to rotate the transfer functions to measurement coordinates.
+        use_declination : bool, optional
+            Whether to use declination for rotation.
 
         """
 
         self.dataset = self._initialize_transfer_function(periods=self.periods)
 
-        self.dataset.transfer_function.loc[
-            dict(input=self.input_channels, output=self.output_channels)
-        ] = self.transfer_functions
+        if rotate_to_measurement_coordinates:
+            logger.info(
+                "Rotating transfer functions to measurement coordinates according to "
+                "the channel metadata."
+            )
+            if use_declination:
+                angle = -1 * self.declination
+            else:
+                angle = 0.0
+            z, z_err = self.calculate_impedance(angle=angle)
+            self.dataset.transfer_function.loc[
+                dict(input=self._hx_hy, output=self._ex_ey)
+            ] = z
+            self.dataset.transfer_function_error.loc[
+                dict(input=self._hx_hy, output=self._ex_ey)
+            ] = z_err
+
+            tipper, tipper_err = self.calculate_tippers(angle=angle)
+            self.dataset.transfer_function.loc[
+                dict(input=self._hx_hy, output=[self._hz])
+            ] = tipper
+            self.dataset.transfer_function_error.loc[
+                dict(input=self._hx_hy, output=[self._hz])
+            ] = tipper_err
+        else:
+            self.dataset.transfer_function.loc[
+                dict(input=self.input_channels, output=self.output_channels)
+            ] = self.transfer_functions
+
         self.dataset.inverse_signal_power.loc[
             dict(input=self.input_channels, output=self.input_channels)
         ] = self.sigma_s
@@ -854,7 +905,9 @@ class ZMM(ZMMHeader):
 
     def calculate_impedance(
         self, angle: float = 0.0
-    ) -> tuple[np.typing.NDArray[np.complex64], np.typing.NDArray[np.float64]]:
+    ) -> tuple[
+        np.typing.NDArray[np.complex64] | None, np.typing.NDArray[np.float64] | None
+    ]:
         """
         calculate the impedances from the transfer functions
 
@@ -865,21 +918,54 @@ class ZMM(ZMMHeader):
 
         Returns
         -------
-        None
+        z : np.ndarray | None
+            The impedance tensor.
+        error : np.ndarray | None
+            The impedance tensor error.
+
         """
+
+        if self.ex is None or self.ey is None or self.hx is None or self.hy is None:
+            msg = (
+                "Cannot return impedance data because these TFs do not "
+                "contain the required electric and magnetic fields as "
+                "predicted and predictor channels. Returning None."
+            )
+            logger.error(msg)
+            return None, None
 
         # check to see if there are actually electric fields in the TFs
         if not hasattr(self, "ex") or not hasattr(self, "ey"):
             msg = (
                 "Cannot return apparent resistivity and phase "
                 "data because these TFs do not contain electric "
-                "fields as a predicted channel."
+                "fields as a predicted channel. Returning None."
             )
             logger.error(msg)
-            raise ZMMError(msg)
+            return None, None
         # transform the TFs first...
         # build transformation matrix for predictor channels
         #    (horizontal magnetic fields)
+        if self.hx.azimuth == self.hy.azimuth:
+            msg = (
+                "Cannot rotate impedance tensor because Hx and Hy have "
+                f"the same azimuth. {self.hx.azimuth}. Check channel "
+                f"metadata in {self.fn}. Returning None."
+            )
+            logger.critical(msg)
+            return None, None
+
+        if self.ex.azimuth == self.ey.azimuth:
+            msg = (
+                "Cannot rotate impedance tensor because Ex and Ey have "
+                f"the same azimuth. {self.ex.azimuth}. Check channel "
+                f"metadata in {self.fn}. Returning None."
+            )
+            logger.critical(msg)
+            return None, None
+
+        # build transformation matrix for predictor channels
+
         hx_index = self.hx.index
         hy_index = self.hy.index
         u = np.eye(2, 2)
