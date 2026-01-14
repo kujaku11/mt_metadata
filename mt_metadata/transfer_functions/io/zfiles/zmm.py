@@ -854,10 +854,14 @@ class ZMM(ZMMHeader):
         use_declination: bool = False,
     ) -> None:
         """
-        fill the dataset
+        fill the xarray dataset with the transfer function data
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        rotate_to_measurement_coordinates : bool, optional
+            Whether to rotate the transfer functions to measurement coordinates.
+        use_declination : bool, optional
+            Whether to use declination for rotation.
 
         """
 
