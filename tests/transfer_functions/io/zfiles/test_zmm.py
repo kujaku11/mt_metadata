@@ -353,7 +353,7 @@ class TestZMMDatasetInitialization:
 
         assert dataset is not None
         assert "transfer_function" in dataset
-        assert "error" in dataset
+        assert "transfer_function_error" in dataset
         assert "inverse_signal_power" in dataset
         assert "residual_covariance" in dataset
 

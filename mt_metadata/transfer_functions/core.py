@@ -2415,8 +2415,8 @@ class TF:
         kwargs: dict
             Keyword arguments for ZMM object
             Can include channel_nomenclature, inverse_channel_nomenclature
-            calculate_impedance : bool, optional
-                If True, calculate impedance in the provided reference frame of the
+            rotate_to_measurement_coordinates : bool, optional
+                If True, rotate impedance to the provided reference frame of the
                 channel metadata, by default True
             use_declination : bool, optional
                 If True, rotate impedance to true north using declination value in metadata,
