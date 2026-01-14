@@ -1040,11 +1040,14 @@ class ZMM(ZMMHeader):
 
         # check to see if there is a vertical magnetic field in the TFs
         if self.hz is None:
-            raise ZMMError(
+            msg = (
                 "Cannot return tipper data because the TFs do not "
                 "contain the vertical magnetic field as a "
-                "predicted channel."
+                "predicted channel. Returning None."
             )
+            logger.warning(msg)
+            return None, None
+
         # transform the TFs first...
         # build transformation matrix for predictor channels
         #    (horizontal magnetic fields)
