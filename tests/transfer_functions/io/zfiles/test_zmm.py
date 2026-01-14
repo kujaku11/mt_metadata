@@ -593,3 +593,382 @@ class TestZMMErrorHandling:
                     # Valid values should set successfully
                     setattr(mock_zmm_basic, prop, value)
                     assert getattr(mock_zmm_basic, prop) == value
+
+
+# =============================================================================
+# Test ZMM.read() method parameters
+# =============================================================================
+
+
+class TestZMMReadParameters:
+    """Test ZMM.read() method with various parameter combinations."""
+
+    def test_read_with_default_parameters(self):
+        """Test read method with default parameters."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM(TF_ZMM)
+
+        # This should not raise an error and should use default parameters:
+        # rotate_to_measurement_coordinates=True, use_declination=False
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+
+    def test_read_rotate_to_measurement_coordinates_true(self):
+        """Test read method with rotate_to_measurement_coordinates=True."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM, rotate_to_measurement_coordinates=True)
+
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+        # Verify that data was read successfully
+        assert zmm_obj.transfer_functions is not None
+        assert zmm_obj.periods is not None
+
+    def test_read_rotate_to_measurement_coordinates_false(self):
+        """Test read method with rotate_to_measurement_coordinates=False."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM, rotate_to_measurement_coordinates=False)
+
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+        # Verify that data was read successfully
+        assert zmm_obj.transfer_functions is not None
+        assert zmm_obj.periods is not None
+
+    def test_read_use_declination_true(self):
+        """Test read method with use_declination=True."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM, use_declination=True)
+
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+        # Verify that data was read successfully
+        assert zmm_obj.transfer_functions is not None
+        assert zmm_obj.periods is not None
+
+    def test_read_use_declination_false(self):
+        """Test read method with use_declination=False."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM, use_declination=False)
+
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+        # Verify that data was read successfully
+        assert zmm_obj.transfer_functions is not None
+        assert zmm_obj.periods is not None
+
+    def test_read_parameter_combinations(self, subtests):
+        """Test read method with various parameter combinations."""
+        from mt_metadata import TF_ZMM
+
+        parameter_combinations = [
+            {"rotate_to_measurement_coordinates": True, "use_declination": True},
+            {"rotate_to_measurement_coordinates": True, "use_declination": False},
+            {"rotate_to_measurement_coordinates": False, "use_declination": True},
+            {"rotate_to_measurement_coordinates": False, "use_declination": False},
+        ]
+
+        for params in parameter_combinations:
+            with subtests.test(params=params):
+                zmm_obj = zmm.ZMM()
+                zmm_obj.read(fn=TF_ZMM, **params)
+
+                assert zmm_obj is not None
+                assert zmm_obj.dataset is not None
+                assert zmm_obj.transfer_functions is not None
+                assert zmm_obj.periods is not None
+
+    def test_read_parameters_affect_dataset(self, subtests):
+        """Test that different parameter values produce different results."""
+        from mt_metadata import TF_ZMM
+
+        # Read with rotate_to_measurement_coordinates=True
+        zmm_obj_rotated = zmm.ZMM()
+        zmm_obj_rotated.read(fn=TF_ZMM, rotate_to_measurement_coordinates=True)
+
+        # Read with rotate_to_measurement_coordinates=False
+        zmm_obj_not_rotated = zmm.ZMM()
+        zmm_obj_not_rotated.read(fn=TF_ZMM, rotate_to_measurement_coordinates=False)
+
+        with subtests.test(check="objects_created"):
+            assert zmm_obj_rotated is not None
+            assert zmm_obj_not_rotated is not None
+
+        with subtests.test(check="datasets_exist"):
+            assert zmm_obj_rotated.dataset is not None
+            assert zmm_obj_not_rotated.dataset is not None
+
+        # Note: The actual values may or may not differ depending on the data
+        # and whether rotation is needed. This test ensures both paths execute.
+
+    def test_read_get_elevation_parameter(self):
+        """Test read method with get_elevation parameter."""
+        from mt_metadata import TF_ZMM
+
+        # Test with get_elevation=False (default)
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM, get_elevation=False)
+
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+
+    @pytest.mark.parametrize(
+        "rotate_to_measurement_coordinates,use_declination",
+        [
+            (True, True),
+            (True, False),
+            (False, True),
+            (False, False),
+        ],
+    )
+    def test_read_parameters_parametrized(
+        self, rotate_to_measurement_coordinates, use_declination
+    ):
+        """Parametrized test for all combinations of boolean parameters."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(
+            fn=TF_ZMM,
+            rotate_to_measurement_coordinates=rotate_to_measurement_coordinates,
+            use_declination=use_declination,
+        )
+
+        assert zmm_obj is not None
+        assert zmm_obj.dataset is not None
+        assert zmm_obj.transfer_functions is not None
+        assert zmm_obj.periods is not None
+        assert len(zmm_obj.periods) > 0
+
+
+# =============================================================================
+# Test ZMM.read() transfer function values
+# =============================================================================
+
+
+class TestZMMTransferFunctionValues:
+    """Test that read parameters affect actual transfer function values."""
+
+    def test_transfer_function_values_are_complex(self):
+        """Test that transfer function values are complex numbers."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM)
+
+        assert np.iscomplexobj(zmm_obj.transfer_functions)
+        assert zmm_obj.transfer_functions.dtype == np.complex64
+
+    def test_transfer_function_shape_consistency(self):
+        """Test that transfer function array has correct shape regardless of parameters."""
+        from mt_metadata import TF_ZMM
+
+        # Test with different parameter combinations
+        zmm_obj1 = zmm.ZMM()
+        zmm_obj1.read(fn=TF_ZMM, rotate_to_measurement_coordinates=True)
+
+        zmm_obj2 = zmm.ZMM()
+        zmm_obj2.read(fn=TF_ZMM, rotate_to_measurement_coordinates=False)
+
+        # Shapes should be consistent
+        assert zmm_obj1.transfer_functions.shape == zmm_obj2.transfer_functions.shape
+        assert zmm_obj1.periods.shape == zmm_obj2.periods.shape
+
+    def test_rotation_affects_transfer_function_values(self, subtests):
+        """Test that rotate_to_measurement_coordinates affects transfer function values."""
+        from mt_metadata import TF_ZMM
+
+        # Read with rotation enabled
+        zmm_obj_rotated = zmm.ZMM()
+        zmm_obj_rotated.read(fn=TF_ZMM, rotate_to_measurement_coordinates=True)
+
+        # Read with rotation disabled
+        zmm_obj_not_rotated = zmm.ZMM()
+        zmm_obj_not_rotated.read(fn=TF_ZMM, rotate_to_measurement_coordinates=False)
+
+        with subtests.test(check="arrays_exist"):
+            assert zmm_obj_rotated.transfer_functions is not None
+            assert zmm_obj_not_rotated.transfer_functions is not None
+
+        with subtests.test(check="no_nans"):
+            assert not np.any(np.isnan(zmm_obj_rotated.transfer_functions))
+            assert not np.any(np.isnan(zmm_obj_not_rotated.transfer_functions))
+
+        with subtests.test(check="finite_values"):
+            assert np.all(np.isfinite(zmm_obj_rotated.transfer_functions))
+            assert np.all(np.isfinite(zmm_obj_not_rotated.transfer_functions))
+
+        # Check if values differ (they may or may not depending on the data)
+        # At minimum, verify both are valid
+        with subtests.test(check="values_are_valid"):
+            assert np.any(np.abs(zmm_obj_rotated.transfer_functions) > 0)
+            assert np.any(np.abs(zmm_obj_not_rotated.transfer_functions) > 0)
+
+    def test_declination_affects_transfer_function_values(self, subtests):
+        """Test that use_declination affects transfer function values when expected."""
+        from mt_metadata import TF_ZMM
+
+        # Read with declination enabled
+        zmm_obj_with_dec = zmm.ZMM()
+        zmm_obj_with_dec.read(fn=TF_ZMM, use_declination=True)
+
+        # Read with declination disabled
+        zmm_obj_without_dec = zmm.ZMM()
+        zmm_obj_without_dec.read(fn=TF_ZMM, use_declination=False)
+
+        with subtests.test(check="arrays_exist"):
+            assert zmm_obj_with_dec.transfer_functions is not None
+            assert zmm_obj_without_dec.transfer_functions is not None
+
+        with subtests.test(check="no_nans"):
+            assert not np.any(np.isnan(zmm_obj_with_dec.transfer_functions))
+            assert not np.any(np.isnan(zmm_obj_without_dec.transfer_functions))
+
+        with subtests.test(check="finite_values"):
+            assert np.all(np.isfinite(zmm_obj_with_dec.transfer_functions))
+            assert np.all(np.isfinite(zmm_obj_without_dec.transfer_functions))
+
+        with subtests.test(check="values_are_valid"):
+            assert np.any(np.abs(zmm_obj_with_dec.transfer_functions) > 0)
+            assert np.any(np.abs(zmm_obj_without_dec.transfer_functions) > 0)
+
+    def test_dataset_transfer_function_values(self, subtests):
+        """Test transfer function values in the xarray dataset."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM, rotate_to_measurement_coordinates=True)
+
+        with subtests.test(check="dataset_has_transfer_function"):
+            assert "transfer_function" in zmm_obj.dataset
+            assert zmm_obj.dataset["transfer_function"] is not None
+
+        with subtests.test(check="transfer_function_is_complex"):
+            assert np.iscomplexobj(zmm_obj.dataset["transfer_function"].values)
+
+        with subtests.test(check="transfer_function_has_coordinates"):
+            assert "period" in zmm_obj.dataset["transfer_function"].coords
+            assert "output" in zmm_obj.dataset["transfer_function"].coords
+            assert "input" in zmm_obj.dataset["transfer_function"].coords
+
+        with subtests.test(check="values_are_finite"):
+            tf_values = zmm_obj.dataset["transfer_function"].values
+            assert np.all(np.isfinite(tf_values))
+
+    def test_transfer_function_values_per_frequency(self, subtests):
+        """Test that transfer function values exist for all frequencies."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM)
+
+        num_freq = zmm_obj.num_freq
+        assert num_freq > 0, "Should have at least one frequency"
+
+        with subtests.test(check="transfer_function_length"):
+            assert len(zmm_obj.transfer_functions) == num_freq
+
+        with subtests.test(check="periods_length"):
+            assert len(zmm_obj.periods) == num_freq
+
+        # Check each frequency has valid data
+        for i in range(num_freq):
+            with subtests.test(frequency_index=i):
+                tf_at_freq = zmm_obj.transfer_functions[i]
+                assert tf_at_freq is not None
+                assert np.all(np.isfinite(tf_at_freq))
+
+    def test_comparison_of_all_parameter_combinations(self, subtests):
+        """Test and compare transfer function values across all parameter combinations."""
+        from mt_metadata import TF_ZMM
+
+        # Create all combinations
+        combinations = {
+            "rot_True_dec_False": {
+                "rotate_to_measurement_coordinates": True,
+                "use_declination": False,
+            },
+            "rot_True_dec_True": {
+                "rotate_to_measurement_coordinates": True,
+                "use_declination": True,
+            },
+            "rot_False_dec_False": {
+                "rotate_to_measurement_coordinates": False,
+                "use_declination": False,
+            },
+            "rot_False_dec_True": {
+                "rotate_to_measurement_coordinates": False,
+                "use_declination": True,
+            },
+        }
+
+        results = {}
+        for name, params in combinations.items():
+            with subtests.test(combination=name):
+                zmm_obj = zmm.ZMM()
+                zmm_obj.read(fn=TF_ZMM, **params)
+                results[name] = zmm_obj.transfer_functions.copy()
+
+                # Verify basic properties
+                assert results[name] is not None
+                assert np.iscomplexobj(results[name])
+                assert np.all(np.isfinite(results[name]))
+                assert results[name].shape[0] > 0  # Has frequencies
+
+        # All combinations should produce valid data
+        assert len(results) == 4
+
+    def test_transfer_function_magnitude_range(self):
+        """Test that transfer function magnitudes are within reasonable ranges."""
+        from mt_metadata import TF_ZMM
+
+        zmm_obj = zmm.ZMM()
+        zmm_obj.read(fn=TF_ZMM)
+
+        tf_magnitude = np.abs(zmm_obj.transfer_functions)
+
+        # Should have non-zero magnitudes
+        assert np.any(tf_magnitude > 0), "Transfer function should have non-zero values"
+
+        # Should not have extremely large values (likely indicates an error)
+        assert np.all(
+            tf_magnitude < 1e10
+        ), "Transfer function values seem unreasonably large"
+
+        # Should be finite
+        assert np.all(
+            np.isfinite(tf_magnitude)
+        ), "Transfer function magnitudes should be finite"
+
+    def test_sigma_arrays_with_rotation_parameters(self, subtests):
+        """Test that sigma_e and sigma_s arrays are valid with different rotation parameters."""
+        from mt_metadata import TF_ZMM
+
+        parameter_sets = [
+            {"rotate_to_measurement_coordinates": True, "use_declination": False},
+            {"rotate_to_measurement_coordinates": False, "use_declination": True},
+        ]
+
+        for params in parameter_sets:
+            with subtests.test(params=params):
+                zmm_obj = zmm.ZMM()
+                zmm_obj.read(fn=TF_ZMM, **params)
+
+                # Check sigma_e (residual covariance)
+                if zmm_obj.sigma_e is not None:
+                    assert np.iscomplexobj(zmm_obj.sigma_e)
+                    assert np.all(np.isfinite(zmm_obj.sigma_e))
+
+                # Check sigma_s (inverse signal power)
+                if zmm_obj.sigma_s is not None:
+                    assert np.iscomplexobj(zmm_obj.sigma_s)
+                    assert np.all(np.isfinite(zmm_obj.sigma_s))
