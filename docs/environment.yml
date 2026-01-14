@@ -19,6 +19,7 @@ dependencies:
   - setuptools
   - sphinx>=2.3
   - sphinx_rtd_theme>=0.4
+  - sphinx-autoapi
   - PyYAML
   - pip
   - pip:

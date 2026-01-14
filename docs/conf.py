@@ -48,20 +48,26 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "nbsphinx",
+    "autoapi.extension",
     "sphinxcontrib.autodoc_pydantic",  # Better display of Pydantic Annotated fields
     "format_annotated",  # Custom formatting for Annotated field signatures
+]
+
+# AutoAPI configuration
+autoapi_dirs = ["../mt_metadata"]
+autoapi_type = "python"
+autoapi_root = "source/api"  # Output directory for generated API docs
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "imported-members",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
-# Configuration for sphinx-apidoc
-apidoc_modules = [
-    {
-        "path": "../mt_metadata",
-        "destination": "source/api",
-    }
-]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
