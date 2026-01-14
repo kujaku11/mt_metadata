@@ -864,6 +864,10 @@ class ZMM(ZMMHeader):
         self.dataset = self._initialize_transfer_function(periods=self.periods)
 
         if rotate_to_measurement_coordinates:
+            logger.info(
+                "Rotating transfer functions to measurement coordinates according to "
+                "the channel metadata."
+            )
             if use_declination:
                 angle = -1 * self.declination
             else:
