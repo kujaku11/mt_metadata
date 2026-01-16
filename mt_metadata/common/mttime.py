@@ -198,6 +198,10 @@ def _parse_string(dt_str: str) -> datetime.datetime:
         Error message suggests proper formatting as YYYY-MM-DDThh:mm:ss.ns.
     """
 
+    if dt_str in ["", "none", "None", "NONE", "null", "Null", "NULL"]:
+        default_time = "1980-01-01T00:00:00+00:00"
+        msg = f"Input is an null value {dt_str}, setting to default {default_time}."
+        return dtparser(default_time)
     try:
         return dtparser(dt_str)
     except ValueError as ve:
