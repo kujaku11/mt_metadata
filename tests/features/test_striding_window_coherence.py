@@ -570,3 +570,281 @@ class TestStridingWindowCoherenceIntegration:
 
         # Should be equal with same configuration
         assert coherence1.model_dump() == coherence2.model_dump()
+
+
+class TestStridingWindowCoherenceParallel:
+    """Test parallel processing functionality."""
+
+    def test_compute_parallel_returns_same_frequencies(
+        self, configured_striding_coherence, sample_time_series
+    ):
+        """Test that parallel compute returns same frequency array as serial."""
+        signal1, signal2, fs = sample_time_series
+
+        # Compute with serial processing
+        f_serial, coh_serial = configured_striding_coherence.compute(
+            signal1, signal2, parallel=False
+        )
+
+        # Compute with parallel processing
+        f_parallel, coh_parallel = configured_striding_coherence.compute(
+            signal1, signal2, parallel=True
+        )
+
+        # Frequencies should be identical
+        np.testing.assert_array_equal(f_serial, f_parallel)
+
+    def test_compute_parallel_returns_same_coherence(
+        self, configured_striding_coherence, sample_time_series
+    ):
+        """Test that parallel compute returns same coherence values as serial."""
+        signal1, signal2, fs = sample_time_series
+
+        # Compute with serial processing
+        f_serial, coh_serial = configured_striding_coherence.compute(
+            signal1, signal2, parallel=False
+        )
+
+        # Compute with parallel processing
+        f_parallel, coh_parallel = configured_striding_coherence.compute(
+            signal1, signal2, parallel=True
+        )
+
+        # Coherence arrays should be identical (within floating point precision)
+        np.testing.assert_allclose(coh_serial, coh_parallel, rtol=1e-10, atol=1e-12)
+
+    def test_compute_parallel_returns_correct_shape(
+        self, configured_striding_coherence, sample_time_series
+    ):
+        """Test that parallel compute returns correct output shape."""
+        signal1, signal2, fs = sample_time_series
+
+        f_parallel, coh_parallel = configured_striding_coherence.compute(
+            signal1, signal2, parallel=True
+        )
+
+        assert isinstance(f_parallel, np.ndarray)
+        assert isinstance(coh_parallel, np.ndarray)
+        assert coh_parallel.ndim == 2
+        assert len(f_parallel) == coh_parallel.shape[1]
+
+    @pytest.mark.parametrize(
+        "window_config,subwindow_config",
+        [
+            (
+                {"num_samples": 200, "overlap": 100, "type": TypeEnum.hann},
+                {"num_samples": 50, "overlap": 25, "type": TypeEnum.hann},
+            ),
+            (
+                {"num_samples": 256, "overlap": 128, "type": TypeEnum.hamming},
+                {"num_samples": 64, "overlap": 32, "type": TypeEnum.hamming},
+            ),
+            (
+                {"num_samples": 300, "overlap": 150, "type": TypeEnum.blackman},
+                {"num_samples": 75, "overlap": 37, "type": TypeEnum.blackman},
+            ),
+        ],
+    )
+    def test_parallel_with_different_window_configs(
+        self, window_config, subwindow_config, sample_time_series
+    ):
+        """Test parallel processing with various window configurations."""
+        signal1, signal2, fs = sample_time_series
+
+        coherence = StridingWindowCoherence(
+            window=Window(**window_config),
+            subwindow=Window(**subwindow_config),
+            station_1="TEST1",
+            station_2="TEST2",
+        )
+
+        # Both methods should complete successfully
+        f_serial, coh_serial = coherence.compute(signal1, signal2, parallel=False)
+        f_parallel, coh_parallel = coherence.compute(signal1, signal2, parallel=True)
+
+        # Results should match
+        np.testing.assert_array_equal(f_serial, f_parallel)
+        np.testing.assert_allclose(coh_serial, coh_parallel, rtol=1e-10, atol=1e-12)
+
+    def test_parallel_with_large_dataset(self):
+        """Test parallel processing with larger dataset to benefit from parallelization."""
+        np.random.seed(42)
+        n_samples = 10000
+        fs = 100.0
+        t = np.linspace(0, n_samples / fs, n_samples, endpoint=False)
+
+        # Create correlated signals
+        f1 = 5.0
+        signal1 = np.sin(2 * np.pi * f1 * t) + 0.2 * np.random.randn(n_samples)
+        signal2 = 0.9 * signal1 + 0.1 * np.random.randn(n_samples)
+
+        coherence = StridingWindowCoherence(
+            window=Window(num_samples=500, overlap=250, type=TypeEnum.hann),
+            subwindow=Window(num_samples=100, overlap=50, type=TypeEnum.hann),
+            station_1="TEST1",
+            station_2="TEST2",
+        )
+
+        # Both should handle large dataset
+        f_serial, coh_serial = coherence.compute(signal1, signal2, parallel=False)
+        f_parallel, coh_parallel = coherence.compute(signal1, signal2, parallel=True)
+
+        # Verify results match
+        np.testing.assert_array_equal(f_serial, f_parallel)
+        np.testing.assert_allclose(coh_serial, coh_parallel, rtol=1e-10, atol=1e-12)
+        assert coh_parallel.shape[0] > 10  # Multiple windows processed
+
+    def test_parallel_with_nan_values(self, configured_striding_coherence):
+        """Test that parallel processing handles NaN values correctly."""
+        np.random.seed(42)
+        n_samples = 1000
+        signal1 = np.random.randn(n_samples)
+        signal2 = np.random.randn(n_samples)
+
+        # Inject some NaN values
+        signal1[100:110] = np.nan
+        signal2[500:505] = np.nan
+
+        # Both should handle NaN (converted to 0 in compute method)
+        f_serial, coh_serial = configured_striding_coherence.compute(
+            signal1, signal2, parallel=False
+        )
+        f_parallel, coh_parallel = configured_striding_coherence.compute(
+            signal1, signal2, parallel=True
+        )
+
+        # Results should match
+        np.testing.assert_array_equal(f_serial, f_parallel)
+        np.testing.assert_allclose(coh_serial, coh_parallel, rtol=1e-10, atol=1e-12)
+
+    def test_parallel_processing_multiple_windows(self):
+        """Test parallel processing creates correct number of windows."""
+        np.random.seed(42)
+        n_samples = 1000
+        signal1 = np.random.randn(n_samples)
+        signal2 = np.random.randn(n_samples)
+
+        # Configure to create multiple windows
+        window_size = 200
+        overlap = 64  # Set explicit overlap
+        stride = window_size - overlap  # 136
+        expected_windows = len(range(0, n_samples - window_size + 1, stride))
+
+        coherence = StridingWindowCoherence(
+            window=Window(num_samples=window_size, overlap=overlap),
+            subwindow=Window(num_samples=50, overlap=25),
+            station_1="TEST1",
+            station_2="TEST2",
+        )
+
+        f, coh = coherence.compute(signal1, signal2, parallel=True)
+
+        # Verify correct number of windows processed
+        assert coh.shape[0] == expected_windows
+
+    def test_parallel_with_special_window_types(self):
+        """Test parallel processing with special window types requiring additional args."""
+        np.random.seed(42)
+        n_samples = 1000
+        signal1 = np.random.randn(n_samples)
+        signal2 = np.random.randn(n_samples)
+
+        # Test with kaiser window (requires beta parameter)
+        coherence = StridingWindowCoherence(
+            window=Window(num_samples=256, overlap=128, type=TypeEnum.kaiser),
+            subwindow=Window(
+                num_samples=64,
+                overlap=32,
+                type=TypeEnum.kaiser,
+                additional_args={"beta": 5.0},
+            ),
+            station_1="TEST1",
+            station_2="TEST2",
+        )
+
+        f_serial, coh_serial = coherence.compute(signal1, signal2, parallel=False)
+        f_parallel, coh_parallel = coherence.compute(signal1, signal2, parallel=True)
+
+        # Results should match
+        np.testing.assert_array_equal(f_serial, f_parallel)
+        np.testing.assert_allclose(coh_serial, coh_parallel, rtol=1e-10, atol=1e-12)
+
+    def test_parallel_default_parameter(
+        self, configured_striding_coherence, sample_time_series
+    ):
+        """Test that parallel parameter defaults to False."""
+        signal1, signal2, fs = sample_time_series
+
+        # Call without parallel parameter (should default to False)
+        f_default, coh_default = configured_striding_coherence.compute(signal1, signal2)
+
+        # Call with explicit parallel=False
+        f_serial, coh_serial = configured_striding_coherence.compute(
+            signal1, signal2, parallel=False
+        )
+
+        # Should be identical
+        np.testing.assert_array_equal(f_default, f_serial)
+        np.testing.assert_array_equal(coh_default, coh_serial)
+
+    def test_parallel_empty_windows_handling(self):
+        """Test parallel processing when no complete windows can be formed."""
+        np.random.seed(42)
+        # Signal shorter than window size
+        signal1 = np.random.randn(50)
+        signal2 = np.random.randn(50)
+
+        coherence = StridingWindowCoherence(
+            window=Window(num_samples=200, overlap=100),
+            subwindow=Window(num_samples=50, overlap=25),
+            station_1="TEST1",
+            station_2="TEST2",
+        )
+
+        # Should raise error for both serial and parallel when no windows can fit
+        with pytest.raises(UnboundLocalError):
+            coherence.compute(signal1, signal2, parallel=False)
+
+        with pytest.raises(IndexError):
+            coherence.compute(signal1, signal2, parallel=True)
+
+    @pytest.mark.parametrize("parallel", [True, False])
+    def test_compute_consistency_across_runs(
+        self, configured_striding_coherence, sample_time_series, parallel
+    ):
+        """Test that multiple runs with same input produce identical results."""
+        signal1, signal2, fs = sample_time_series
+
+        # Run twice with same parameters
+        f1, coh1 = configured_striding_coherence.compute(
+            signal1, signal2, parallel=parallel
+        )
+        f2, coh2 = configured_striding_coherence.compute(
+            signal1, signal2, parallel=parallel
+        )
+
+        # Results should be identical across runs
+        np.testing.assert_array_equal(f1, f2)
+        np.testing.assert_array_equal(coh1, coh2)
+
+    def test_parallel_with_different_detrend_options(self, sample_time_series):
+        """Test parallel processing with different detrend options."""
+        signal1, signal2, fs = sample_time_series
+
+        for detrend_type in ["constant", "linear"]:
+            coherence = StridingWindowCoherence(
+                window=Window(num_samples=200, overlap=100),
+                subwindow=Window(num_samples=50, overlap=25),
+                station_1="TEST1",
+                station_2="TEST2",
+                detrend=detrend_type,
+            )
+
+            f_serial, coh_serial = coherence.compute(signal1, signal2, parallel=False)
+            f_parallel, coh_parallel = coherence.compute(
+                signal1, signal2, parallel=True
+            )
+
+            # Results should match for each detrend option
+            np.testing.assert_array_equal(f_serial, f_parallel)
+            np.testing.assert_allclose(coh_serial, coh_parallel, rtol=1e-10, atol=1e-12)

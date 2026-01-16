@@ -1,6 +1,9 @@
 # ==============================================================================
 # Imports
 # ==============================================================================
+import platform
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from functools import partial
 from typing import Annotated
 
 import numpy as np
@@ -11,7 +14,51 @@ from mt_metadata.features.coherence import Coherence
 from mt_metadata.processing.window import Window
 
 
-# from pathos.multiprocessing import ProcessingPool as Pool
+# ==============================================================================
+# Helper function for parallel processing
+# ==============================================================================
+def _process_coherence_segment(
+    start, main_win_len, ts_1, ts_2, win_tuple, nperseg, noverlap, detrend
+):
+    """
+    Helper function for parallel coherence computation.
+    Must be at module level for pickling on Windows.
+
+    Parameters
+    ----------
+    start : int
+        Starting index for the window
+    main_win_len : int
+        Length of the main window
+    ts_1 : np.ndarray
+        First time series
+    ts_2 : np.ndarray
+        Second time series
+    win_tuple : tuple or str
+        Window specification for scipy.signal.coherence
+    nperseg : int
+        Number of samples per segment (subwindow)
+    noverlap : int
+        Number of overlapping samples in subwindow
+    detrend : str or False
+        Detrending method
+
+    Returns
+    -------
+    tuple
+        (frequencies, coherence)
+    """
+    seg1 = ts_1[start : start + main_win_len]
+    seg2 = ts_2[start : start + main_win_len]
+    f, coh = ssig.coherence(
+        seg1,
+        seg2,
+        window=win_tuple,
+        nperseg=nperseg,
+        noverlap=noverlap,
+        detrend=detrend,
+    )
+    return f, coh
 
 
 # ==============================================================================
@@ -100,40 +147,50 @@ class StridingWindowCoherence(Coherence):
         ts_2 = np.nan_to_num(ts_2)
 
         starts = range(0, n - main_win_len + 1, main_stride)
-        # if parallel:
 
-        #     def process_segment(start):
-        #         f, coh = ssig.coherence(
-        #             ts_1[start : start + main_win_len],
-        #             ts_2[start : start + main_win_len],
-        #             window=win_tuple,
-        #             nperseg=self.subwindow.num_samples,
-        #             noverlap=self.subwindow.overlap,
-        #             detrend=self.detrend,
-        #         )
-        #         return f, coh
-
-        #     with Pool() as pool:
-        #         results = pool.map(process_segment, starts)
-
-        #     f = results[0][0]
-        #     coherences = [r[1] for r in results]
-
-        # else:
-        coherences = []
-        for start in starts:
-            end = start + main_win_len
-            seg1 = ts_1[start:end]
-            seg2 = ts_2[start:end]
-
-            f, coh = ssig.coherence(
-                seg1,
-                seg2,
-                window=win_tuple,
+        if parallel:
+            # Use partial to bind data and parameters to the function
+            # Only the start index needs to be sent to each worker
+            process_func = partial(
+                _process_coherence_segment,
+                main_win_len=main_win_len,
+                ts_1=ts_1,
+                ts_2=ts_2,
+                win_tuple=win_tuple,
                 nperseg=self.subwindow.num_samples,
                 noverlap=self.subwindow.overlap,
                 detrend=self.detrend,
             )
-            coherences.append(coh)
+
+            # On Windows, use ThreadPoolExecutor (no process spawning overhead)
+            # On Unix/Linux/macOS, use ProcessPoolExecutor (better for CPU-intensive tasks)
+            executor_class = (
+                ThreadPoolExecutor
+                if platform.system() == "Windows"
+                else ProcessPoolExecutor
+            )
+
+            with executor_class() as executor:
+                results = list(executor.map(process_func, starts))
+
+            f = results[0][0]
+            coherences = [r[1] for r in results]
+
+        else:
+            coherences = []
+            for start in starts:
+                end = start + main_win_len
+                seg1 = ts_1[start:end]
+                seg2 = ts_2[start:end]
+
+                f, coh = ssig.coherence(
+                    seg1,
+                    seg2,
+                    window=win_tuple,
+                    nperseg=self.subwindow.num_samples,
+                    noverlap=self.subwindow.overlap,
+                    detrend=self.detrend,
+                )
+                coherences.append(coh)
 
         return f, np.array(coherences)
