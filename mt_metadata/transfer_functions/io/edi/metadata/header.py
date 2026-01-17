@@ -306,15 +306,29 @@ class Header(BasicLocation, GeographicLocation):
     def __repr__(self):
         return self.__str__()
 
-    def get_header_list(self, edi_lines):
+    def get_header_list(self, edi_lines: list[str]) -> list[str]:
         """
-        Get the header information from the .edi file in the form of a list,
-        where each item is a line in the header section.
+        Get the header information from the .edi file in the form of a list.
 
-        :param edi_lines: DESCRIPTION
-        :type edi_lines: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Extracts header lines from an EDI file, returning each key-value pair
+        as a formatted string.
+
+        Parameters
+        ----------
+        edi_lines : list of str
+            List of lines from an EDI file to parse for header information.
+
+        Returns
+        -------
+        list of str
+            List of header key-value pairs in the format 'key=value'.
+
+        Examples
+        --------
+        >>> header = Header()
+        >>> edi_lines = ['>HEAD', 'DATAID=MT001', 'LAT=45.5', '>']
+        >>> header.get_header_list(edi_lines)
+        ['DATAID=MT001', 'LAT=45.5']
 
         """
 
@@ -342,18 +356,42 @@ class Header(BasicLocation, GeographicLocation):
                     if len(h_list) == 2:
                         key = h_list[0].strip()
                         value = h_list[1].strip()
-                        header_list.append("{0}={1}".format(key, value))
+                        header_list.append(f"{key}={value}")
         return header_list
 
-    def read_header(self, edi_lines):
+    def read_header(self, edi_lines: list[str]) -> None:
         """
-        read a header information from a list of lines
-        containing header information.
+        Read and parse header information from EDI file lines.
 
-        :param edi_lines: DESCRIPTION
-        :type edi_lines: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parses header lines from an EDI file and populates the Header object
+        attributes with the corresponding values. Handles special cases like
+        Phoenix-formatted EDI files and coordinate system normalization.
+
+        Parameters
+        ----------
+        edi_lines : list of str
+            List of lines from an EDI file containing header information.
+
+        Returns
+        -------
+        None
+            Updates the object's attributes in place.
+
+        Examples
+        --------
+        >>> header = Header()
+        >>> edi_lines = ['>HEAD', 'DATAID=MT001', 'LAT=45:30:00', 'LON=-122:30:00', '>']
+        >>> header.read_header(edi_lines)
+        >>> header.dataid
+        'mt001'
+        >>> header.latitude
+        45.5
+
+        Notes
+        -----
+        - Station IDs are automatically validated and normalized to lowercase
+        - Coordinate systems are normalized to 'geographic', 'geomagnetic', or 'station'
+        - Phoenix MT-Editor format is automatically detected
 
         """
 
@@ -397,26 +435,52 @@ class Header(BasicLocation, GeographicLocation):
 
     def write_header(
         self,
-        longitude_format="LON",
-        latlon_format="dms",
-        required=False,
-    ):
+        longitude_format: str = "LON",
+        latlon_format: str = "dms",
+        required: bool = False,
+    ) -> list[str]:
         """
-        Write header information to a list of lines.
+        Write header information to a list of formatted lines for EDI output.
 
+        Formats all header attributes as EDI-compliant key-value pairs. Automatically
+        updates file metadata (filedate, progvers, progname) to current values.
 
-        :param header_list: should be read from an .edi file or input as
-                            ['key_01=value_01', 'key_02=value_02']
-        :type header_list: list
-        :param longitude_format:  whether to write longitude as LON or LONG.
-                                  options are 'LON' or 'LONG', default 'LON'
-        :type longitude_format:  string
-        :param latlon_format:  format of latitude and longitude in output edi,
-                               degrees minutes seconds ('dms') or decimal
-                               degrees ('dd')
-        :type latlon_format:  string
+        Parameters
+        ----------
+        longitude_format : {'LON', 'LONG'}, default 'LON'
+            Format for longitude field name in output.
+        latlon_format : {'dms', 'dd'}, default 'dms'
+            Format for latitude/longitude values.
+            - 'dms': degrees:minutes:seconds (e.g., '45:30:00')
+            - 'dd': decimal degrees (e.g., '45.500000')
+        required : bool, default False
+            If True, only include required fields in output.
 
-        :returns header_lines: list of lines containing header information
+        Returns
+        -------
+        list of str
+            List of formatted header lines starting with '>HEAD' and ending with
+            a blank line. Each data line follows the format 'KEY=value'.
+
+        Examples
+        --------
+        >>> header = Header(dataid='mt001', latitude=45.5, longitude=-122.5)
+        >>> lines = header.write_header(latlon_format='dd')
+        >>> print(lines[0])
+        >HEAD
+        >>> print(lines[1])
+        \tDATAID=mt001
+
+        >>> # Write with degrees-minutes-seconds format
+        >>> lines_dms = header.write_header(latlon_format='dms')
+        >>> # Latitude will be formatted as 45:30:00
+
+        Notes
+        -----
+        - filedate is automatically set to current UTC time
+        - progvers is set to mt_metadata version
+        - Zero declination values are omitted from output
+        - None values are skipped
 
         """
 
@@ -453,11 +517,40 @@ class Header(BasicLocation, GeographicLocation):
         header_lines.append("\n")
         return header_lines
 
-    def _validate_header_list(self, header_list):
+    def _validate_header_list(self, header_list: list[str] | None) -> list[str] | None:
         """
-        make sure the input header list is valid
+        Validate and normalize header list format.
 
-        returns a validated header list
+        Cleans header list by removing quotes, extra whitespace, and ensuring
+        proper key=value format for each line.
+
+        Parameters
+        ----------
+        header_list : list of str or None
+            Raw header lines to validate and normalize.
+
+        Returns
+        -------
+        list of str or None
+            Normalized header lines in 'key=value' format, or None if input is None.
+
+        Examples
+        --------
+        >>> header = Header()
+        >>> raw_list = ['  DATAID = "MT001" ', 'LAT=45.5', '', 'INVALID']
+        >>> header._validate_header_list(raw_list)
+        ['dataid=MT001', 'lat=45.5']
+
+        >>> header._validate_header_list(None)
+        None
+
+        Notes
+        -----
+        - Empty lines are removed
+        - Keys are converted to lowercase
+        - Lines without '=' are skipped
+        - Double quotes are removed from values
+
         """
 
         if header_list is None:

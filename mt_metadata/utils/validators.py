@@ -216,7 +216,7 @@ def validate_station_name(name: str | int | float) -> str:
     original = str(name)
 
     # Replace spaces with underscores
-    name = name.replace(" ", "_").replace("-", "_")
+    name = name.replace(" ", "_").replace("-", "_").replace(".", "_")
 
     # Test if string contains only letters, numbers, and underscores
     if not re.match(r"^[a-zA-Z0-9_]+$", name):
