@@ -200,7 +200,7 @@ History
 * Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/227
 * Bump version: 0.3.7 → 0.3.8 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/229 
 
-0.x.x ()
+1.0.0 (2026-01-19)
 ----------------------
 
 * The underlying code has been refactored using Pydantic to improve performance and maintainability.
@@ -226,3 +226,13 @@ History
 * Moved `listdict` to `mt_metadata.common.listdict` and added a `pop` method to it.
 * Moved `units` to `mt_metadata.common.units` and added a `Unit` object that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
 * In `features.CoherenceBaseModel` changed `station_1` and `station_2` to `station_1` and `station_2` to be more consistent with other objects.  The old attributes are still available for backwards compatibility, but will be deprecated in the future. Similar with channel, changed `ch1` and `ch2` to `channel_1` and `channel_2`.
+* Fix deprecation warnings by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/265
+* Revert "Fix deprecation warnings" by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/267
+* Fix deprecation warnings by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/266
+* Old pydantic 3 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/268
+* Update how z-files are read in  by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/269
+* Update validation using Pydantic by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/255
+* Rebase using Pydantic by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/270
+
+
+**Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v0.4.0...v1.0.0
