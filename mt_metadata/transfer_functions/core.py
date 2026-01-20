@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-.. module:: TF
+.. module:: mt_metadata.transfer_functions.core
    :synopsis: The main container for transfer functions
 
 .. moduleauthor:: Jared Peacock <jpeacock@usgs.gov>
@@ -27,6 +27,7 @@ from mt_metadata.timeseries import Survey
 from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile, ZMM, ZongeMTAvg
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
 from mt_metadata.transfer_functions.tf import Station
+
 
 # =============================================================================
 

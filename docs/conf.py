@@ -20,11 +20,13 @@
 import os
 import sys
 
+
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath("../"))
 sys.path.insert(0, os.path.abspath("_ext"))
 
 import mt_metadata
+
 
 # -- General configuration ---------------------------------------------
 
@@ -39,7 +41,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.coverage",
     "sphinx.ext.imgmath",
-    "sphinx.ext.viewcode",
+    # "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx.ext.githubpages",
     "sphinx.ext.inheritance_diagram",
