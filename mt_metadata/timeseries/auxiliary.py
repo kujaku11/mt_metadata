@@ -1,26 +1,33 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema
-from .standards import SCHEMA_FN_PATHS
-from . import Channel
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
-# =============================================================================
+from pydantic import Field, PrivateAttr
+
+from mt_metadata.timeseries import Channel
+
+# =====================================================
+
+
 class Auxiliary(Channel):
-    __doc__ = write_lines(attr_dict)
+    """
+    Auxiliary channel class for storing auxiliary channel information.
+    """
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    _channel_type: str = PrivateAttr("auxiliary")
+
+    type: Annotated[
+        str,
+        Field(
+            default="auxiliary",
+            description="Data type for the channel, should be a descriptive word that a user can understand.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": "auxiliary",
+                "type": "string",
+            },
+        ),
+    ]

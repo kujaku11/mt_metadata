@@ -435,7 +435,7 @@
             <Id></Id>
          </Site>
       </RemoteInfo>
-      <SignConvention>exp(+ i\omega mu)</SignConvention>
+      <SignConvention>exp(+ i\omega t)</SignConvention>
    </ProcessingInfo>
    <Site>
       <Project>INTERMAGNET</Project>

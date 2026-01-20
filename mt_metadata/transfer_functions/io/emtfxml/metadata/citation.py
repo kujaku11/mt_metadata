@@ -1,30 +1,53 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
+
+from pydantic import Field, field_validator, HttpUrl
+
+from mt_metadata.common import Citation as CommonCitation
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.utils.validators import validate_doi
 
-# =============================================================================
-attr_dict = get_schema("citation", SCHEMA_FN_PATHS)
-# =============================================================================
-class Citation(Base):
-    __doc__ = write_lines(attr_dict)
 
-    def __init__(self, **kwargs):
+# =====================================================
+class Citation(CommonCitation):
+    survey_d_o_i: Annotated[
+        HttpUrl | str | None,
+        Field(
+            default=None,
+            description="doi number of the survey",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["###/###"],
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    @field_validator("survey_d_o_i", mode="before")
+    @classmethod
+    def validate_survey_d_o_i(
+        cls,
+        value: HttpUrl | str | None,
+    ) -> HttpUrl | None:
+        """
+        Validate the survey DOI.
+
+        Parameters
+        ----------
+        value : str | None
+            The DOI value to validate.
+        info : ValidationInfo
+            Additional validation information.
+
+        Returns
+        -------
+        str | None
+            The validated DOI or None if not provided.
+        """
+        return validate_doi(value)
 
     def to_xml(self, string=False, required=True):
         """

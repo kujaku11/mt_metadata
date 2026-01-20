@@ -1,65 +1,68 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.utils.mttime import MTime
+# =====================================================
+from typing import Annotated
+from xml.etree import ElementTree as et
+
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator
+
+from mt_metadata.common import Software
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-# =============================================================================
-attr_dict = get_schema("software", SCHEMA_FN_PATHS)
-# =============================================================================
 
+# =====================================================
+class ProcessingSoftware(Software):
+    last_mod: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Date the software was last modified",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["2020-01-01"],
+            },
+        ),
+    ]
 
-class ProcessingSoftware(Base):
-    __doc__ = write_lines(attr_dict)
+    @field_validator("last_mod", mode="before")
+    @classmethod
+    def validate_last_mod(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        if isinstance(field_value, MTime):
+            return field_value
+        return MTime(time_stamp=field_value)
 
-    def __init__(self, **kwargs):
-
-        self._last_mod_dt = MTime()
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
-    @property
-    def last_mod(self):
-        return self._last_mod_dt.date
-
-    @last_mod.setter
-    def last_mod(self, value):
-        self._last_mod_dt.parse(value)
-
-    def read_dict(self, input_dict):
+    def read_dict(self, input_dict: dict) -> None:
         """
+        Read processing software information from a dictionary.
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        input_dict : dict
+            A dictionary containing processing software information.
         """
         helpers._read_element(self, input_dict, "processing_software")
 
-    def to_xml(self, string=False, required=True):
-        """
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+        """Convert the processing software information to XML format.
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        string : bool, optional
+            If True, return the XML as a string. If False, return an ElementTree element.
+        required : bool, optional
+            If True, include all required fields in the XML.
 
+        Returns
+        -------
+        str | et.Element
+            The XML representation of the processing software information.
         """
 
         return helpers.to_xml(

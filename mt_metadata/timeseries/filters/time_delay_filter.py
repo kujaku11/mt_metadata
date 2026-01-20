@@ -1,40 +1,62 @@
-# -*- coding: utf-8 -*-
-"""
-.. py:module:: time_delay_filter
-    :synopsis: Time delay filter
-
-.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
-.. codeauthor:: Karl Kappler
-
-"""
+# =====================================================
+# Imports
+# =====================================================
+from typing import Annotated
 
 import numpy as np
+from loguru import logger
+from pydantic import Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base.helpers import requires
+from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
 try:
     from obspy.core import inventory
 except ImportError:
     inventory = None
 
-from mt_metadata.base import get_schema
-from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
-from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
-# =============================================================================
-attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
-# =============================================================================
-
-
+# =====================================================
 class TimeDelayFilter(FilterBase):
-    def __init__(self, **kwargs):
-        super().__init__()
+    _filter_type: str = PrivateAttr("time delay")
+    type: Annotated[
+        str,
+        Field(
+            default="time delay",
+            description="Type of filter.  Must be 'fir'",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": "time delay",
+            },
+        ),
+    ]
+    delay: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="The delay interval of the filter. This should be a single number.",
+            alias=None,
+            json_schema_extra={
+                "units": "second",
+                "required": True,
+                "examples": "-0.201",
+            },
+        ),
+    ]
 
-        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-
-        self.type = "time delay"
+    @field_validator("type", mode="before")
+    @classmethod
+    def validate_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the type of filter is set to "time delay"
+        """
+        if value not in ["time delay", "time_delay"]:
+            logger.warning(
+                f"Filter type is set to {value}, but should be 'time delay' for TimeDelayFilter."
+            )
+        return "time delay"
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
@@ -61,8 +83,8 @@ class TimeDelayFilter(FilterBase):
             stage_number,
             self.gain,
             normalization_frequency,
-            self.units_in,
-            self.units_out,
+            self.units_in_object.symbol,
+            self.units_out_object.symbol,
             "DIGITAL",
             name=self.name,
             decimation_input_sample_rate=sample_rate,
@@ -73,8 +95,8 @@ class TimeDelayFilter(FilterBase):
             numerator=[1],
             denominator=[],
             description=self.get_filter_description(),
-            input_units_description=self._units_in_obj.name,
-            output_units_description=self._units_out_obj.name,
+            input_units_description=self.units_in_object.name,
+            output_units_description=self.units_out_object.name,
         )
 
         return stage
@@ -89,7 +111,7 @@ class TimeDelayFilter(FilterBase):
         :rtype: np.ndarray
 
         """
-        self.logger.debug(
+        logger.debug(
             "USING FREQUENCY DOMAIN VERSION OF TIME DELAY FILTER NOT RECOMMENDED FOR MT PROCESSING"
         )
 

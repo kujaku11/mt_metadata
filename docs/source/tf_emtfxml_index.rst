@@ -1,7 +1,8 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-EMTF XML
+
+EMTFXML
 ==============================
 
 .. toctree::
@@ -11,7 +12,6 @@ EMTF XML
     tf_emtfxml_attachment
     tf_emtfxml_channels
     tf_emtfxml_citation
-    tf_emtfxml_comment
     tf_emtfxml_copyright
     tf_emtfxml_data_quality_notes
     tf_emtfxml_data_quality_warnings
@@ -25,12 +25,10 @@ EMTF XML
     tf_emtfxml_external_url
     tf_emtfxml_field_notes
     tf_emtfxml_instrument
-    tf_emtfxml_location
     tf_emtfxml_magnetic
     tf_emtfxml_magnetometer
     tf_emtfxml_orientation
     tf_emtfxml_period_range
-    tf_emtfxml_person
     tf_emtfxml_primary_data
     tf_emtfxml_processing_info
     tf_emtfxml_processing_software

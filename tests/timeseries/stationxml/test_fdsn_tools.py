@@ -1,169 +1,183 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Feb 20 16:23:12 2021
+Tests for FDSN tools using pytest.
 
 :copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
-
 """
 
-import unittest
 import pytest
+
 try:
     from mt_metadata.timeseries.stationxml import fdsn_tools
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 
-class TestOrientationCode(unittest.TestCase):
-    """
-    get orientation code from azimuth
-    """
+# --- Fixtures ---
 
-    @classmethod
-    def setUpClass(self):
-        self.north = 0
-        self.vertical = 3
-        self.east = 91
-        self.one = -16
-        self.two = 134
-        self.three = 20
 
-    def test_north(self):
-        for angle in [-14, -10, -5, 0, 5, 10, 14]:
-            with self.subTest(msg=f"testing angle {angle}"):
-                self.assertEqual(fdsn_tools.get_orientation_code(angle), "N")
+@pytest.fixture(scope="module")
+def orientation_angles():
+    """Define test angles for different orientations."""
+    return {
+        "north_angles": [-14, -10, -5, 0, 5, 10, 14],
+        "east_angles": [76, 80, 85, 91, 95, 100, 104],
+        "vertical_angles": [-14, -10, -5, 0, 3, 5, 10, 14],
+        "one": -16,
+        "two": 134,
+        "three": 20,
+    }
 
-    def test_east(self):
-        for angle in [76, 80, 85, 91, 95, 100, 104]:
-            with self.subTest(msg={f"testing angle {angle}"}):
-                self.assertEqual(fdsn_tools.get_orientation_code(angle), "E")
 
-    def test_vertical(self):
-        for angle in [-14, -10, -5, 0, 3, 5, 10, 14]:
-            with self.subTest(msg=f"Testing angle {angle}"):
-                self.assertEqual(
-                    fdsn_tools.get_orientation_code(
-                        angle, orientation="vertical"
-                    ),
-                    "Z",
+@pytest.fixture(scope="module")
+def channel_codes():
+    """Define test channel codes."""
+    return {"h_channel_code": "LFN", "e_channel_code": "EQE", "aux_channel_code": "LKZ"}
+
+
+# --- Test Functions for Orientation Code ---
+
+
+class TestOrientationCode:
+    """Test getting orientation code from azimuth."""
+
+    def test_north(self, orientation_angles, subtests):
+        """Test north orientation codes."""
+        for angle in orientation_angles["north_angles"]:
+            with subtests.test(msg=f"testing angle {angle}"):
+                assert fdsn_tools.get_orientation_code(angle) == "N"
+
+    def test_east(self, orientation_angles, subtests):
+        """Test east orientation codes."""
+        for angle in orientation_angles["east_angles"]:
+            with subtests.test(msg=f"testing angle {angle}"):
+                assert fdsn_tools.get_orientation_code(angle) == "E"
+
+    def test_vertical(self, orientation_angles, subtests):
+        """Test vertical orientation codes."""
+        for angle in orientation_angles["vertical_angles"]:
+            with subtests.test(msg=f"Testing angle {angle}"):
+                assert (
+                    fdsn_tools.get_orientation_code(angle, orientation="vertical")
+                    == "Z"
                 )
 
-    def test_one(self):
-        self.assertEqual(fdsn_tools.get_orientation_code(self.one), "1")
+    def test_numbered_orientations(self, orientation_angles, subtests):
+        """Test numbered orientation codes."""
+        with subtests.test(msg="one code"):
+            assert fdsn_tools.get_orientation_code(orientation_angles["one"]) == "1"
 
-    def test_two(self):
-        self.assertEqual(fdsn_tools.get_orientation_code(self.two), "2")
+        with subtests.test(msg="two code"):
+            assert fdsn_tools.get_orientation_code(orientation_angles["two"]) == "2"
 
-    def test_three(self):
-        self.assertEqual(
-            fdsn_tools.get_orientation_code(
-                self.three, orientation="vertical"
-            ),
-            "3",
-        )
+        with subtests.test(msg="three code"):
+            assert (
+                fdsn_tools.get_orientation_code(
+                    orientation_angles["three"], orientation="vertical"
+                )
+                == "3"
+            )
 
-    def test_x_direction(self):
-        self.assertEqual(fdsn_tools.get_orientation_code(direction="x"), "N")
+    def test_direction_codes(self, subtests):
+        """Test orientation codes from direction strings."""
+        with subtests.test(msg="x direction"):
+            assert fdsn_tools.get_orientation_code(direction="x") == "N"
 
-    def test_y_direction(self):
-        self.assertEqual(fdsn_tools.get_orientation_code(direction="y"), "E")
+        with subtests.test(msg="y direction"):
+            assert fdsn_tools.get_orientation_code(direction="y") == "E"
 
-    def test_z_direction(self):
-        self.assertEqual(fdsn_tools.get_orientation_code(direction="z"), "Z")
+        with subtests.test(msg="z direction"):
+            assert fdsn_tools.get_orientation_code(direction="z") == "Z"
 
     def test_direction_fail(self):
-        self.assertRaises(
-            ValueError, fdsn_tools.get_orientation_code, None, "k"
-        )
+        """Test invalid direction raises ValueError."""
+        with pytest.raises(ValueError):
+            fdsn_tools.get_orientation_code(None, "k")
 
 
-class TestChannelCode(unittest.TestCase):
-    """
-    test making and reading channel codes
-    """
+# --- Test Functions for Channel Code ---
 
-    @classmethod
-    def setUpClass(self):
-        self.h_channel_code = "LFN"
-        self.e_channel_code = "EQE"
-        self.aux_channel_code = "LKZ"
 
-    def test_orientation_code(self):
+class TestChannelCode:
+    """Test making and reading channel codes."""
 
-        with self.subTest("0 to Z"):
-            self.assertEqual(
-                fdsn_tools.get_orientation_code(0, orientation="vertical"), "Z"
+    def test_orientation_code(self, subtests):
+        """Test specific orientation codes."""
+        with subtests.test(msg="0 to Z"):
+            assert fdsn_tools.get_orientation_code(0, orientation="vertical") == "Z"
+
+        with subtests.test(msg="16 to 1"):
+            assert fdsn_tools.get_orientation_code(16) == "1"
+
+        with subtests.test(msg="50 to 2"):
+            assert fdsn_tools.get_orientation_code(50) == "2"
+
+    def test_read_h_channel(self, channel_codes, subtests):
+        """Test reading horizontal magnetic channel code."""
+        ch_dict = fdsn_tools.read_channel_code(channel_codes["h_channel_code"])
+
+        with subtests.test(msg="period range"):
+            assert ch_dict["period"] == {"min": 0.95, "max": 1.05}
+
+        with subtests.test(msg="measurement type"):
+            assert ch_dict["measurement"] == "magnetic"
+
+        with subtests.test(msg="orientation"):
+            assert ch_dict["orientation"] == {"angle": 0, "variance": 15}
+
+    def test_read_e_channel(self, channel_codes, subtests):
+        """Test reading electric channel code."""
+        ch_dict = fdsn_tools.read_channel_code(channel_codes["e_channel_code"])
+
+        with subtests.test(msg="period range"):
+            assert ch_dict["period"] == {"min": 80, "max": 250}
+
+        with subtests.test(msg="measurement type"):
+            assert ch_dict["measurement"] == "electric"
+
+        with subtests.test(msg="orientation"):
+            assert ch_dict["orientation"] == {"angle": 90, "variance": 15}
+
+    def test_read_aux_channel(self, channel_codes, subtests):
+        """Test reading auxiliary channel code."""
+        ch_dict = fdsn_tools.read_channel_code(channel_codes["aux_channel_code"])
+
+        with subtests.test(msg="period range"):
+            assert ch_dict["period"] == {"min": 0.95, "max": 1.05}
+
+        with subtests.test(msg="measurement type"):
+            assert ch_dict["measurement"] == "temperature"
+
+        with subtests.test(msg="orientation"):
+            assert ch_dict["orientation"] == {"angle": 0, "variance": 15}
+
+    def test_make_channels(self, channel_codes, subtests):
+        """Test making different channel codes."""
+        with subtests.test(msg="make_h_channel"):
+            ch_code = fdsn_tools.make_channel_code(1, "magnetic", 0)
+            assert ch_code == channel_codes["h_channel_code"]
+
+        with subtests.test(msg="make_h_channel_direction"):
+            ch_code = fdsn_tools.make_channel_code(1, "magnetic", "x")
+            assert ch_code == channel_codes["h_channel_code"]
+
+        with subtests.test(msg="make_e_channel"):
+            ch_code = fdsn_tools.make_channel_code(100, "electric", 87)
+            assert ch_code == channel_codes["e_channel_code"]
+
+        with subtests.test(msg="make_e_channel_direction"):
+            ch_code = fdsn_tools.make_channel_code(100, "electric", "y")
+            assert ch_code == channel_codes["e_channel_code"]
+
+        with subtests.test(msg="make_aux_channel"):
+            ch_code = fdsn_tools.make_channel_code(
+                1, "temperature", 4, orientation="vertical"
             )
-        with self.subTest("16 to 1"):
-            self.assertEqual(fdsn_tools.get_orientation_code(16), "1")
-        with self.subTest("50 to 2"):
-            self.assertEqual(fdsn_tools.get_orientation_code(50), "2")
+            assert ch_code == channel_codes["aux_channel_code"]
 
-    def test_read_h_channel(self):
-        ch_dict = fdsn_tools.read_channel_code(self.h_channel_code)
-        with self.subTest("dict equal"):
-            self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
-        with self.subTest("measurement type"):
-            self.assertEqual(ch_dict["measurement"], "magnetic")
-        with self.subTest("orientation"):
-            self.assertDictEqual(
-                ch_dict["orientation"], {"angle": 0, "variance": 15}
-            )
-
-    def test_read_e_channel(self):
-        ch_dict = fdsn_tools.read_channel_code(self.e_channel_code)
-        with self.subTest("dict equal"):
-            self.assertDictEqual(ch_dict["period"], {"min": 80, "max": 250})
-        with self.subTest("measurement type"):
-            self.assertEqual(ch_dict["measurement"], "electric")
-        with self.subTest("orientation"):
-            self.assertDictEqual(
-                ch_dict["orientation"], {"angle": 90, "variance": 15}
-            )
-
-    def test_read_aux_channel(self):
-        ch_dict = fdsn_tools.read_channel_code(self.aux_channel_code)
-        with self.subTest("dict equal"):
-            self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
-        with self.subTest("measurement type"):
-            self.assertEqual(ch_dict["measurement"], "temperature")
-        with self.subTest("orientation"):
-            self.assertDictEqual(
-                ch_dict["orientation"], {"angle": 0, "variance": 15}
-            )
-
-    def test_make_h_channel(self):
-        ch_code = fdsn_tools.make_channel_code(1, "magnetic", 0)
-        self.assertEqual(ch_code, self.h_channel_code)
-
-    def test_make_h_channel_direction(self):
-        ch_code = fdsn_tools.make_channel_code(1, "magnetic", "x")
-        self.assertEqual(ch_code, self.h_channel_code)
-
-    def test_make_e_channel(self):
-        ch_code = fdsn_tools.make_channel_code(100, "electric", 87)
-        self.assertEqual(ch_code, self.e_channel_code)
-
-    def test_make_e_channel_direction(self):
-        ch_code = fdsn_tools.make_channel_code(100, "electric", "y")
-        self.assertEqual(ch_code, self.e_channel_code)
-
-    def test_make_aux_channel(self):
-        ch_code = fdsn_tools.make_channel_code(
-            1, "temperature", 4, orientation="vertical"
-        )
-        self.assertEqual(ch_code, self.aux_channel_code)
-
-    def test_make_aux_channel_direction(self):
-        ch_code = fdsn_tools.make_channel_code(1, "temperature", "z")
-        self.assertEqual(ch_code, self.aux_channel_code)
-
-
-# =============================================================================
-# run
-# =============================================================================
-if __name__ == "__main__":
-    unittest.main()
+        with subtests.test(msg="make_aux_channel_direction"):
+            ch_code = fdsn_tools.make_channel_code(1, "temperature", "z")
+            assert ch_code == channel_codes["aux_channel_code"]

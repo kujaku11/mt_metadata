@@ -1,0 +1,53 @@
+{
+    "title": "battery",
+    "type": "object",
+    "properties": {
+        "type": {
+            "default": null,
+            "description": "Description of battery type.",
+            "title": "type",
+            "examples": "pb-acid gel cell",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "id": {
+            "default": null,
+            "description": "battery id",
+            "title": "id",
+            "examples": "battery01",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "voltage.start": {
+            "default": null,
+            "description": "Starting voltage",
+            "title": "voltage.start",
+            "examples": "14.3",
+            "type": "number",
+            "alias": null,
+            "units": "volts"
+        },
+        "voltage.end": {
+            "default": null,
+            "description": "Ending voltage",
+            "title": "voltage.end",
+            "examples": "12.1",
+            "type": "number",
+            "alias": null,
+            "units": "volts"
+        },
+        "comments": {
+            "default": null,
+            "description": "Any comments about the battery.",
+            "title": "comments",
+            "examples": "discharged too quickly",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "battery"
+}

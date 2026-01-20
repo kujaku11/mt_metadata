@@ -1,0 +1,59 @@
+{
+    "title": "run",
+    "type": "object",
+    "properties": {
+        "errors": {
+            "default": null,
+            "description": "Any field errors",
+            "title": "errors",
+            "examples": "moose ate cables",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "run": {
+            "default": "",
+            "description": "Run name",
+            "title": "run",
+            "examples": "mt001a",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "sampling_rate": {
+            "default": null,
+            "description": "Sample rate of the run",
+            "title": "sampling_rate",
+            "examples": "1",
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "start": {
+            "default": "1980-01-01T00:00:00",
+            "description": "Date time when the data collection started",
+            "title": "start",
+            "examples": "2020-01-01T12:00:00",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "date-time"
+        },
+        "end": {
+            "default": "1980-01-01T00:00:00",
+            "description": "Date time when the data collection ended",
+            "title": "end",
+            "examples": "2020-05-01T12:00:00",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "run",
+        "start",
+        "end"
+    ],
+    "description": "run"
+}

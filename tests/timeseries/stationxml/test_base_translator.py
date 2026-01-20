@@ -1,103 +1,125 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb 18 16:33:42 2021
+Tests for the BaseTranslator class using pytest.
 
 :copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
-
 """
 
-import unittest
 import pytest
+
 try:
-    from mt_metadata.timeseries.stationxml.utils import BaseTranslator
     from obspy.core.inventory import Comment
+
+    from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 
-class TestReadXMLComment(unittest.TestCase):
-    """
-    test reading different comments
-    """
+@pytest.fixture(scope="module")
+def translator():
+    """Return a BaseTranslator instance."""
+    return BaseTranslator()
 
-    @classmethod
-    def setUpClass(self):
-        self.run_comment = Comment(
+
+@pytest.fixture(scope="module")
+def test_comments():
+    """Return test comment objects."""
+    return {
+        "run_comment": Comment(
             "author: John Doe, comments: X array a 0 and 90 degrees.",
             subject="mt.run:b.metadata_by",
-        )
-        self.null_comment = Comment(None, subject="mt.survey.survey_id")
-        self.long_comment = Comment(
-            "a: b, c: d, efg", subject="mt.run.a:comment"
-        )
-        self.odd_comment = Comment(
-            "a: b: action, d: efg", subject="mt.run.odd"
-        )
-        self.normal_comment = Comment("normal", subject="mt.run.comment")
-        self.doi = [r"DOI:10.1234.mt/test"]
-
-    def test_null_comment(self):
-        k, v = BaseTranslator.read_xml_comment(self.null_comment)
-        with self.subTest("key equal"):
-            self.assertEqual("mt.survey.survey_id", k)
-        with self.subTest("value equal"):
-            self.assertEqual("None", v)
-
-    def test_run_comment(self):
-        k, v = BaseTranslator.read_xml_comment(self.run_comment)
-        with self.subTest("key equal"):
-            self.assertEqual(k, "mt.run:b.metadata_by")
-        with self.subTest("is dict"):
-            self.assertIsInstance(v, dict)
-        with self.subTest("value equal"):
-            self.assertDictEqual(
-                v,
-                {
-                    "author": "John Doe",
-                    "comments": "X array a 0 and 90 degrees.",
-                },
-            )
-
-    def test_long_comment(self):
-        k, v = BaseTranslator.read_xml_comment(self.long_comment)
-        with self.subTest("key equal"):
-            self.assertEqual(k, "mt.run.a:comment")
-        with self.subTest("is dict"):
-            self.assertIsInstance(v, dict)
-        with self.subTest("value equal"):
-            self.assertDictEqual(v, {"a": "b", "c": "d, efg"})
-
-    def test_odd_comment(self):
-        k, v = BaseTranslator().read_xml_comment(self.odd_comment)
-        with self.subTest("key equal"):
-            self.assertEqual(k, "mt.run.odd")
-        with self.subTest("is dict"):
-            self.assertIsInstance(v, dict)
-        with self.subTest("value equal"):
-            self.assertDictEqual(v, {"a": "b-- action", "d": "efg"})
-
-    def test_normal_comment(self):
-        k, v = BaseTranslator().read_xml_comment(self.normal_comment)
-        with self.subTest("key equal"):
-            self.assertEqual(k, "mt.run.comment")
-        with self.subTest("value equal"):
-            self.assertEqual(v, "normal")
-
-    def test_flip_dict(self):
-        original = {"a": "b", "c": "d", "e": None, "f": "special"}
-        flipped = BaseTranslator().flip_dict(original)
-        self.assertDictEqual({"b": "a", "d": "c"}, flipped)
-
-    def test_read_identifier(self):
-        read_doi = BaseTranslator().read_xml_identifier(self.doi)
-        self.assertEqual(read_doi, "10.1234.mt/test")
+        ),
+        "null_comment": Comment(None, subject="mt.survey.survey_id"),
+        "long_comment": Comment("a: b, c: d, efg", subject="mt.run.a:comment"),
+        "odd_comment": Comment("a: b: action, d: efg", subject="mt.run.odd"),
+        "normal_comment": Comment("normal", subject="mt.run.comment"),
+    }
 
 
-# =============================================================================
-# Run
-# =============================================================================
-if __name__ == "__main__":
-    unittest.main()
+@pytest.fixture(scope="module")
+def test_doi():
+    """Return a test DOI."""
+    return [r"DOI:10.1234.mt/test"]
+
+
+def test_null_comment(test_comments, subtests):
+    """Test parsing a null comment."""
+    k, v = BaseTranslator.read_xml_comment(test_comments["null_comment"])
+
+    with subtests.test(msg="key equal"):
+        assert k == "mt.survey.survey_id"
+
+    with subtests.test(msg="value equal"):
+        assert v == "None"
+
+
+def test_run_comment(test_comments, subtests):
+    """Test parsing a run comment."""
+    k, v = BaseTranslator.read_xml_comment(test_comments["run_comment"])
+
+    with subtests.test(msg="key equal"):
+        assert k == "mt.run:b.metadata_by"
+
+    with subtests.test(msg="is dict"):
+        assert isinstance(v, dict)
+
+    with subtests.test(msg="value equal"):
+        assert v == {
+            "author": "John Doe",
+            "comments": "X array a 0 and 90 degrees.",
+        }
+
+
+def test_long_comment(test_comments, subtests):
+    """Test parsing a long comment."""
+    k, v = BaseTranslator.read_xml_comment(test_comments["long_comment"])
+
+    with subtests.test(msg="key equal"):
+        assert k == "mt.run.a:comment"
+
+    with subtests.test(msg="is dict"):
+        assert isinstance(v, dict)
+
+    with subtests.test(msg="value equal"):
+        assert v == {"a": "b", "c": "d, efg"}
+
+
+def test_odd_comment(test_comments, translator, subtests):
+    """Test parsing an odd comment."""
+    k, v = translator.read_xml_comment(test_comments["odd_comment"])
+
+    with subtests.test(msg="key equal"):
+        assert k == "mt.run.odd"
+
+    with subtests.test(msg="is dict"):
+        assert isinstance(v, dict)
+
+    with subtests.test(msg="value equal"):
+        assert v == {"a": "b-- action", "d": "efg"}
+
+
+def test_normal_comment(test_comments, translator, subtests):
+    """Test parsing a normal comment."""
+    k, v = translator.read_xml_comment(test_comments["normal_comment"])
+
+    with subtests.test(msg="key equal"):
+        assert k == "mt.run.comment"
+
+    with subtests.test(msg="value equal"):
+        assert v == "normal"
+
+
+def test_flip_dict(translator):
+    """Test flipping a dictionary."""
+    original = {"a": "b", "c": "d", "e": None, "f": "special"}
+    flipped = translator.flip_dict(original)
+    assert flipped == {"b": "a", "d": "c"}
+
+
+def test_read_identifier(translator, test_doi):
+    """Test reading an identifier."""
+    read_doi = translator.read_xml_identifier(test_doi)
+    assert read_doi == "https://doi.org/10.1234.mt/test"

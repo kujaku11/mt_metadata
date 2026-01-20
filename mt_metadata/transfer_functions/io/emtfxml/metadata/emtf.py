@@ -1,24 +1,84 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Sep  4 18:21:25 2021
-
-@author: jpeacock
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("emtf", SCHEMA_FN_PATHS)
-# =============================================================================
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import DataTypeEnum
+
+# =====================================================
 
 
-class EMTF(Base):
-    __doc__ = write_lines(attr_dict)
+class EMTF(MetadataBase):
+    description: Annotated[
+        str | None,
+        Field(
+            default="",
+            description="description of what is in the file; default is magnetotelluric transfer functions",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["Magnetotelluric Transfer Functions"],
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
+    product_id: Annotated[
+        str | None,
+        Field(
+            default="",
+            description="ID given as the archive ID of the station",
+            alias=None,
+            pattern="^[a-zA-Z0-9._-]*$",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["USMTArray.NVS11.2020"],
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    tags: Annotated[
+        str | None,
+        Field(
+            default="",
+            description="tags that help describe the data",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["impedance, induction vectors"],
+            },
+        ),
+    ]
+
+    sub_type: Annotated[
+        DataTypeEnum,
+        Field(
+            default=DataTypeEnum.MT_TF,
+            description="subject data type",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["MT_TF"],
+            },
+        ),
+    ]
+
+    notes: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="any notes applicable to the user on data present in the file",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["these are notes"],
+            },
+        ),
+    ]

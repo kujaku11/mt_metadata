@@ -1,143 +1,230 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.timeseries.standards import (
-    SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
+# =====================================================
+from typing import Annotated
+
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import (
+    AuthorPerson,
+    DataQuality,
+    GeographicReferenceFrameEnum,
+    SignConventionEnum,
+    Software,
 )
-from mt_metadata.utils.mttime import MTime
-from . import Person, Software, DataQuality
-from mt_metadata.transfer_functions.processing import aurora
+from mt_metadata.common.mttime import MTime
+from mt_metadata.common.units import get_unit_object
 
-# =============================================================================
-attr_dict = get_schema("transfer_function", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("person", TS_SCHEMA_FN_PATHS), "processed_by")
-attr_dict.add_dict(get_schema("software", TS_SCHEMA_FN_PATHS), "software")
-attr_dict.add_dict(DataQuality()._attr_dict, "data_quality")
+# =====================================================
 
 
-# =============================================================================
-class TransferFunction(Base):
-    __doc__ = write_lines(attr_dict)
+class TransferFunction(MetadataBase):
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="transfer function id",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["mt01_256"],
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        self.processed_by = Person()
-        self.software = Software()
-        self._processed_date = MTime()
-        self.data_quality = DataQuality()
-        self.processing_parameters = []
-        self.processing_config = None
+    sign_convention: Annotated[
+        SignConventionEnum,
+        Field(
+            default="+",
+            description="sign of the transfer function estimates",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["+"],
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict)
+    units: Annotated[
+        str,
+        Field(
+            default="milliVolt per kilometer per nanoTesla",
+            description="units of the impedance tensor estimates",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["milliVolt per kilometer per nanoTesla"],
+            },
+        ),
+    ]
 
-        for key, value in kwargs.items():
-            self.set_attr_from_name(key, value)
+    runs_processed: Annotated[
+        list[str],
+        Field(
+            default=[],
+            description="list of runs used in the processing",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [["MT001a", "MT001c"]],
+            },
+        ),
+    ]
 
-    @property
-    def processed_date(self):
-        return self._processed_date.date
+    remote_references: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of remote references",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [["MT002b", "MT002c"]],
+            },
+        ),
+    ]
 
-    @processed_date.setter
-    def processed_date(self, value):
-        self._processed_date.parse(value)
+    processed_date: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="date the data were processed",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["2020-01-01T12:00:00"],
+            },
+        ),
+    ]
 
-    @property
-    def processing_config(self):
-        """
+    processing_parameters: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of processing parameters with structure name = value",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [["nfft=4096", "n_windows=16"]],
+            },
+        ),
+    ]
 
-        :return: processing configuration
+    processed_by: Annotated[
+        AuthorPerson,
+        Field(
+            default_factory=AuthorPerson,  # type: ignore
+            description="person who processed the data",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["Person(name='John Doe', email='john.doe@example.com')"],
+            },
+        ),
+    ]
 
-        """
-        if self._processing_config is None:
-            if len(self.processing_parameters) > 0:
-                processing_dict = {}
-                for item in self.processing_parameters:
-                    if item.startswith("aurora"):
-                        default_key = "aurora"
-                        key, value = item.split("=")
-                        key = key.replace(f"{default_key}.", "")
-                        processing_dict[key] = value
-                self._processing_config = aurora.Processing()
-                self._processing_config.from_dict(
-                    {"processing": processing_dict}
-                )
+    processing_type: Annotated[
+        str,
+        Field(
+            default="",
+            description="Type of processing",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["robust remote reference"],
+            },
+        ),
+    ]
 
-        return self._processing_config
+    software: Annotated[
+        Software,
+        Field(
+            default_factory=Software,  # type: ignore
+            description="software used to process the data",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["Software(name='Aurora', version='1.0.0')"],
+            },
+        ),
+    ]
 
-    def _dict_to_params(self, object_dict, base_key):
-        """
-        dictionary to parameters
+    data_quality: Annotated[
+        DataQuality,
+        Field(
+            default_factory=DataQuality,  # type: ignore
+            description="data quality information",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["DataQuality()"],
+            },
+        ),
+    ]
 
-        key_base.key = value
+    coordinate_system: Annotated[
+        GeographicReferenceFrameEnum,
+        Field(
+            default=GeographicReferenceFrameEnum.geographic,
+            description="coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["geographic"],
+            },
+        ),
+    ]
 
-        :param object_dict: DESCRIPTION
-        :type object_dict: TYPE
-        :param key_base: DESCRIPTION
-        :type key_base: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+    # this will evenutally be config objects for the various processing programs
+    # e.g. aurora, razorback, resistics, etc.
+    # for now it is just a string
+    processing_config: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="processing configuration",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["aurora.processing"],
+            },
+        ),
+    ]
 
-        """
+    @field_validator("processed_date", mode="before")
+    @classmethod
+    def validate_processed_date(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        if isinstance(field_value, MTime):
+            return field_value
+        return MTime(time_stamp=field_value)
 
-        for key, value in object_dict.items():
-            if isinstance(value, list):
-                if len(value) > 0:
-                    if isinstance(value[0], dict):
-                        for item in value:
-                            if len(item.keys()) == 1:
-                                item_key = list(item.keys())[0]
-                                self._dict_to_params(
-                                    item[item_key],
-                                    f"{base_key}.{key}.{item_key}",
-                                )
-                            else:
-                                self._dict_to_params(item, f"{base_key}.{key}")
-                    else:
-                        self.processing_parameters.append(
-                            f"{base_key}.{key}={value}"
-                        )
-                else:
-                    self.processing_parameters.append(
-                        f"{base_key}.{key}={value}"
-                    )
-
-            elif isinstance(value, dict):
-                self._dict_to_params(value, f"{base_key}.{key}")
-            else:
-                self.processing_parameters.append(f"{base_key}.{key}={value}")
-
-    @processing_config.setter
-    def processing_config(self, processing_config):
-        """
-        set processing config, if a Base object, processing parameters are
-        filled.
-
-        To add more processing schemes need to create a Processing object for
-        that specific program and then add in
-
-        :param processing_config: DESCRIPTION
-        :type processing_config: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        if processing_config is not None:
-            if isinstance(processing_config, aurora.Processing):
-                default_key = "aurora"
-                processing_dict = processing_config.to_dict(single=True)
-                self._dict_to_params(processing_dict, default_key)
-                self._processing_config = processing_config
-        else:
-            self._processing_config = None
+    @field_validator("units", mode="before")
+    @classmethod
+    def validate_units(cls, value: str) -> str:
+        if value in [None, ""]:
+            return ""
+        try:
+            unit_object = get_unit_object(value)
+            return unit_object.name
+        except ValueError as error:
+            raise KeyError(error)
+        except KeyError as error:
+            raise KeyError(error)

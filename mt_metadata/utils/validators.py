@@ -14,23 +14,88 @@ Created on Wed Apr 29 11:11:31 2020
 
 @author: jpeacock
 """
+
+import re
+
 # =============================================================================
 # Imports
 # =============================================================================
 import sys
-import re
 from collections.abc import Iterable
 
 import numpy as np
+from loguru import logger
+from pydantic import HttpUrl
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
-from mt_metadata.utils.exceptions import MTValidatorError, MTSchemaError
+from mt_metadata.utils.exceptions import MTSchemaError, MTValidatorError
 
-from loguru import logger
+# from mt_metadata.common.comment import Comment
+
 
 # =============================================================================
 # validator functions
 # =============================================================================
+
+
+def validate_doi(value: str | HttpUrl | None) -> HttpUrl | None:
+    """
+    Validate a DOI string.
+
+    Parameters
+    ----------
+    value : str
+        The DOI string to validate.
+
+    Returns
+    -------
+    str
+        The validated DOI string.
+
+    Raises
+    ------
+    ValueError
+        If the DOI string is not valid.
+    """
+    if value is None:
+        return None
+    elif isinstance(value, str):
+        if value == "":
+            return None
+        if value.startswith("10."):
+            value = f"https://doi.org/{value}"
+        elif value.startswith("doi:"):
+            value = f"https://doi.org/{value.replace('doi:', '')}"
+        value = HttpUrl(value)
+    elif isinstance(value, HttpUrl):
+        pass
+    # Check if the URL starts with a valid DOI prefix
+    if not value.unicode_string().startswith("https://doi.org/"):
+        if not value.unicode_string().startswith("https://dx.doi.org/"):
+            raise ValueError(f"Invalid DOI: {value}")
+
+    return value
+
+
+# def validate_comments(comments: str | Comment | None) -> Comment | None:
+#     """
+#     Validate comments string.
+
+#     Parameters
+#     ----------
+#     comments : str | None
+#         The comments to validate.
+
+#     Returns
+#     -------
+#     str | None
+#         The validated comments string or None if empty.
+#     """
+#     if isinstance(comments, str):
+#         return Comment(value=comments)  # type: ignore
+#     return comments
+
+
 def validate_header(header, attribute=False):
     """
     validate header to make sure it includes the required keys:
@@ -40,15 +105,17 @@ def validate_header(header, attribute=False):
         * 'style'
         * 'units'
 
-    :param header: list of header names
-    :type header: list
+    Parameters
+    ----------
+    header : list
+        list of header names
+    attribute : bool, optional
+        include attribute in test or not, by default False
 
-    :param attribute: include attribute in test or not
-    :type attribute: [ True | False ]
-
-    :return: validated header
-    :rtype: list
-
+    Returns
+    -------
+    list
+        validated header
     """
     if not isinstance(header, list):
         msg = "input header must be a list, not {type(header)}"
@@ -68,10 +135,95 @@ def validate_header(header, attribute=False):
             msg = (
                 f"Keys is not correct, must include {required_keys}\n"
                 + f". Currently has {header}\n"
-                +  f"Need to add keys: {missing_keys}"
+                + f"Need to add keys: {missing_keys}"
             )
             raise MTValidatorError(msg)
     return header
+
+
+def validate_name(name):
+    """
+    validate the name to conform to the standards
+    name must be:
+
+        * all lower case {a-z; 1-9}
+        * must start with a letter
+        * categories are separated by '.'
+        * words separated by '_'
+
+    {object}.{name_name}
+
+    '/' will be replaced with '.'
+    converted to all lower case
+
+    Parameters
+    ----------
+    name : str
+        name name
+
+    Returns
+    -------
+    str
+        valid name name
+    """
+    if not isinstance(name, str):
+        msg = f"Attribute name must be a string, not {type(name)}"
+        raise MTValidatorError(msg)
+
+    original = str(name)
+
+    if re.match("^[0-9]", name):
+        msg = f"Attribute name cannot start with a number, {original}"
+        raise MTValidatorError(msg)
+
+    if "/" in name:
+        name = name.replace("/", ".")
+
+    if re.search("[A-Z].*?", name):
+        name = "_".join(re.findall(".[^A-Z]*", name))
+        name = name.replace("._", ".")
+        name = name.lower()
+
+    if original != name:
+        msg = "input name {0} converted to {1} following MTH5 standards"
+
+    return name
+
+
+def validate_station_name(name: str | int | float) -> str:
+    """
+    validate station name to conform to general standards
+
+    - must be a string
+    - must only contain letters, numbers, and underscores
+
+    Parameters
+    ----------
+    name : str | int | float
+        The station name to validate
+
+    Returns
+    -------
+    str
+        The validated station name
+
+    Raises
+    ------
+    MTValidatorError
+        If name is not a string or contains invalid characters
+    """
+    name = str(name).strip()
+    original = str(name)
+
+    # Replace spaces with underscores
+    name = name.replace(" ", "_").replace("-", "_").replace(".", "_")
+
+    # Test if string contains only letters, numbers, and underscores
+    if not re.match(r"^[a-zA-Z0-9_]+$", name):
+        msg = f"Station name '{original}' contains invalid characters. Only letters, numbers, and underscores are allowed."
+        raise MTValidatorError(msg)
+
+    return name
 
 
 def validate_attribute(name):
@@ -89,11 +241,15 @@ def validate_attribute(name):
     '/' will be replaced with '.'
     converted to all lower case
 
-    :param name: name name
-    :type name: string
-    :return: valid name name
-    :rtype: string
+    Parameters
+    ----------
+    name : str
+        name name
 
+    Returns
+    -------
+    str
+        valid name name
     """
     if not isinstance(name, str):
         msg = f"Attribute name must be a string, not {type(name)}"
@@ -121,14 +277,17 @@ def validate_attribute(name):
 
 def validate_required(value):
     """
-
     Validate required, must be True or False
 
-    :param value: required value
-    :type value: [ string | bool ]
-    :return: validated required value
-    :rtype: boolean
+    Parameters
+    ----------
+    value : str or bool
+        required value
 
+    Returns
+    -------
+    bool
+        validated required value
     """
     if isinstance(value, bool):
         return value
@@ -148,18 +307,24 @@ def validate_required(value):
 
 def validate_type(value):
     """
-
     Validate required type. Must be:
         * str
         * float
         * int
         * bool
+        * list
+        * dict
+        * object
 
-    :param value: required type
-    :type value: [ type | string ]
-    :return: validated type
-    :rtype: string
+    Parameters
+    ----------
+    value : type or str
+        required type
 
+    Returns
+    -------
+    str
+        validated type
     """
     if isinstance(value, type):
         value = "{0}".format(value).replace("<class", "").replace(">", "")
@@ -174,19 +339,25 @@ def validate_type(value):
             return "string"
         elif "bool" in value.lower():
             return "boolean"
+        elif "list" in value.lower() or "array" in value.lower():
+            return "list"
+        elif "dict" in value.lower():
+            return "dict"
+        elif "object" in value.lower():
+            return "object"
         elif "h5py_reference" in value.lower():
             return value
 
         else:
             msg = (
                 "'type' must be type [ int | float "
-                + f"| str | bool ].  Not {value}"
+                + f"| str | bool | list | dict | object ].  Not {value}"
             )
             raise MTValidatorError(msg)
     else:
         msg = (
             "'type' must be type [ int | float "
-            + f"| str | bool ] or string.  Not {value}"
+            + f"| str | bool | list | dict | object ] or string.  Not {value}"
         )
         raise MTValidatorError(msg)
 
@@ -197,12 +368,15 @@ def validate_units(value):
 
     ..todo:: make a list of acceptable unit names
 
-    :param value: unit value to be validated
-    :type value: string
+    Parameters
+    ----------
+    value : str
+        unit value to be validated
 
-    :return: validated units
-    :rtype: string
-
+    Returns
+    -------
+    str
+        validated units
     """
     if value is None:
         return value
@@ -222,11 +396,15 @@ def validate_style(value):
 
     ..todo:: make list of accepted style formats
 
-    :param value: style to be validated
-    :type value: string
-    :return: validated style
-    :rtype: string
+    Parameters
+    ----------
+    value : str
+        style to be validated
 
+    Returns
+    -------
+    str
+        validated style
     """
     # if None then return the generic name style
     if value is None:
@@ -245,14 +423,17 @@ def validate_style(value):
 
 def validate_description(description):
     """
-
     make sure the description is a string
 
-    :param description: detailed description of an attribute
-    :type description: str
-    :return: validated string of description
-    :rtype: string
+    Parameters
+    ----------
+    description : str
+        detailed description of an attribute
 
+    Returns
+    -------
+    str
+        validated string of description
     """
     if not isinstance(description, str):
         msg = f"Description must be a string, not {type(description)}"
@@ -265,11 +446,15 @@ def validate_options(options):
     """
     turn options into a list of strings
 
-    :param options: DESCRIPTION
-    :type options: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    options : TYPE
+        DESCRIPTION
 
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
     if isinstance(options, str):
         options = options.replace("[", "").replace("]", "").strip().split("|")
@@ -293,11 +478,16 @@ def validate_options(options):
 def validate_alias(alias):
     """
     validate alias names
-    :param alias: DESCRIPTION
-    :type alias: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
 
+    Parameters
+    ----------
+    alias : TYPE
+        DESCRIPTION
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
 
     if isinstance(alias, str):
@@ -321,12 +511,17 @@ def validate_alias(alias):
 
 def validate_example(example):
     """
+    Validate example values
 
-    :param example: DESCRIPTION
-    :type example: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    example : TYPE
+        DESCRIPTION
 
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
     if not isinstance(example, str):
         example = "{0}".format(example)
@@ -337,11 +532,15 @@ def validate_default(value_dict):
     """
     validate default value
 
-    :param default: DESCRIPTION
-    :type default: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    value_dict : TYPE
+        DESCRIPTION
 
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
 
     if value_dict["required"]:
@@ -365,7 +564,6 @@ def validate_default(value_dict):
                 elif value_dict["type"] in ["h5py_reference"]:
                     value = None
         else:
-
             value = validate_value_type(
                 value_dict["default"], value_dict["type"], value_dict["style"]
             )
@@ -380,17 +578,21 @@ def validate_default(value_dict):
 
 def validate_value_type(value, v_type, style=None):
     """
-
-    :param value:
-    :type value:
-    :param v_type:
-    :type v_type:
-    :param style:
-    :type style:
-    :return:
-
     validate type from standards
 
+    Parameters
+    ----------
+    value : TYPE
+        DESCRIPTION
+    v_type : TYPE
+        DESCRIPTION
+    style : TYPE, optional
+        DESCRIPTION, by default None
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
 
     # if the value is a metadata type skip cause the individual components
@@ -425,6 +627,9 @@ def validate_value_type(value, v_type, style=None):
             "integer": int,
             "float": float,
             "boolean": bool,
+            "list": list,
+            "dict": dict,
+            "object": object,
         }
         v_type = type_dict[validate_type(v_type)]
     else:
@@ -450,6 +655,8 @@ def validate_value_type(value, v_type, style=None):
         if isinstance(value, str):
             if v_type is int:
                 try:
+                    if value.lower() in ["none", "nan", ""]:
+                        return None
                     return int(value)
                 except ValueError:
                     raise MTSchemaError(msg, value, v_type, type(value))
@@ -469,9 +676,7 @@ def validate_value_type(value, v_type, style=None):
                 return value
 
         # if a number convert to appropriate type
-        elif isinstance(
-            value, (int, np.int_, np.int64, np.int32, np.int16, np.int8)
-        ):
+        elif isinstance(value, (int, np.int_, np.int64, np.int32, np.int16, np.int8)):
             if v_type is float:
                 return float(value)
             elif v_type is str:
@@ -479,9 +684,7 @@ def validate_value_type(value, v_type, style=None):
             return int(value)
 
         # if a number convert to appropriate type
-        elif isinstance(
-            value, (float, np.float16, np.float32, np.float64)
-        ):
+        elif isinstance(value, (float, np.float16, np.float32, np.float64)):
             if v_type is int:
                 return int(value)
             elif v_type is str:
@@ -493,9 +696,7 @@ def validate_value_type(value, v_type, style=None):
             if v_type is str:
                 if isinstance(value, np.ndarray):
                     value = value.astype(np.str_)
-                value = [
-                    f"{v}".replace("'", "").replace('"', "") for v in value
-                ]
+                value = [f"{v}".replace("'", "").replace('"', "") for v in value]
             elif v_type is int:
                 value = [int(float(v)) for v in value]
             elif v_type is float:

@@ -27,7 +27,7 @@ Welcome to MT Metadata documentation!
 
 MT Metadata is meant to be a tool to standardize both time series and transfer function metadata for magnetotelluric data.
 
-The base metadata object is structured in a flexible way to accommodate any type of metadata, you just need to formulate the standards following the format described in the documentation.  See :ref:`structure` and :ref:`ref-usage` for more details. 
+The base metadata object is structured in a flexible way to accommodate any type of metadata, you just need to formulate the standards following the format described in the documentation.  See :ref:`ref-usage` for more details. 
 
 Examples
 -------------
@@ -53,30 +53,66 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
 .. toctree::
     :maxdepth: 1
     :caption: Basics of Metadata Structure
+    :name: ref-structure
     
-    source/structure
-    
-.. toctree::
-    :maxdepth: 1
-    :caption: Time Series
+    usage
 
-    source/ts_metadata_guide
-    source/notebooks/filters_example.ipynb
-    
+Metadata Reference
+--------------------
+
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
+    :caption: MetadataBase
+
+    source/base_index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Common Metadata
+    
+    source/common_index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Features and Weights
+
+    source/features_index
+    source/weights_index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Processing and Fourier Coefficients
+
+    source/processing_index
+    source/processing_aurora_index
+    source/processing_fcs_index
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Time Series and Filters
+
+    source/ts_index
+    source/ts_filter_index
+    source/stationxml_index
+    source/notebooks/filters_example.ipynb
+
+.. toctree::
+    :maxdepth: 3
     :caption: Transfer Functions
     
-    source/tf_structure
-    source/tf_processing_aurora_index
-    source/tf_processing_fcs_index
-        
+    source/tf_index
+    source/tf_base_index
+    source/tf_emtfxml_index
+    source/tf_edi_index
+    source/tf_zmm_index
+    source/tf_jfile_index
+    source/tf_zonge_index
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 6
     :caption: API Reference
     
-    source/modules
+    source/api/modules
     
 
 Indices and tables

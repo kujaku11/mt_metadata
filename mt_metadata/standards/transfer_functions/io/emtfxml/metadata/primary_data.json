@@ -1,0 +1,19 @@
+{
+    "title": "primary_data",
+    "type": "object",
+    "properties": {
+        "filename": {
+            "default": "",
+            "description": "file name of the figure file that displays the data",
+            "title": "filename",
+            "examples": "example.png",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "filename"
+    ],
+    "description": "primary_data"
+}

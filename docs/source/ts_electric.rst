@@ -6,181 +6,6 @@ Electric
 ========
 
 
-:navy:`dipole_length`
-~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **dipole_length**                            | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Length of the dipole as measured in a         | 55.25          |
-       |                                              | straight line from electrode to electrode.    |                |
-       | **Units**: meters                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`contact_resistance.start`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **contact_resistance.start**                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Starting contact resistance; if more than one | "[1.2, 1.4]"   |
-       |                                              | measurement input as a list of number [1 2 3  |                |
-       | **Units**: ohms                              | ...].                                         |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number list                       |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`contact_resistance.end`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **contact_resistance.end**                   | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Ending contact resistance; if more than one   | "[1.5, 1.8]"   |
-       |                                              | measurement input as a list of number [1 2 3  |                |
-       | **Units**: ohms                              | ...].                                         |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number list                       |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`ac.start`
-~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **ac.start**                                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Starting AC value; if more than one           | "[52.1, 55.8]" |
-       |                                              | measurement input as a list of number [1 2 3  |                |
-       | **Units**: volts                             | ...].                                         |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`ac.end`
-~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **ac.end**                                   | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Ending AC value; if more than one measurement | "[45.3, 49.5]" |
-       |                                              | input as a list of number [1 2 3 ...].        |                |
-       | **Units**: volts                             |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`dc.start`
-~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **dc.start**                                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Starting DC value; if more than one           | 1.1            |
-       |                                              | measurement input as a list of number [1 2 3  |                |
-       | **Units**: volts                             | ...].                                         |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`dc.end`
-~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **dc.end**                                   | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Ending DC value; if more than one measurement | 1.5            |
-       |                                              | input as a list of number [1 2 3 ...].        |                |
-       | **Units**: volts                             |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
 :navy:`channel_number`
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -195,13 +20,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Channel number on the data logger.            | 1              |
        |                                              |                                               |                |
+       | **Type**: <class 'int'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0                               |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -220,19 +45,19 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | channel id given by the user or data logger   | 1001.11        |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -241,17 +66,67 @@ Electric
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the channel.               | ambient air    |
-       |                                              |                                               | temperature was|
-       | **Units**: None                              |                                               | chilly, ice on |
-       |                                              |                                               | cables         |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.time_stamp**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.value`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.value**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -268,15 +143,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **component**                                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the component measured, can be        | T              |
-       |                                              | uppercase and/or lowercase.  For now electric |                |
-       | **Units**: None                              | channels should start with an 'e' and         |                |
-       |                                              | magnetic channels start with an 'h', followed |                |
-       | **Type**: string                             | by the component. If there are multiples of   |                |
-       |                                              | the same channel the name could include an    |                |
-       | **Style**: controlled vocabulary             | integer.  {type}{component}{number} --> Ex01. |                |
+       | **Required**: :red:`True`                    | Component of the electric field.              | Ex             |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -293,15 +168,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **measurement_azimuth**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Horizontal azimuth of the channel in          | 0              |
+       | **Required**: :red:`True`                    | Horizontal azimuth of the channel in          | 0.0            |
        |                                              | measurement coordinate system spcified in     |                |
-       | **Units**: degrees                           | station.orientation.reference_frame.  Default |                |
+       | **Type**: <class 'float'>                    | station.orientation.reference_frame.  Default |                |
        |                                              | reference frame is a geographic right-handed  |                |
-       | **Type**: float                              | coordinate system with north=0, east=90,      |                |
+       | **Units**: degrees                           | coordinate system with north=0, east=90,      |                |
        |                                              | vertical=+ downward.                          |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -320,13 +195,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Vertical tilt of the channel in measurement   | 0              |
        |                                              | coordinate system specified in                |                |
-       | **Units**: degrees                           | station.orientation.reference_frame.  Default |                |
+       | **Type**: <class 'float'>                    | station.orientation.reference_frame.  Default |                |
        |                                              | reference frame is a geographic right-handed  |                |
-       | **Type**: float                              | coordinate system with north=0, east=90,      |                |
+       | **Units**: degrees                           | coordinate system with north=0, east=90,      |                |
        |                                              | vertical=+ downward.                          |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -343,15 +218,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sample_rate**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Digital sample rate                           | 8              |
+       | **Required**: :red:`True`                    | Digital sample rate                           | 8.0            |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
        | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -368,15 +243,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **translated_azimuth**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Horizontal azimuth of the channel in          | 0              |
+       | **Required**: :blue:`False`                  | Horizontal azimuth of the channel in          | 0.0            |
        |                                              | translated coordinate system, this should     |                |
-       | **Units**: degrees                           | only be used for derived product.  For        |                |
+       | **Type**: float | None                       | only be used for derived product.  For        |                |
        |                                              | instance if you collected your data in        |                |
-       | **Type**: float                              | geomagnetic coordinates and then translated   |                |
+       | **Units**: degrees                           | geomagnetic coordinates and then translated   |                |
        |                                              | them to geographic coordinates you would set  |                |
-       | **Style**: number                            | measurement_azimuth=0,                        |                |
+       |                                              | measurement_azimuth=0,                        |                |
        |                                              | translated_azimuth=-12.5 for a declination    |                |
-       | **Default**: None                            | angle of N12.5E.                              |                |
+       |                                              | angle of N12.5E.                              |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -393,15 +268,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **translated_tilt**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Tilt of channel in translated coordinate      | 0              |
+       | **Required**: :blue:`False`                  | Tilt of channel in translated coordinate      | 0.0            |
        |                                              | system, this should only be used for derived  |                |
-       | **Units**: degrees                           | product.  For instance if you collected your  |                |
+       | **Type**: float | None                       | product.  For instance if you collected your  |                |
        |                                              | data using a tripod you would set             |                |
-       | **Type**: float                              | measurement_tilt=45, translated_tilt=0 for a  |                |
+       | **Units**: degrees                           | measurement_tilt=45, translated_tilt=0 for a  |                |
        |                                              | vertical component.                           |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -418,15 +293,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **type**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Data type for the channel, should be a        | temperature    |
+       | **Required**: :red:`True`                    | Data type for the channel, should be a        | electric       |
        |                                              | descriptive word that a user can understand.  |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -445,13 +320,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Units of the data, should be in SI units and  | celsius        |
        |                                              | represented as the full name of the unit all  |                |
-       | **Units**: None                              | lowercase.  If a complex unit use 'per' and   |                |
+       | **Type**: <class 'str'>                      | lowercase.  If a complex unit use 'per' and   |                |
        |                                              | '-'.                                          |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -470,13 +345,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | any warnings about the data that should be    | periodic       |
        |                                              | noted                                         | pipeline noise |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -495,13 +370,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Data are good for periods larger than this    | 0.01           |
        |                                              | number                                        |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -520,13 +395,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Data are good for periods smaller than this   | 1000           |
        |                                              | number                                        |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -545,19 +420,19 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Flag for data quality                         | 0              |
        |                                              |                                               |                |
+       | **Type**: int | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`data_quality.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`data_quality.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -566,17 +441,67 @@ Electric
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **data_quality.comments**                    | **Description**                               | **Example**    |
+       | **data_quality.comments.author**             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | any comments about the data quality           | 0              |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_quality.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_quality.comments.time_stamp**         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_quality.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_quality.comments.value**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -595,13 +520,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Author of who rated the data.                 | gradstudent ace|
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -620,13 +545,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | The method used to rate the data.             | standard       |
        |                                              |                                               | deviation      |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -645,19 +570,19 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | A rating from 1-5 where 1 is bad and 5 is     | 4              |
        |                                              | good and 0 if unrated.                        |                |
+       | **Type**: int | None | str                   |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0                               |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`filter.name`
-~~~~~~~~~~~~~~~~~~~
+:navy:`filters`
+~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -666,47 +591,22 @@ Electric
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **filter.name**                              | **Description**                               | **Example**    |
+       | **filters**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "[counts2mv, lo|
-       |                                              | more than one filter input as a comma         | wpass_magnetic]|
-       | **Units**: None                              | separated list.                               | "              |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       | **Required**: :red:`True`                    | Filter data for the channel.                  | AppliedFilter(n|
+       |                                              |                                               | ame='filter_nam|
+       | **Type**: list[mt_metadata.timeseries.filtere|                                               | e',            |
+       | d.AppliedFilter]                             |                                               | applied=True,  |
+       | **Units**: None                              |                                               | stage=1)       |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`filter.applied`
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **filter.applied**                           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Boolean if filter has been applied or not. If | "[True, False]"|
-       |                                              | more than one filter input as a comma         |                |
-       | **Units**: None                              | separated list.  Needs to be the same length  |                |
-       |                                              | as name or if only one entry is given it is   |                |
-       | **Type**: boolean                            | assumed to apply to all filters listed.       |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`filter.comments`
+:navy:`time_period.end`
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -716,17 +616,217 @@ Electric
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **filter.comments**                          | **Description**                               | **Example**    |
+       | **time_period.end**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments on filters.                      | low pass is not|
-       |                                              |                                               | calibrated     |
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
+       |                                              |                                               | 04T16:23:45.453|
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`time_period.start`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.start**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
+       |                                              |                                               | 01T09:23:45.453|
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.id`
+~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.id**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.network`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.network**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
+       |                                              | code. Needs to be 2 alpha numeric characters. |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.channel_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.channel_code**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Type**: str | None                         | identifiers/en/v1.0/channel-codes.html        |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.new_epoch`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
+       |                                              | created or not.                               |                |
+       | **Type**: bool | None                        |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.alternate_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.alternate_network_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`dipole_length`
+~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **dipole_length**                            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Length of the dipole as measured in a         | 55.25          |
+       |                                              | straight line from electrode to electrode.    |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -743,15 +843,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.id**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       | **Required**: :blue:`False`                  | Instrument ID number can be serial number or  | mt01           |
        |                                              | a designated ID.                              |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -768,15 +868,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.manufacturer**                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
+       | **Required**: :blue:`False`                  | Who manufactured the instrument.              | mt gurus       |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -793,15 +893,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.type**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
+       | **Required**: :blue:`False`                  | Description of the instrument type.           | broadband      |
        |                                              |                                               | 32-bit         |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -820,13 +920,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Model version of the instrument.              | falcon5        |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -845,13 +945,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Standard marketing name of the instrument.    | falcon5        |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -868,15 +968,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.latitude**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Latitude of the location.                     | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -893,15 +993,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.longitude**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Longitude of the location.                    | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -918,90 +1018,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.elevation**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | elevation of location in datum specified at   | 123.4          |
-       |                                              | survey level                                  |                |
-       | **Units**: meters                            |                                               |                |
+       | **Required**: :blue:`False`                  | Elevation of the location.                    | 1234.0         |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`positive.latitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **positive.latitude_uncertainty**            | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in latitude estimation in degrees | 0.01           |
-       |                                              |                                               |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`positive.longitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **positive.longitude_uncertainty**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
-       |                                              | degrees                                       |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`positive.elevation_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **positive.elevation_uncertainty**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in elevation estimation           | 0.01           |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1018,15 +1043,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **positive.datum**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS84          |
+       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS 84         |
        |                                              | known datum like WGS84.                       |                |
+       | **Type**: str | int                          |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1045,38 +1070,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`positive.x2`
-~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **positive.x2**                              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1095,38 +1095,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`positive.y2`
-~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **positive.y2**                              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1145,13 +1120,138 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`positive.latitude_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **positive.latitude_uncertainty**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in latitude estimation in degrees | 0.01           |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`positive.longitude_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **positive.longitude_uncertainty**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
+       |                                              | degrees                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`positive.elevation_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **positive.elevation_uncertainty**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in elevation estimation           | 0.01           |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`positive.x2`
+~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **positive.x2**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
+       |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`positive.y2`
+~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **positive.y2**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
+       |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1170,13 +1270,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1195,13 +1295,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | x-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1220,13 +1320,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | y-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1245,13 +1345,13 @@ Electric
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | z-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1268,15 +1368,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.id**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       | **Required**: :blue:`False`                  | Instrument ID number can be serial number or  | mt01           |
        |                                              | a designated ID.                              |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1293,15 +1393,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.manufacturer**                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
+       | **Required**: :blue:`False`                  | Who manufactured the instrument.              | mt gurus       |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1318,15 +1418,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.type**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
+       | **Required**: :blue:`False`                  | Description of the instrument type.           | broadband      |
        |                                              |                                               | 32-bit         |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1343,15 +1443,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.model**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Model version of the instrument.              | falcon5        |
+       | **Required**: :blue:`False`                  | Model version of the instrument.              | falcon5        |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1368,15 +1468,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.name**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Standard marketing name of the instrument.    | falcon5        |
+       | **Required**: :blue:`False`                  | Standard marketing name of the instrument.    | falcon5        |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1393,15 +1493,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.latitude**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Latitude of the location.                     | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1418,15 +1518,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.longitude**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Longitude of the location.                    | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1443,90 +1543,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.elevation**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | elevation of location in datum specified at   | 123.4          |
-       |                                              | survey level                                  |                |
-       | **Units**: meters                            |                                               |                |
+       | **Required**: :blue:`False`                  | Elevation of the location.                    | 1234.0         |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`negative.latitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **negative.latitude_uncertainty**            | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in latitude estimation in degrees | 0.01           |
-       |                                              |                                               |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`negative.longitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **negative.longitude_uncertainty**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
-       |                                              | degrees                                       |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`negative.elevation_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **negative.elevation_uncertainty**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in elevation estimation           | 0.01           |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1543,15 +1568,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.datum**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Datum of the location values.  Usually a well | WGS84          |
+       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS 84         |
        |                                              | known datum like WGS84.                       |                |
+       | **Type**: str | int                          |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1568,40 +1593,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.x**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`negative.x2`
-~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **negative.x2**                              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1618,40 +1618,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.y**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`negative.y2`
-~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **negative.y2**                              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1668,15 +1643,140 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.z**                               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative elevation to the center of the       | 10.0           |
+       | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`negative.latitude_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **negative.latitude_uncertainty**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in latitude estimation in degrees | 0.01           |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`negative.longitude_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **negative.longitude_uncertainty**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
+       |                                              | degrees                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`negative.elevation_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **negative.elevation_uncertainty**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in elevation estimation           | 0.01           |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`negative.x2`
+~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **negative.x2**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
+       |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`negative.y2`
+~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **negative.y2**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
+       |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1693,15 +1793,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.z2**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | relative elevation to the center of the       | 10.0           |
+       | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1718,15 +1818,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.x_uncertainty**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | x-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1743,15 +1843,15 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.y_uncertainty**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | y-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1768,21 +1868,21 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **negative.z_uncertainty**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | uncertainty in longitude estimation in        | 0.01           |
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | z-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`time_period.end`
-~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`contact_resistance.start`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1791,23 +1891,23 @@ Electric
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **time_period.end**                          | **Description**                               | **Example**    |
+       | **contact_resistance.start**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04T16:2|
-       |                                              |                                               | 3:45.453670+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | Starting value.                               | 1.0            |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: time                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`time_period.start`
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`contact_resistance.end`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1816,17 +1916,117 @@ Electric
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **time_period.start**                        | **Description**                               | **Example**    |
+       | **contact_resistance.end**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01T09:2|
-       |                                              |                                               | 3:45.453670+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | Ending value of the range.                    | 1.0            |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: time                              |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`ac.start`
+~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **ac.start**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Starting value.                               | 1.0            |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`ac.end`
+~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **ac.end**                                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Ending value of the range.                    | 1.0            |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`dc.start`
+~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **dc.start**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Starting value.                               | 1.0            |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`dc.end`
+~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **dc.end**                                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Ending value of the range.                    | 1.0            |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

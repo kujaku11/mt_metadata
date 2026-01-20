@@ -1,38 +1,86 @@
-# -*- coding: utf-8 -*-
-"""
-.. py:module:: pole_zero_filter
-    :synopsis: Deal with Pole Zero Filters
+# =====================================================
+# Imports
+# =====================================================
+from typing import Annotated
 
-.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
-
-"""
 import numpy as np
+from pydantic import Field, field_validator, ValidationInfo
+
 try:
     import obspy
 except ImportError:
     obspy = None
 import scipy.signal as signal
 
-from mt_metadata.base import get_schema
-from mt_metadata.base.helpers import requires
-from mt_metadata.timeseries.filters.filter_base import FilterBase, get_base_obspy_mapping
-from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
-
-# =============================================================================
-attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
-# =============================================================================
+from mt_metadata.base.helpers import object_to_array, requires
+from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
 
+# =====================================================
 class PoleZeroFilter(FilterBase):
-    def __init__(self, **kwargs):
+    _filter_type: str = "zpk"
+    type: Annotated[
+        str,
+        Field(
+            default="zpk",
+            description="Type of filter.  Must be 'zpk'",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": "zpk",
+            },
+        ),
+    ]
+    poles: Annotated[
+        np.ndarray | list[complex] | complex,
+        Field(
+            default_factory=lambda: np.empty(0, dtype=complex),
+            description="The complex-valued poles associated with the filter response.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": '"[-1/4., -0.1+j*0.3, -0.1-j*0.3]"',
+            },
+        ),
+    ]
 
-        self._poles = np.empty(0, dtype=complex)
-        self._zeros = np.empty(0, dtype=complex)
-        super().__init__()
+    zeros: Annotated[
+        np.ndarray | list[complex] | complex,
+        Field(
+            default_factory=lambda: np.empty(0, dtype=complex),
+            description="The complex-valued zeros associated with the filter response.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": '"[0.0, ]"',
+            },
+        ),
+    ]
 
-        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-        self.type = "zpk"
+    normalization_factor: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="The scale factor to apply to the monic response.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": '"[-1000.1]"',
+            },
+        ),
+    ]
+
+    @field_validator("poles", "zeros", mode="before")
+    @classmethod
+    def validate_input_arrays(cls, value, info: ValidationInfo) -> np.ndarray:
+        """
+        Validate that the input is a list, tuple, or np.ndarray and convert to np.ndarray.
+        """
+        return object_to_array(value, dtype=complex)
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
@@ -42,68 +90,13 @@ class PoleZeroFilter(FilterBase):
         return mapping
 
     @property
-    def poles(self):
-        """
-
-        :return: array of poles
-        :rtype: np.ndarray
-
-        """
-        return self._poles
-
-    @poles.setter
-    def poles(self, value):
-        """
-        Set the poles, make sure the input is validated
-        :param value: pole values
-        :type value: list, tuple, np.ndarray
-
-        """
-        if isinstance(value, (list, tuple, np.ndarray)):
-            self._poles = np.array(value, dtype=complex)
-
-        elif isinstance(value, str):
-            self._poles = np.array(value.split(","), dtype=complex)
-
-        else:
-            self._poles = np.empty(0, dtype=complex)
-
-    @property
-    def zeros(self):
-        """
-
-        :return: array of zeros
-        :rtype: np.ndarray
-
-        """
-        return self._zeros
-
-    @zeros.setter
-    def zeros(self, value):
-        """
-
-        Set the zeros, make sure the input is validated
-        :param value: zero values
-        :type value: list, tuple, np.ndarray
-
-        """
-        if isinstance(value, (list, tuple, np.ndarray)):
-            self._zeros = np.array(value, dtype=complex)
-
-        elif isinstance(value, str):
-            self._zeros = np.array(value.split(","), dtype=complex)
-
-        else:
-            self._zeros = np.empty(0, complex)
-
-    @property
     def n_poles(self):
         """
         :return: number of poles
         :rtype: integer
 
         """
-        return len(self._poles)
+        return len(self.poles)
 
     @property
     def n_zeros(self):
@@ -113,7 +106,7 @@ class PoleZeroFilter(FilterBase):
         :rtype: integer
 
         """
-        return len(self._zeros)
+        return len(self.zeros)
 
     def zero_pole_gain_representation(self):
         """
@@ -122,9 +115,7 @@ class PoleZeroFilter(FilterBase):
         :rtype: :class:`scipy.signal.ZerosPolesGain`
 
         """
-        zpg = signal.ZerosPolesGain(
-            self.zeros, self.poles, self.normalization_factor
-        )
+        zpg = signal.ZerosPolesGain(self.zeros, self.poles, self.normalization_factor)
         return zpg
 
     @property
@@ -169,8 +160,8 @@ class PoleZeroFilter(FilterBase):
             stage_number,
             self.gain,
             normalization_frequency,
-            self.units_in,
-            self.units_out,
+            self.units_in_object.symbol,
+            self.units_out_object.symbol,
             pz_type,
             normalization_frequency,
             self.zeros,
@@ -178,8 +169,8 @@ class PoleZeroFilter(FilterBase):
             name=self.name,
             normalization_factor=self.normalization_factor,
             description=self.get_filter_description(),
-            input_units_description=self._units_in_obj.name,
-            output_units_description=self._units_out_obj.name,
+            input_units_description=self.units_in_object.name,
+            output_units_description=self.units_out_object.name,
         )
 
         return rs
@@ -201,7 +192,13 @@ class PoleZeroFilter(FilterBase):
 
         return h
 
-    def normalization_frequency(self, estimate="mean", window_len=5, tol=1e-4):
+    def normalization_frequency(
+        self,
+        frequencies: np.ndarray = np.logspace(-4, 4, 32),
+        estimate: str = "mean",
+        window_len: int = 5,
+        tol: float = 1e-4,
+    ) -> float:
         """
         Try to estimate the normalization frequency in the pass band
         by finding the flattest spot in the amplitude.
@@ -223,9 +220,10 @@ class PoleZeroFilter(FilterBase):
         :rtype: float
 
         """
-        pass_band = self.pass_band(window_len, tol)
-
-        if len(pass_band) == 0:
+        pass_band = self.pass_band(frequencies, window_len, tol)
+        if pass_band is None:
+            return np.NAN
+        if pass_band.size == 0:
             return np.NAN
 
         if estimate == "mean":

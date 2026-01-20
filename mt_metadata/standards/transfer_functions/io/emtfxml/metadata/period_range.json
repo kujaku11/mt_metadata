@@ -1,0 +1,29 @@
+{
+    "title": "period_range",
+    "type": "object",
+    "properties": {
+        "min": {
+            "default": 0.0,
+            "description": "minimum period",
+            "title": "min",
+            "examples": "\"4.5E-5\"",
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "max": {
+            "default": 0.0,
+            "description": "maxmimu period",
+            "title": "max",
+            "examples": "\"4.5E5\"",
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        }
+    },
+    "required": [
+        "min",
+        "max"
+    ],
+    "description": "period_range"
+}

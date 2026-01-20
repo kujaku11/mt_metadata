@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mt_metadata"
+version = "1.0.0"
+description = "Metadata for magnetotelluric data"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE"}
+authors = [
+    {name = "Jared Peacock", email = "jpeacock@usgs.gov"},
+    {name = "Anna Kelbert"},
+    {name = "Karl Kappler"},
+    {name = "Lindsey Heagy"},
+    {name = "Andy Frassetto"},
+    {name = "Tim Ronan"},
+]
+keywords = ["mt_metadata"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "xarray",
+    "loguru",
+    "pydantic[email] >= 2.0.0",
+    "pyproj>=3.4.0",
+    "typing_extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+obspy = ["obspy"]
+test = ["pytest>=3", "pytest-subtests", "pytest-cov"]
+
+[project.urls]
+Homepage = "https://github.com/kujaku11/mt_metadata"
+Repository = "https://github.com/kujaku11/mt_metadata"
+Documentation = "https://mt-metadata.readthedocs.io/"
+
+[tool.setuptools.packages.find]
+include = ["mt_metadata", "mt_metadata.*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = [
+    "data/mt_xml/*.xml",
+    "data/stationxml/*.xml",
+    "data/stationxml/readme", 
+    "data/transfer_functions/*.edi",
+    "data/transfer_functions/*.xml",
+    "data/transfer_functions/*.avg",
+    "data/transfer_functions/*.j",
+    "data/transfer_functions/*.zmm",
+    "data/transfer_functions/*.zss",
+    "data/transfer_functions/*.txt",
+    "data/licenses.json",
+    "../HISTORY.rst",
+    "../AUTHORS.rst",
+]
+
+[tool.pytest.ini_options]
+collect_ignore = ["setup.py"]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310', 'py311']
+include = '\.pyi?$'
+skip-string-normalization = false
+
+[tool.isort]
+profile = "black"
+skip = "__init__.py"
+force_alphabetical_sort_within_sections = true
+order_by_type = true
+lines_after_imports = 2
+known_first_party = ["mt_metadata"]
+
+[tool.autoflake]
+remove-all-unused-imports = true
+expand-star-imports = true
+ignore-init-module-imports = true
+in-place = true

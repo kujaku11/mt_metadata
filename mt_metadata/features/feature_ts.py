@@ -1,24 +1,24 @@
+# -*- coding: utf-8 -*-
+# =============================================================================
+# Imports
+# =============================================================================
+
+from pydantic import model_validator
+
 from mt_metadata.features.feature import Feature
+
+# =============================================================================
+
 
 class FeatureTS(Feature):
     """
     Stub feature class for time series features.
     """
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.name = "feature_ts"
-        self.add_base_attribute(
-            "name",
-            "feature_ts",
-            {
-                "type": str,
-                "required": True,
-                "style": "free form",
-                "description": "Name of the feature (time series)",
-                "units": None,
-                "options": [],
-                "alias": [],
-                "example": "feature_ts",
-                "default": "feature_ts",
-            },
-        )
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_defaults(cls, data: dict) -> dict:
+        data["name"] = "feature_ts"
+        data["description"] = "A feature for storing time series information."
+        data["domain"] = "time"
+        return data

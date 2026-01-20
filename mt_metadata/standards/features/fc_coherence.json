@@ -1,0 +1,68 @@
+{
+    "title": "fc_coherence",
+    "type": "object",
+    "properties": {
+        "channel_1": {
+            "default": "",
+            "description": "The first channel of two channels in the coherence calculation.",
+            "title": "channel_1",
+            "examples": "ex",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "channel_2": {
+            "default": "",
+            "description": "The second channel of two channels in the coherence calculation.",
+            "title": "channel_2",
+            "examples": "hy",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "minimum_fcs": {
+            "default": null,
+            "description": "The minimum number of Fourier coefficients needed to compute the feature.",
+            "title": "minimum_fcs",
+            "examples": "2",
+            "type": "integer",
+            "alias": null,
+            "units": null
+        },
+        "band_definition_type": {
+            "default": "'Q'",
+            "description": "How the feature frequency bands are defined.",
+            "title": "band_definition_type",
+            "examples": "user defined",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "Q",
+                "fractional bandwidth",
+                "user defined"
+            ]
+        },
+        "q_radius": {
+            "default": "'constant Q'",
+            "description": "How the feature frequency bands are defined.",
+            "title": "q_radius",
+            "examples": "user defined",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "constant Q",
+                "user defined"
+            ]
+        }
+    },
+    "required": [
+        "channel_1",
+        "channel_2",
+        "minimum_fcs",
+        "band_definition_type",
+        "q_radius"
+    ],
+    "description": "fc_coherence"
+}
