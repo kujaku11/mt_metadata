@@ -15,7 +15,6 @@ import pkgutil
 from pathlib import Path
 from typing import Any
 
-
 try:
     from pydantic import BaseModel
 except ImportError:

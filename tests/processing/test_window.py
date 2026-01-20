@@ -7,6 +7,7 @@ Created on September 7, 2025
 Comprehensive pytest test suite for Window basemodel using fixtures and subtests
 whilst optimizing for efficiency.
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -25,7 +26,6 @@ from mt_metadata.processing.window import (
     TypeEnum,
     Window,
 )
-
 
 # =============================================================================
 # Fixtures

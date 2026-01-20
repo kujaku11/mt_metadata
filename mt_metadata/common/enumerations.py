@@ -8,7 +8,6 @@ from pathlib import Path
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema, CoreSchema
 
-
 # =====================================================
 
 

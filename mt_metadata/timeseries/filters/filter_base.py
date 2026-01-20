@@ -15,7 +15,6 @@ from mt_metadata.common.mttime import MTime
 from mt_metadata.common.units import get_unit_object, Unit
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
-
 try:
     from obspy.core.inventory.response import ResponseListResponseStage, ResponseStage
 

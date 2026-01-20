@@ -10,7 +10,6 @@ Created on July 13, 2025
 @author: mt_metadata_pytest_suite
 """
 
-
 # =============================================================================
 # Imports
 # =============================================================================
@@ -18,7 +17,6 @@ import pytest
 
 # Import the Channels class directly
 from mt_metadata.transfer_functions.io.emtfxml.metadata import Channels
-
 
 # =============================================================================
 # Test Data Constants

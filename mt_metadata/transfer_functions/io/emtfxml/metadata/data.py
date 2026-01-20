@@ -4,6 +4,7 @@ Created on Mon Sep  6 13:53:55 2021
 
 @author: jpeacock
 """
+
 from typing import Annotated, ClassVar
 from xml.etree import cElementTree as et
 
@@ -16,7 +17,6 @@ from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import element_to_string
-
 
 # =============================================================================
 

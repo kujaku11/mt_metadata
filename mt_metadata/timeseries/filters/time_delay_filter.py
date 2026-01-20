@@ -10,7 +10,6 @@ from pydantic import Field, field_validator, PrivateAttr, ValidationInfo
 from mt_metadata.base.helpers import requires
 from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
-
 try:
     from obspy.core import inventory
 except ImportError:

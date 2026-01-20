@@ -2,9 +2,7 @@
 Test module for transfer_functions/io/emtfxml/metadata/description.py
 """
 
-
 from mt_metadata.transfer_functions.io.emtfxml.metadata.description import Description
-
 
 # ============================================================================
 # TEST DESCRIPTION DEFAULTS

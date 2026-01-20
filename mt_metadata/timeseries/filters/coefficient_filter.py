@@ -8,7 +8,6 @@ from pydantic import Field, PrivateAttr
 
 from mt_metadata.timeseries.filters import FilterBase
 
-
 try:
     from obspy.core import inventory
 except ImportError:

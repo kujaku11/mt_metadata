@@ -6,6 +6,7 @@ Created on September 7, 2025
 
 Pytest test suite for Channel basemodel
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -14,7 +15,6 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.processing.aurora.channel import Channel
-
 
 # =============================================================================
 # Fixtures

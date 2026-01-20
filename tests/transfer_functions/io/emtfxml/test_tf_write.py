@@ -19,7 +19,6 @@ Test Structure:
 Total: 37 tests covering EMTFXML write functionality and roundtrip validation
 """
 
-
 import numpy as np
 
 # =============================================================================

@@ -21,7 +21,6 @@ from mt_metadata.common import Comment, TimePeriod
 # Import the class under test
 from mt_metadata.features.feature_fc_run import FeatureFCRun
 
-
 # =====================================================
 # Fixtures
 # =====================================================

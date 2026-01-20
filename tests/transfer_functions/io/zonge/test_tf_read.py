@@ -11,6 +11,7 @@ Updated to pytest: August 17, 2025
 :license: MIT
 
 """
+
 import time
 from collections import OrderedDict
 
@@ -19,7 +20,6 @@ import pytest
 
 from mt_metadata import TF_AVG
 from mt_metadata.transfer_functions.core import TF
-
 
 # =============================================================================
 # Fixtures - Session scoped for maximum efficiency

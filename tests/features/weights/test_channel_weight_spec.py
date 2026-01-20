@@ -22,7 +22,6 @@ from mt_metadata.features.weights.channel_weight_spec import (
 )
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 
-
 # =====================================================
 # Fixtures for optimal efficiency
 # =====================================================

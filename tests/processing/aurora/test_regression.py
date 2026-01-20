@@ -7,6 +7,7 @@ Created on September 7, 2025
 Comprehensive pytest test suite for Regression basemodel using fixtures and subtests
 whilst optimizing for efficiency.
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -15,7 +16,6 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.processing.aurora.regression import Regression
-
 
 # =============================================================================
 # Fixtures

@@ -17,7 +17,6 @@ import pytest
 from mt_metadata import TF_JFILE
 from mt_metadata.transfer_functions.core import TF
 
-
 # =============================================================================
 # Mock Data Fixtures
 # =============================================================================

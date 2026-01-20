@@ -10,7 +10,6 @@ from pyproj import CRS
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import DataTypeEnum
 
-
 # =====================================================
 
 

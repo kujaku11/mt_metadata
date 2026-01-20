@@ -15,7 +15,6 @@ from pathlib import Path
 from mt_metadata.common.mttime import get_now_utc, MTime
 from mt_metadata.timeseries.tools import MT2StationXML
 
-
 # =============================================================================
 
 # name space maping

@@ -16,7 +16,6 @@ import pytest
 from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.tf.transfer_function import TransferFunction
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

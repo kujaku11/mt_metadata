@@ -10,7 +10,6 @@ Tests for FDSN tools using pytest.
 
 import pytest
 
-
 try:
     from mt_metadata.timeseries.stationxml import fdsn_tools
 except ImportError:

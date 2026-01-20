@@ -9,7 +9,6 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import ArrayDTypeEnum
 from mt_metadata.common.units import get_unit_object
 
-
 # =====================================================
 
 

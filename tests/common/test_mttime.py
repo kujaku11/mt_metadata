@@ -4,6 +4,7 @@ time test
 Created on Thu May 21 14:09:17 2020
 @author: jpeacock
 """
+
 import datetime
 
 import numpy as np
@@ -15,7 +16,6 @@ import pandas as pd
 import pytest
 from dateutil import parser as dtparser
 from dateutil import tz
-
 
 try:
     from obspy import UTCDateTime

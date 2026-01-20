@@ -7,6 +7,7 @@ have a look at https://github.com/pydantic/pydantic/discussions/3673.
 
 @author: jpeacock
 """
+
 import datetime
 
 # =============================================================================
@@ -19,7 +20,6 @@ import pandas as pd
 from dateutil.parser import parse as dtparser
 from loguru import logger
 from pandas._libs.tslibs import OutOfBoundsDatetime
-
 
 try:
     from obspy.core.utcdatetime import UTCDateTime  # for type hinting
@@ -37,7 +37,6 @@ from pydantic import (
     PrivateAttr,
     ValidationInfo,
 )
-
 
 # =============================================================================
 #  Get leap seconds

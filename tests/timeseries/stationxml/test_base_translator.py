@@ -10,7 +10,6 @@ Tests for the BaseTranslator class using pytest.
 
 import pytest
 
-
 try:
     from obspy.core.inventory import Comment
 

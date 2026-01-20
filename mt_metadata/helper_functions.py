@@ -8,7 +8,6 @@ from typing import Dict, List, Union
 
 from mt_metadata.base import MetadataBase
 
-
 """
     Here are some rather abstract functions for generalizing setters of lists,
     whose elements are particular mt_metadata classes.

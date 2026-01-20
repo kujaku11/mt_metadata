@@ -7,6 +7,7 @@ Created on Mon Sep 27 16:28:09 2021
 
 Modernized for pytest with fixtures and subtests for optimal efficiency.
 """
+
 import pathlib
 
 import numpy as np
@@ -15,7 +16,6 @@ import pytest
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.transfer_functions.io.zfiles import zmm
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel
-
 
 # =============================================================================
 # Fixtures

@@ -16,7 +16,6 @@ from pydantic import ValidationError
 from mt_metadata.common import StartEndRange
 from mt_metadata.timeseries import ChannelBase, Electric, Electrode
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

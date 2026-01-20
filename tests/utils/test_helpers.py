@@ -13,7 +13,6 @@ from pydantic import Field
 
 from mt_metadata.base import helpers
 
-
 # =============================================================================
 
 

@@ -8,7 +8,6 @@ Idea here is to add logic to interrogate stage filters received from StationXML
 # =============================================================================
 import numpy as np
 
-
 try:
     import obspy
 except ImportError:
@@ -22,7 +21,6 @@ from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     TimeDelayFilter,
 )
-
 
 # =============================================================================
 

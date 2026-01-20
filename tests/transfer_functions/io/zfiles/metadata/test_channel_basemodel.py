@@ -16,7 +16,6 @@ import pytest
 from mt_metadata.common.enumerations import ChannelEnum
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

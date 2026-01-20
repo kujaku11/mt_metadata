@@ -10,7 +10,6 @@ from pydantic import computed_field, Field, field_validator, PrivateAttr, Valida
 from mt_metadata.base.helpers import requires
 from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
-
 try:
     from obspy.core.inventory.response import FIRResponseStage
 except ImportError:
@@ -18,7 +17,6 @@ except ImportError:
 import scipy.signal as signal
 
 from mt_metadata.common import SymmetryEnum
-
 
 # =====================================================
 

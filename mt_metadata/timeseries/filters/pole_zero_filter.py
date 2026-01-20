@@ -6,7 +6,6 @@ from typing import Annotated
 import numpy as np
 from pydantic import Field, field_validator, ValidationInfo
 
-
 try:
     import obspy
 except ImportError:

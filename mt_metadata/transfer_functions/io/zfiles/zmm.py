@@ -23,7 +23,6 @@ from mt_metadata.transfer_functions.tf import Station
 
 from .metadata import Channel
 
-
 # ==============================================================================
 PERIOD_FORMAT = ".10g"
 

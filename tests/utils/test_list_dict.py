@@ -4,6 +4,7 @@ Created on Wed Nov 16 12:22:08 2022
 
 @author: jpeacock
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -11,7 +12,6 @@ import unittest
 
 from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Channel, Run, Station, Survey
-
 
 # =============================================================================
 

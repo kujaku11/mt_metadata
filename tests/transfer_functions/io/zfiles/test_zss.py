@@ -19,7 +19,6 @@ from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE, TF_ZSS_TIPPER
 from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

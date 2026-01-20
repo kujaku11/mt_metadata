@@ -16,7 +16,6 @@ import black
 import isort
 from loguru import logger
 
-
 # try:
 #     from datamodel_code_generator import DataModelType, PythonVersion
 #     from datamodel_code_generator.model import get_data_model_types

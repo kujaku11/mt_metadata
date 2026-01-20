@@ -4,7 +4,6 @@ import pytest
 from mt_metadata.common import SymmetryEnum
 from mt_metadata.timeseries.filters import FIRFilter
 
-
 try:
     from obspy.core.inventory.response import FIRResponseStage
 

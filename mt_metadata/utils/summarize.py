@@ -27,20 +27,19 @@ Example usage:
     # Get BaseDict-compatible summary
     >>> summary = summarize_pydantic_standards()
 """
+
 from typing import get_args, get_origin, Union
 
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
-from numpy._typing._array_like import NDArray
 import pandas as pd
 from loguru import logger
 
 from mt_metadata import __version__
 from mt_metadata.base import BaseDict, MetadataBase
 from mt_metadata.utils.validators import validate_name
-
 
 # =============================================================================
 

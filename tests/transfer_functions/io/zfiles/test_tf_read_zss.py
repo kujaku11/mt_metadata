@@ -20,7 +20,6 @@ import pytest
 from mt_metadata import TF_ZSS_TIPPER
 from mt_metadata.transfer_functions.core import TF
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

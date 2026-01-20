@@ -19,7 +19,6 @@ import pandas as pd
 from loguru import logger
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
-
 # =============================================================================
 
 # Define SI prefixes

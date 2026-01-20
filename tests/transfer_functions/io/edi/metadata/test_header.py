@@ -17,7 +17,6 @@ from mt_metadata.common import GeographicReferenceFrameEnum, StdEDIversionsEnum
 from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.edi.metadata import Header
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

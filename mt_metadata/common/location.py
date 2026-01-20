@@ -10,7 +10,6 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common import Declination, GeographicLocation
 from mt_metadata.utils.location_helpers import validate_position
 
-
 # =====================================================
 
 

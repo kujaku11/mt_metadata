@@ -10,6 +10,7 @@ Created on Wed Sep 30 11:47:01 2020
 :license: MIT
 
 """
+
 import numpy as np
 
 # =============================================================================
@@ -18,7 +19,6 @@ import numpy as np
 from loguru import logger
 
 from mt_metadata.common import LicenseEnum
-
 
 # =============================================================================
 

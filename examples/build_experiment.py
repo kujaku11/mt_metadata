@@ -19,7 +19,6 @@ from mt_metadata.timeseries import (
     Survey,
 )
 
-
 experiment = Experiment()
 
 for survey in ["One", "Two"]:

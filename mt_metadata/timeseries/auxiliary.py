@@ -7,7 +7,6 @@ from pydantic import Field, PrivateAttr
 
 from mt_metadata.timeseries import Channel
 
-
 # =====================================================
 
 

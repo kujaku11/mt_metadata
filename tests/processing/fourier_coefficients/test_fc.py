@@ -24,7 +24,6 @@ from mt_metadata.common import ListDict, TimePeriod
 from mt_metadata.processing.fourier_coefficients.decimation import Decimation
 from mt_metadata.processing.fourier_coefficients.fc import FC, MethodEnum
 
-
 # =====================================================
 # Fixtures
 # =====================================================

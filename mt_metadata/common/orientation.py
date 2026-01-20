@@ -12,7 +12,6 @@ from mt_metadata.common.enumerations import (
     OrientationMethodEnum,
 )
 
-
 # =====================================================
 
 

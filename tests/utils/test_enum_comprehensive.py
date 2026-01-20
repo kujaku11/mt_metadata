@@ -2,6 +2,7 @@
 """
 Test script to verify comprehensive enum handling in to_dict method
 """
+
 from enum import Enum
 from typing import Any, List
 

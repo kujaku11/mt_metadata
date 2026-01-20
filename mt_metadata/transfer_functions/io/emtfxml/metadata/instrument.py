@@ -8,6 +8,7 @@ Created on Wed Dec 23 21:30:36 2020
 :license: MIT
 
 """
+
 from typing import Annotated
 
 # =============================================================================

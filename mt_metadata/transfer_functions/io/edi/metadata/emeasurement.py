@@ -14,7 +14,6 @@ from pydantic import (
 
 from mt_metadata.base import MetadataBase
 
-
 # =====================================================
 
 

@@ -8,7 +8,6 @@ from pydantic import Field
 from mt_metadata.timeseries import Station as TSStation
 from mt_metadata.transfer_functions.tf.transfer_function import TransferFunction
 
-
 # =====================================================
 
 

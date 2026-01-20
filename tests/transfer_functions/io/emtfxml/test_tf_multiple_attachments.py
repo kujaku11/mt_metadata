@@ -32,12 +32,10 @@ Created from test_tf_multiple_attachments.py template for improved efficiency an
 @author: pytest conversion
 """
 
-
 import pytest
 
 from mt_metadata import TF_XML_MULTIPLE_ATTACHMENTS
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
-
 
 # =============================================================================
 # Fixtures

@@ -2,7 +2,6 @@
 
 from mt_metadata.timeseries.electric import Electric
 
-
 # Test edge cases and comprehensive scenarios
 print("=== Test: Comprehensive scenarios ===")
 

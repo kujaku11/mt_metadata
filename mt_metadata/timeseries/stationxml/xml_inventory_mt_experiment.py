@@ -8,6 +8,7 @@ Created on Mon Feb 22 09:27:10 2021
 :license: MIT
 
 """
+
 from copy import deepcopy
 
 # =============================================================================
@@ -25,7 +26,6 @@ from mt_metadata.timeseries.stationxml import (
     XMLNetworkMTSurvey,
     XMLStationMTStation,
 )
-
 
 # =============================================================================
 

@@ -27,7 +27,6 @@ from mt_metadata.timeseries.filters import (
 )
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
-
 try:
     from obspy.core import inventory
 except ImportError:

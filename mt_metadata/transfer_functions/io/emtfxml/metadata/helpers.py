@@ -17,7 +17,6 @@ from mt_metadata import NULL_VALUES
 from mt_metadata.base.helpers import element_to_string
 from mt_metadata.utils.validators import validate_attribute
 
-
 # =============================================================================
 
 

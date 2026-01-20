@@ -8,6 +8,7 @@ Created on Wed Dec 23 20:41:16 2020
 :license: MIT
 
 """
+
 from __future__ import annotations
 
 import json
@@ -41,7 +42,6 @@ from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import validate_attribute, validate_name
 
 from . import helpers, pydantic_helpers
-
 
 # =============================================================================
 #  Base class that everything else will inherit

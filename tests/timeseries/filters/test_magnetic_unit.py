@@ -13,7 +13,6 @@ Notes:
 
 import pytest
 
-
 try:
     from obspy.core import inventory
 

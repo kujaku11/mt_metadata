@@ -9,7 +9,6 @@ from pyproj import CRS
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils import location_helpers
 
-
 # =====================================================
 
 

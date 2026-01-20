@@ -7,6 +7,7 @@ Created on September 7, 2025
 Comprehensive pytest test suite for TimeSeriesDecimation basemodel using fixtures and subtests
 whilst optimizing for efficiency.
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -18,7 +19,6 @@ from mt_metadata.processing.time_series_decimation import (
     MethodEnum,
     TimeSeriesDecimation,
 )
-
 
 # =============================================================================
 # Fixtures
