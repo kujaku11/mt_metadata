@@ -1,0 +1,32 @@
+{
+    "title": "decimation",
+    "type": "object",
+    "properties": {
+        "id": {
+            "default": "",
+            "description": "Decimation level ID",
+            "title": "id",
+            "examples": "1",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "channels_estimated": {
+            "type": "string",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of channels",
+            "title": "channels_estimated",
+            "examples": "[ex, hy]",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "id",
+        "channels_estimated"
+    ],
+    "description": "decimation"
+}

@@ -20,19 +20,19 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Alpha numeric ID that will be unique for      | EMT20          |
        |                                              | archiving.                                    |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -41,17 +41,67 @@ Survey
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the survey.                | long survey    |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.time_stamp**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.value`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.value**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -68,15 +118,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **datum**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Datum of latitude and longitude coordinates.  | WGS84          |
+       | **Required**: :red:`True`                    | Datum of latitude and longitude coordinates.  | WGS 84         |
        |                                              | Should be a well-known datum, such as WGS84,  |                |
-       | **Units**: None                              | and will be the reference datum for all       |                |
+       | **Type**: str | int                          | and will be the reference datum for all       |                |
        |                                              | locations.  This is important for the user,   |                |
-       | **Type**: string                             | they need to make sure all coordinates in the |                |
+       | **Units**: None                              | they need to make sure all coordinates in the |                |
        |                                              | survey and child items (i.e. stations,        |                |
-       | **Style**: controlled vocabulary             | channels) are referenced to this datum.       |                |
+       |                                              | channels) are referenced to this datum.       |                |
        |                                              |                                               |                |
-       | **Default**: WGS84                           |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -95,13 +145,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Closest geographic reference to survey,       | Yukon          |
        |                                              | usually a city but could be a landmark or     |                |
-       | **Units**: None                              | some other common geographic reference point. |                |
+       | **Type**: <class 'str'>                      | some other common geographic reference point. |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -120,13 +170,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Descriptive name of the survey.               | MT Characteriza|
        |                                              |                                               | tion of Yukon  |
-       | **Units**: None                              |                                               | Terrane        |
+       | **Type**: <class 'str'>                      |                                               | Terrane        |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -145,13 +195,63 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Alpha numeric name for the project e.g USGS-  | YUTOO          |
        |                                              | GEOMAG.                                       |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`stations`
+~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **stations**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | List of stations recorded in the survey.      | ListDict[Statio|
+       |                                              |                                               | n(id=id)]      |
+       | **Type**: mt_metadata.common.list_dict.ListDi|                                               |                |
+       | ct | list | dict |                           |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`filters`
+~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **filters**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | List of filters for channel responses.        | ListDict[Filter|
+       |                                              |                                               | ()]            |
+       | **Type**: mt_metadata.common.list_dict.ListDi|                                               |                |
+       | ct | list | dict |                           |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -170,13 +270,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Summary paragraph of survey including the     | long project of|
        |                                              | purpose; difficulties; data quality; summary  | characterizing |
-       | **Units**: None                              | of outcomes if the data have been processed   | mineral        |
+       | **Type**: <class 'str'>                      | of outcomes if the data have been processed   | mineral        |
        |                                              | and modeled.                                  | resources in   |
-       | **Type**: string                             |                                               | Yukon          |
+       | **Units**: None                              |                                               | Yukon          |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -193,15 +293,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **time_period.end_date**                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | End date of the survey in UTC.                | 1995-01-01     |
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04     |
        |                                              |                                               |                |
+       | **Type**: str | float | int |                |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01                      |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -218,15 +318,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **time_period.start_date**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Start date of the survey in UTC.              | 1/2/2020       |
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01     |
        |                                              |                                               |                |
+       | **Type**: str | float | int |                |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01                      |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -245,13 +345,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -269,14 +369,14 @@ Survey
        | **fdsn.network**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
-       |                                              | code.                                         |                |
+       |                                              | code. Needs to be 2 alpha numeric characters. |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -295,13 +395,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
        |                                              | http://docs.fdsn.org/projects/source-         |                |
-       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       | **Type**: str | None                         | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -320,13 +420,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
        |                                              | created or not.                               |                |
+       | **Type**: bool | None                        |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: boolean                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -343,15 +443,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN,.|
-       |                                              |                                               | UNRESTRICTED,_U|
-       | **Units**: None                              |                                               | S-ALL,_US-     |
-       |                                              |                                               | MT,_US-MT-TA   |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -368,40 +468,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN,.|
-       |                                              |                                               | UNRESTRICTED,_U|
-       | **Units**: None                              |                                               | S-ALL,_US-     |
-       |                                              |                                               | MT,_US-MT-TA   |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`acquired_by.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.author**                       | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -420,19 +495,19 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`acquired_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`acquired_by.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -441,17 +516,142 @@ Survey
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.comments**                     | **Description**                               | **Example**    |
+       | **acquired_by.email**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.url`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.url**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.author**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.time_stamp**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.value**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -470,13 +670,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
+       | **Type**: list[str] | str | None             |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -495,13 +695,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
+       | **Type**: list[str] | str | None             |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -520,13 +720,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
+       | **Type**: list[pydantic.networks.EmailStr] | |                                               |                |
+       | pydantic.networks.EmailStr | None            |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -545,19 +745,19 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | URL of the contact person                     | em.org         |
        |                                              |                                               |                |
+       | **Type**: list[pydantic.networks.AnyHttpUrl] |                                               |                |
+       | | pydantic.networks.AnyHttpUrl |             |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`funding_source.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`funding_source.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -566,17 +766,67 @@ Survey
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **funding_source.comments**                  | **Description**                               | **Example**    |
+       | **funding_source.comments.author**           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`funding_source.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **funding_source.comments.time_stamp**       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`funding_source.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **funding_source.comments.value**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -595,13 +845,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Grant ID number or name                       | MT-01-2020     |
        |                                              |                                               |                |
+       | **Type**: list[str] | str | None             |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -618,15 +868,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation_dataset.doi**                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | full url of the doi number                    | http://doi.### |
+       | **Required**: :blue:`False`                  | full url of the doi number                    | http://doi.### |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.HttpUrl | str |  |                                               |                |
+       | None                                         |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -645,13 +895,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | author names                                  | M.Tee A. Roura |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -670,13 +920,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Full title of the citation                    | Paper Title    |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -695,13 +945,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Year of citation                              | 2020           |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -720,13 +970,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Journal volume of the citation                | 12             |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -745,13 +995,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Page numbers of the citation                  | 10-15          |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -770,13 +1020,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Journal title of citation                     | Journal of     |
        |                                              |                                               | Geophysical    |
-       | **Units**: None                              |                                               | Research       |
+       | **Type**: str | None                         |                                               | Research       |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -793,15 +1043,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **citation_journal.doi**                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | full url of the doi number                    | http://doi.### |
+       | **Required**: :blue:`False`                  | full url of the doi number                    | http://doi.### |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.HttpUrl | str |  |                                               |                |
+       | None                                         |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -820,13 +1070,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | author names                                  | M.Tee A. Roura |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -845,13 +1095,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Full title of the citation                    | Paper Title    |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -870,13 +1120,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Year of citation                              | 2020           |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -895,13 +1145,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Journal volume of the citation                | 12             |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -920,13 +1170,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Page numbers of the citation                  | 10-15          |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -945,13 +1195,13 @@ Survey
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Journal title of citation                     | Journal of     |
        |                                              |                                               | Geophysical    |
-       | **Units**: None                              |                                               | Research       |
+       | **Type**: str | None                         |                                               | Research       |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -968,15 +1218,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **northwest_corner.latitude**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Latitude of the location.                     | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -993,15 +1243,40 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **northwest_corner.longitude**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Longitude of the location.                    | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`northwest_corner.elevation`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **northwest_corner.elevation**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Elevation of the location.                    | 1234.0         |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1018,15 +1293,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **southeast_corner.latitude**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Latitude of the location.                     | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1043,15 +1318,40 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **southeast_corner.longitude**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Longitude of the location.                    | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`southeast_corner.elevation`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **southeast_corner.elevation**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Elevation of the location.                    | 1234.0         |
+       |                                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1068,15 +1368,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **country**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Country of the geographic location, should be | United States  |
-       |                                              | spelled out in full. Can be a list of         | of America     |
-       | **Units**: None                              | countries.                                    |                |
+       | **Required**: :blue:`False`                  | Country where the survey was conducted.       | Canada         |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: list[str] | str | None             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1093,40 +1393,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **state**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | State or province of the geographic location, | [Colorado,     |
-       |                                              | should be spelled out in full. Can be a list  | Utah]          |
-       | **Units**: None                              | of states or provinces.                       |                |
+       | **Required**: :blue:`False`                  | State or province where the survey was        | Yukon          |
+       |                                              | conducted.                                    |                |
+       | **Type**: list[str] | str | None             |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`project_lead.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **project_lead.author**                      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1143,15 +1418,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **project_lead.organization**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1168,15 +1443,140 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **project_lead.email**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`project_lead.url`
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **project_lead.url**                         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`project_lead.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **project_lead.comments.author**             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`project_lead.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **project_lead.comments.time_stamp**         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`project_lead.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **project_lead.comments.value**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`project_lead.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **project_lead.author**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1193,15 +1593,15 @@ Survey
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **release_license**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | How the data can be used. The options are     | CC BY          |
-       |                                              | based on https://github.com/spdx/license-     |                |
-       | **Units**: None                              | list-data                                     |                |
+       | **Required**: :red:`True`                    | Release license for the data.                 | CC-BY-4.0      |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: CC0-1.0                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

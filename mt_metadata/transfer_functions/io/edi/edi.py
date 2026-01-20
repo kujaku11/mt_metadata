@@ -12,34 +12,37 @@ Updated 2021 to used mt_metadata type metadata and how spectra are read.
 
 """
 
+
 # ==============================================================================
 #  Imports
 # ==============================================================================
-import numpy as np
 from pathlib import Path
+from typing import Literal
+
+import numpy as np
 from loguru import logger
 
+from mt_metadata import __version__, NULL_VALUES
+from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
+from mt_metadata.transfer_functions import tf
 from mt_metadata.transfer_functions.io.edi.metadata import (
+    DataSection,
+    DefineMeasurement,
     Header,
     Information,
-    DefineMeasurement,
-    DataSection,
 )
-from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.transfer_functions.io.tools import (
-    _validate_str_with_equals,
-    index_locator,
     _validate_edi_lines,
+    _validate_str_with_equals,
     get_nm_elev,
+    index_locator,
 )
-
-from mt_metadata import __version__
 
 
 # ==============================================================================
 # EDI Class
 # ==============================================================================
-class EDI(object):
+class EDI:
     """
     This class is for .edi files, mainly reading and writing.  Has been tested
     on Winglink and Phoenix output .edi's, which are meant to follow the
@@ -67,7 +70,7 @@ class EDI(object):
     def __init__(self, fn=None, **kwargs):
         self.logger = logger
         self._fn = None
-        self._edi_lines = None
+        self._edi_lines = []
 
         self.Header = Header()
         self.Info = Information()
@@ -195,25 +198,15 @@ class EDI(object):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(
-            f"\tAcquired by:   {self.station_metadata.acquired_by.name}"
-        )
-        lines.append(
-            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
-        )
-        lines.append(
-            f"\tLatitude:      {self.station_metadata.location.latitude:.3f}"
-        )
-        lines.append(
-            f"\tLongitude:     {self.station_metadata.location.longitude:.3f}"
-        )
-        lines.append(
-            f"\tElevation:     {self.station_metadata.location.elevation:.3f}"
-        )
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start}")
+        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
+        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
+        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
         if self.z is not None:
             lines.append("\tImpedance:     True")
         else:
@@ -232,7 +225,7 @@ class EDI(object):
             )
         return "\n".join(lines)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     @property
@@ -240,35 +233,40 @@ class EDI(object):
         return self._fn
 
     @fn.setter
-    def fn(self, fn):
+    def fn(self, fn: str | Path | None):
         if fn is not None:
             self._fn = Path(fn)
             if self._fn.exists():
                 self.read()
 
     @property
-    def period(self):
+    def period(self) -> np.typing.NDArray | None:
         if self.frequency is not None:
             return 1.0 / self.frequency
         return None
 
-    def _assert_descending_frequency(self):
+    def _assert_descending_frequency(self) -> None:
         """
         Assert that the transfer function is ordered from high frequency to low
         frequency.
 
         """
-        if self.frequency[0] < self.frequency[1]:
-            self.logger.debug(
-                "Ordered arrays to be arranged from high to low frequency"
-            )
-            self.frequency = self.frequency[::-1]
-            self.z = self.z[::-1]
-            self.z_err = self.z_err[::-1]
-            self.t = self.t[::-1]
-            self.t_err = self.t_err[::-1]
+        if self.frequency is not None:
+            if self.frequency[0] < self.frequency[1]:
+                self.logger.debug(
+                    "Ordered arrays to be arranged from high to low frequency"
+                )
+                self.frequency = self.frequency[::-1]
+                if self.z is not None:
+                    self.z = self.z[::-1]
+                if self.z_err is not None:
+                    self.z_err = self.z_err[::-1]
+                if self.t is not None:
+                    self.t = self.t[::-1]
+                if self.t_err is not None:
+                    self.t_err = self.t_err[::-1]
 
-    def read(self, fn=None, get_elevation=False):
+    def read(self, fn: str | Path | None = None, get_elevation: bool = False) -> None:
         """
         Read in an edi file and fill attributes of each section's classes.
         Including:
@@ -316,27 +314,21 @@ class EDI(object):
 
         self._read_data()
 
-        if self.Header.lat in [None, 0.0]:
-            self.Header.lat = self.Measurement.reflat
-            self.logger.debug(
-                f"Got latitude from reflat for {self.Header.dataid}"
-            )
-        if self.Header.lon in [None, 0.0]:
-            self.Header.lon = self.Measurement.reflon
-            self.logger.debug(
-                f"Got longitude from reflon for {self.Header.dataid}"
-            )
-        if self.Header.elev in [None, 0.0]:
-            self.Header.elev = self.Measurement.refelev
-            self.logger.debug(
-                f"Got elevation from refelev for {self.Header.dataid}"
-            )
+        if self.Header.latitude in [None, 0.0]:
+            self.Header.latitude = self.Measurement.reflat
+            self.logger.debug(f"Got latitude from reflat for {self.Header.dataid}")
+        if self.Header.longitude in [None, 0.0]:
+            self.Header.longitude = self.Measurement.reflon
+            self.logger.debug(f"Got longitude from reflon for {self.Header.dataid}")
+        if self.Header.elevation in [None, 0.0]:
+            self.Header.elevation = self.Measurement.refelev
+            self.logger.debug(f"Got elevation from refelev for {self.Header.dataid}")
 
         if self.elev in [0, None] and get_elevation:
             if self.lat != 0 and self.lon != 0:
                 self.elev = get_nm_elev(self.lat, self.lon)
 
-    def _read_data(self):
+    def _read_data(self) -> None:
         """
         Read either impedance or spectra data depending on what the type is
         in the data section.
@@ -344,7 +336,7 @@ class EDI(object):
 
         lines = self._edi_lines[self.Data._line_num :]
 
-        if self.Data.data_type_in == "spectra":
+        if self.Data._data_type_in == "spectra":
             self.logger.debug("Converting Spectra to Impedance and Tipper")
             self.logger.debug(
                 "Check to make sure input channel list is correct if the data looks incorrect"
@@ -358,10 +350,10 @@ class EDI(object):
             elif self.Data.nchan == 7:
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
             self._read_spectra(lines, comp_list=c_list)
-        elif self.Data.data_type_in == "z":
+        elif self.Data._data_type_in == "z":
             self._read_mt(lines)
 
-    def _read_mt(self, data_lines):
+    def _read_mt(self, data_lines: list[str]) -> None:
         """
         Read in impedance and tipper data
 
@@ -417,43 +409,27 @@ class EDI(object):
             error_obj = getattr(self, index["err_obj"])
             try:
                 if key.startswith("z"):
-                    obj[:, ii, jj] = (
-                        data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
-                    )
+                    obj[:, ii, jj] = data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
                     try:
                         error_key = [
-                            k
-                            for k in data_dict.keys()
-                            if key in k and "var" in k
+                            k for k in data_dict.keys() if key in k and "var" in k
                         ][0]
-                        error_obj[:, ii, jj] = (
-                            np.abs(data_dict[error_key]) ** 0.5
-                        )
+                        error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
                     except IndexError:
-                        self.logger.debug(
-                            f"Could not find error information for {key}"
-                        )
+                        self.logger.debug(f"Could not find error information for {key}")
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
                         data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
                     try:
                         error_key = [
-                            k
-                            for k in data_dict.keys()
-                            if key in k and "var" in k
+                            k for k in data_dict.keys() if key in k and "var" in k
                         ][0]
-                        error_obj[:, ii, jj] = (
-                            np.abs(data_dict[error_key]) ** 0.5
-                        )
+                        error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
                     except IndexError:
-                        self.logger.debug(
-                            f"Could not find error information for {key}"
-                        )
+                        self.logger.debug(f"Could not find error information for {key}")
                 elif key.startswith("r") or key.startswith("p"):
-                    self.logger.debug(
-                        "Reading RHO and PHS to compute impedance"
-                    )
+                    self.logger.debug("Reading RHO and PHS to compute impedance")
                     if (self.z[:, ii, jj] == 0).all():
                         phase = data_dict[f"phs{key[-2:]}"]
                         z_real = np.sqrt(
@@ -484,9 +460,9 @@ class EDI(object):
 
     def _read_spectra(
         self,
-        data_lines,
-        comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"],
-    ):
+        data_lines: list[str],
+        comp_list: list[str] = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"],
+    ) -> None:
         """
         Read in spectra data and convert to impedance and Tipper.
 
@@ -712,8 +688,11 @@ class EDI(object):
                 self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
 
     def write(
-        self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"
-    ):
+        self,
+        new_edi_fn: str | Path | None = None,
+        longitude_format: Literal["LON", "LONG"] = "LON",
+        latlon_format: Literal["dms", "dd"] = "dms",
+    ) -> Path:
         """
         Write a new edi file from either an existing .edi file or from data
         input by the user into the attributes of Edi.
@@ -745,27 +724,21 @@ class EDI(object):
 
         if new_edi_fn is None:
             if self.fn is not None:
-                new_edi_fn = self.fn
+                new_edi_fn = Path(self.fn)
             else:
                 new_edi_fn = Path().cwd().joinpath(f"{self.Header.dataid}.edi")
+        else:
+            new_edi_fn = Path(new_edi_fn)
         # write lines
         extra_lines = []
         if self.survey_metadata.summary != None:
-            extra_lines.append(
-                f"\tsurvey.summary = {self.survey_metadata.summary}\n"
-            )
+            extra_lines.append(f"\tsurvey.summary = {self.survey_metadata.summary}\n")
         if self.Header.progname != "mt_metadata":
-            extra_lines.append(
-                f"\toriginal_program.name={self.Header.progname}\n"
-            )
+            extra_lines.append(f"\toriginal_program.name={self.Header.progname}\n")
         if self.Header.progvers != __version__:
-            extra_lines.append(
-                f"\toriginal_program.version={self.Header.progvers}\n"
-            )
+            extra_lines.append(f"\toriginal_program.version={self.Header.progvers}\n")
         if self.Header.progdate != "1980-01-01":
-            extra_lines.append(
-                f"\toriginal_program.date={self.Header.progdate}\n"
-            )
+            extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
         if self.Header.filedate != "1980-01-01":
             extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
         header_lines = self.Header.write_header(
@@ -787,15 +760,11 @@ class EDI(object):
         freq_lines += self._write_data_block(self.frequency, "freq")
 
         # write out rotation angles
-        zrot_lines = [
-            self._data_header_str.format("impedance rotation angles".upper())
-        ]
+        zrot_lines = [self._data_header_str.format("impedance rotation angles".upper())]
         if self.rotation_angle is None:
             self.rotation_angle = np.zeros(self.frequency.size)
         elif isinstance(self.rotation_angle, (float, int)):
-            self.rotation_angle = np.repeat(
-                self.rotation_angle, self.frequency.size
-            )
+            self.rotation_angle = np.repeat(self.rotation_angle, self.frequency.size)
         elif len(self.rotation_angle) != self.frequency.size:
             raise ValueError(
                 "rotation angle must be the same length and the number of "
@@ -836,9 +805,7 @@ class EDI(object):
             try:
                 # write out rotation angles
                 trot_lines = [
-                    self._data_header_str.format(
-                        "tipper rotation angles".upper()
-                    )
+                    self._data_header_str.format("tipper rotation angles".upper())
                 ]
                 if isinstance(self.rotation_angle, float):
                     trot = np.repeat(self.rotation_angle, self.frequency.size)
@@ -881,8 +848,11 @@ class EDI(object):
         with open(new_edi_fn, "w") as fid:
             fid.write("".join(edi_lines))
         self.fn = new_edi_fn
+        return new_edi_fn
 
-    def _write_data_block(self, data_comp_arr, data_key):
+    def _write_data_block(
+        self, data_comp_arr: np.typing.NDArray, data_key: str
+    ) -> list[str]:
         """
         Write a data block
 
@@ -942,40 +912,40 @@ class EDI(object):
     # set a few important properties
     # --> Latitude
     @property
-    def lat(self):
+    def lat(self) -> float | None:
         """latitude in decimal degrees"""
-        return self.Header.lat
+        return self.Header.latitude
 
     @lat.setter
-    def lat(self, input_lat):
+    def lat(self, input_lat) -> None:
         """set latitude and make sure it is converted to a float"""
-        self.Header.lat = input_lat
+        self.Header.latitude = input_lat
 
     # --> Longitude
     @property
-    def lon(self):
+    def lon(self) -> float | None:
         """longitude in decimal degrees"""
-        return self.Header.lon
+        return self.Header.longitude
 
     @lon.setter
-    def lon(self, input_lon):
+    def lon(self, input_lon: float | None):
         """set latitude and make sure it is converted to a float"""
-        self.Header.lon = input_lon
+        self.Header.longitude = input_lon
 
     # --> Elevation
     @property
-    def elev(self):
+    def elev(self) -> float:
         """Elevation in elevation units"""
-        return self.Header.elev
+        return self.Header.elevation
 
     @elev.setter
-    def elev(self, input_elev):
+    def elev(self, input_elev: float) -> None:
         """set elevation and make sure it is converted to a float"""
-        self.Header.elev = input_elev
+        self.Header.elevation = input_elev
 
     # --> station
     @property
-    def station(self):
+    def station(self) -> str | None:
         """station name"""
         if self.Header.dataid is not None:
             return self.Header.dataid.replace(r"/", "_")
@@ -985,7 +955,7 @@ class EDI(object):
             return self.Data.sectid
 
     @station.setter
-    def station(self, new_station):
+    def station(self, new_station: str | int):
         """station name"""
         if not isinstance(new_station, str):
             new_station = f"{new_station}".replace(r"/", "_")
@@ -993,19 +963,23 @@ class EDI(object):
         self.Data.sectid = new_station
 
     @property
-    def survey_metadata(self):
-        sm = metadata.Survey()
-        sm.project = self.Header.project
-        if sm.project is None:
-            try:
+    def survey_metadata(self) -> Survey:
+        sm = Survey()
+
+        if self.Header.project is None:
+            if self.Header.prospect is not None:
                 sm.project = self.Header.prospect
-            except AttributeError:
-                pass
-        sm.id = self.Header.survey
-        if sm.id is None:
+        else:
+            sm.project = self.Header.project
+
+        if self.Header.survey is None:
             sm.id = "0"
-        sm.acquired_by.name = self.Header.acqby
-        sm.geographic_name = self.Header.loc
+        else:
+            sm.id = self.Header.survey
+        if self.Header.acqby is not None:
+            sm.acquired_by.author = self.Header.acqby
+        if self.Header.loc is not None:
+            sm.geographic_name = self.Header.loc
         sm.country = self.Header.country
 
         for key, value in self.Info.info_dict.items():
@@ -1013,14 +987,14 @@ class EDI(object):
                 key = "extra"
             key = key.lower()
             if key.startswith("survey."):
-                sm.set_attr_from_name(key.split("survey.")[1], value)
+                sm.update_attribute(key.split("survey.")[1], value)
 
         sm.add_station(self.station_metadata)
 
         return sm
 
     @survey_metadata.setter
-    def survey_metadata(self, survey):
+    def survey_metadata(self, survey: Survey) -> None:
         """
         Update metadata from a survey metadata object
 
@@ -1031,7 +1005,7 @@ class EDI(object):
 
         """
 
-        if not isinstance(survey, metadata.Survey):
+        if not isinstance(survey, Survey):
             raise TypeError(
                 "Input must be a mt_metadata.transfer_function.Survey object"
                 f" not {type(survey)}"
@@ -1040,21 +1014,22 @@ class EDI(object):
         self.Header.project = survey.project
         self.Header.loc = survey.geographic_name
         self.Header.country = survey.country
-        if survey.summary != None:
-            self.Info.info_list.append(f"survey.summary = {survey.summary}")
+        if survey.summary not in NULL_VALUES:
+            self.Info.info_dict[f"survey.summary"] = survey.summary
 
         for key in survey.to_dict(single=True).keys():
             if "northwest" in key or "southeast" in key or "time_period" in key:
                 continue
             value = survey.get_attr_from_name(key)
-            if value != None:
-                self.Info.info_list.append(f"survey.{key} = {value}")
+            if value not in NULL_VALUES:
+                self.Info.info_dict[f"survey.{key}"] = value
 
     @property
-    def station_metadata(self):
-        sm = metadata.Station()
-        sm.add_run(metadata.Run(id=f"{self.station}a"))
-        sm.id = self.station
+    def station_metadata(self) -> tf.Station:
+        sm = tf.Station()
+        sm.add_run(Run(id=f"{self.station}a"))
+        if self.station is not None:
+            sm.id = self.station
         sm.data_type = "MT"
         sm.channels_recorded = self.Measurement.channels_recorded
         # location
@@ -1063,84 +1038,140 @@ class EDI(object):
         sm.location.elevation = self.elev
         sm.location.datum = self.Header.datum
         sm.location.declination.value = self.Header.declination.value
-        sm.orientation.reference_frame = self.Header.coordinate_system.split()[
-            0
-        ]
+        sm.orientation.reference_frame = self.Header.coordinate_system.split()[0]
+        if self.Header.loc is not None:
+            sm.geographic_name = self.Header.loc
+
         # provenance
-        sm.acquired_by.name = self.Header.acqby
+        if self.Header.acqby is not None:
+            sm.acquired_by.author = self.Header.acqby
         sm.provenance.creation_time = self.Header.filedate
         sm.provenance.submitter.author = self.Header.fileby
         sm.provenance.software.name = self.Header.fileby
         sm.provenance.software.version = self.Header.progvers
         sm.transfer_function.processed_date = self.Header.filedate
         sm.transfer_function.runs_processed = sm.run_list
-        sm.transfer_function.id = self.station
+        if self.station is not None:
+            sm.transfer_function.id = self.station
         # dates
         if self.Header.acqdate is not None:
             sm.time_period.start = self.Header.acqdate
         if self.Header.enddate is not None:
             sm.time_period.end = self.Header.enddate
 
-        for key, value in self.Info.info_dict.items():
-            if key is None:
-                continue
-
         # processing information
         for key, value in self.Info.info_dict.items():
             if key is None:
                 continue
+            if value in NULL_VALUES:
+                continue
             key = key.lower()
 
             if "provenance" in key:
-                sm.set_attr_from_name(key, value)
+                sm.update_attribute(key, value)
             elif "transfer_function" in key:
                 key = key.split("transfer_function.")[1]
                 if "processing_parameters" in key:
-                    param = key.split(".")[-1]
-                    sm.transfer_function.processing_parameters.append(
-                        f"{param}={value}"
-                    )
+                    if isinstance(value, list):
+                        for item in value:
+                            if "=" in item:
+                                param, val = item.split("=")
+                                sm.transfer_function.processing_parameters.append(
+                                    f"{param}={val}"
+                                )
+                            else:
+                                sm.transfer_function.processing_parameters.append(item)
+                    elif value not in NULL_VALUES:
+                        param = key.split(".")[-1]
+                        sm.transfer_function.processing_parameters.append(
+                            f"{param}={value}"
+                        )
+                elif "remote_references" in key:
+                    if key.count(".") > 1:
+                        if key in ["remote_references.id"]:
+                            sm.transfer_function.remote_references.append(value)
+                        elif key in ["remote_references.geographic_name"]:
+                            try:
+                                sm.transfer_function.remote_references[
+                                    -1
+                                ] = f"{value}.{sm.transfer_function.remote_references[-1]}"
+                            except IndexError:
+                                sm.transfer_function.remote_references.append(value)
+                        else:
+                            # skip any keys that have remote_references.something_else
+                            continue
+                    else:
+                        if isinstance(value, list):
+                            sm.transfer_function.remote_references.extend(value)
+                        elif isinstance(value, str):
+                            sm.transfer_function.remote_references.append(value)
+                        elif isinstance(value, (int, float)):
+                            sm.transfer_function.remote_references.append(value)
+                        else:
+                            self.logger.warning(
+                                f"Do not know how to handle remote_references {value}"
+                            )
+                            continue
+                elif "runs_processed" in key:
+                    sm.run_list = sm.transfer_function.runs_processed
                 else:
-                    sm.transfer_function.set_attr_from_name(key, value)
-                    if "runs_processed" in key:
-                        sm.run_list = sm.transfer_function.runs_processed
+                    sm.transfer_function.update_attribute(key, value)
 
             elif key.startswith("run."):
+                comp = None
                 key = key.split("run.")[1]
-                comp, key = key.split(".", 1)
-                try:
-                    ch = getattr(sm.runs[0], comp)
-                except AttributeError:
-                    ch = None
-                if ch is None:
-                    if comp in ["ex", "ey"]:
-                        ch = metadata.Electric(component=comp)
-                        sm.runs[0].add_channel(ch)
-                    elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
-                        ch = metadata.Magnetic(component=comp)
-                        sm.runs[0].add_channel(ch)
-                    else:
-                        self.logger.warning(
-                            f"Do not recognize channel {comp}, skipping..."
-                        )
-                ch.set_attr_from_name(key, value)
+                if "." in key:
+                    # split the key into component and attribute
+                    # e.g. run.mt01a.hx.comments
+                    try:
+                        comp, key = key.split(".", 1)
+                    except (IndexError, ValueError):
+                        continue
+                if comp is not None:
+                    try:
+                        ch = getattr(sm.runs[0], comp)
+                    except AttributeError:
+                        ch = None
+                    if ch is None:
+                        if comp in ["ex", "ey"]:
+                            ch = Electric(component=comp)  # type: ignore
+                            sm.runs[0].add_channel(ch)
+                        elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
+                            ch = Magnetic(component=comp)  # type: ignore
+                            sm.runs[0].add_channel(ch)
+                        else:
+                            self.logger.warning(
+                                f"Do not recognize channel {comp}, skipping..."
+                            )
+                            try:
+                                sm.runs[0].update_attribute(f"{key}.{comp}", value)
+
+                            except Exception as e:
+                                self.logger.warning(
+                                    f"Failed to update attribute {key}.{comp}: {e}"
+                                )
+                    if key in ["comments"]:
+                        if isinstance(value, list):
+                            value = ",".join(value)
+                    try:
+                        ch.update_attribute(key, value)
+                    except Exception as e:
+                        self.logger.warning(f"Failed to update attribute {key}: {e}")
             elif key.startswith("data_logger"):
-                sm.runs[0].set_attr_from_name(key, value)
+                sm.runs[0].update_attribute(key, value)
             elif key.startswith("station."):
-                sm.set_attr_from_name(key.split("station.")[1], value)
+                sm.update_attribute(key.split("station.")[1], value)
             elif "processing." in key:
                 key = key.split("processing.")[1]
                 if key in ["software"]:
                     sm.transfer_function.software.name = value
                 elif key in ["tag"]:
                     if value.count(",") > 0:
-                        sm.transfer_function.remote_references = value.split(
-                            ","
-                        )
+                        sm.transfer_function.remote_references = value.split(",")
                     else:
                         sm.transfer_function.remote_references = value.split()
             elif key in ["processedby", "processed_by"]:
-                sm.transfer_function.processed_by.author = value
+                sm.transfer_function.processed_by.name = value
             elif key in ["runlist", "run_list"]:
                 if value.count(",") > 0:
                     runs = value.split(",")
@@ -1149,38 +1180,37 @@ class EDI(object):
                 sm.run_list = []
                 for rr in runs:
                     if rr not in sm.runs.keys():
-                        sm.add_run(metadata.Run(id=rr))
+                        sm.add_run(Run(id=rr))
                 sm.transfer_function.runs_processed = runs
             elif key == "sitename":
                 sm.geographic_name = value
             elif key == "signconvention":
                 sm.transfer_function.sign_convention = value
             elif "mtft" in key or "emtf" in key or "mtedit" in key:
-                sm.transfer_function.processing_parameters.append(
-                    f"{key}={value}"
-                )
+                sm.transfer_function.processing_parameters.append(f"{key}={value}")
 
         if self.Header.filedate is not None:
             sm.transfer_function.processed_date = self.Header.filedate
         # make any extra information in info list into a comment
-        sm.comments = "\n".join(self.Info.info_list)
+        sm.comments = "\n".join(self.Info.write_info()[1:])
 
         # add information to runs
         for rr in sm.runs:
-            if rr.time_period.start == "1980-01-01T00:00:00+00:00":
+            if rr.time_period.start in NULL_VALUES:
                 rr.time_period.start = sm.time_period.start
-            if rr.time_period.end == "1980-01-01T00:00:00+00:00":
+            if rr.time_period.end in NULL_VALUES:
                 rr.time_period.end = sm.time_period.end
 
             for ch in self.Measurement.channels_recorded:
                 try:
-                    rr.add_channel(getattr(self, f"{ch}_metadata"))
+                    ch_obj = rr.channels[ch]
+                    ch_obj.update(getattr(self, f"{ch}_metadata"))
                 except AttributeError:
                     pass
         return sm
 
     @station_metadata.setter
-    def station_metadata(self, sm):
+    def station_metadata(self, sm: tf.Station) -> None:
         """
         Set EDI metadata from station metadata object
 
@@ -1190,16 +1220,16 @@ class EDI(object):
         """
 
         ### fill header information from station
-        self.Header.acqby = sm.acquired_by.name
+        self.Header.acqby = sm.acquired_by.author
         self.Header.acqdate = sm.time_period.start
         self.Header.coordinate_system = sm.orientation.reference_frame
         self.Header.dataid = sm.id
         self.Header.declination = sm.location.declination
-        self.Header.elev = sm.location.elevation
+        self.Header.elevation = sm.location.elevation
         self.Header.fileby = sm.provenance.submitter.author
         self.Header.filedate = sm.provenance.creation_time
-        self.Header.lat = sm.location.latitude
-        self.Header.lon = sm.location.longitude
+        self.Header.latitude = sm.location.latitude
+        self.Header.longitude = sm.location.longitude
         self.Header.datum = sm.location.datum
         self.Header.units = sm.transfer_function.units
         self.Header.enddate = sm.time_period.end
@@ -1209,48 +1239,48 @@ class EDI(object):
         ### write notes
         # write comments, which would be anything in the info section from an edi
         if isinstance(sm.comments, str):
-            self.Info.info_list += sm.comments.split("\n")
+            self.Info.read_info(sm.comments.split("\n"))
         # write transfer function info first
         for k, v in sm.transfer_function.to_dict(single=True).items():
-            if not v in [None]:
+            if not v in NULL_VALUES:
                 if k in ["processing_parameters"]:
                     for item in v:
-                        self.Info.info_list.append(
-                            f"transfer_function.processing_parameters.{item.replace('=', ' = ')}"
-                        )
+                        param, value = item.split("=", 1)
+                        self.Info.info_dict[
+                            f"transfer_function.processing_parameters.{param}"
+                        ] = value
+
                 else:
-                    self.Info.info_list.append(f"transfer_function.{k} = {v}")
+                    self.Info.info_dict[f"transfer_function.{k}"] = v
         # write provenance
         for k, v in sm.provenance.to_dict(single=True).items():
-            if not v in [None, "None", "null", "1980-01-01T00:00:00+00:00"]:
-                self.Info.info_list.append(f"provenance.{k} = {v}")
+            if not v in NULL_VALUES:
+                self.Info.info_dict[f"provenance.{k}"] = v
         # write field notes
         for run in sm.runs:
             r_dict = run.to_dict(single=True)
             for r_key, r_value in r_dict.items():
-                if r_value in [
-                    None,
-                    "None",
-                    "null",
-                    "1980-01-01T00:00:00+00:00",
-                ]:
+                if r_value in NULL_VALUES:
                     continue
-                self.Info.info_list.append(f"{run.id}.{r_key} = {r_value}")
+                self.Info.info_dict[f"{run.id}.{r_key}"] = r_value
             for ch in run.channels:
                 ch_dict = ch.to_dict(single=True)
                 for ch_key, ch_value in ch_dict.items():
                     if ch_key not in self._channel_skip_list:
-                        if ch_value in [
-                            None,
-                            "None",
-                            "null",
-                            "1980-01-01T00:00:00+00:00",
-                        ]:
+                        if ch_value in NULL_VALUES:
                             continue
-                        self.Info.info_list.append(
-                            f"{run.id}.{ch.component}.{ch_key} = {ch_value}"
-                        )
+                        self.Info.info_dict[
+                            f"{run.id}.{ch.component}.{ch_key}"
+                        ] = ch_value
+                # write station information
                 self.Measurement.from_metadata(ch)
+                # add channel id to data section
+                try:
+                    setattr(self.Data, f"{ch.component}", ch.channel_id)
+                except AttributeError:
+                    self.logger.warning(
+                        f"Cannot set {ch.component} channel id, skipping..."
+                    )
 
         ### fill measurement
         self.Measurement.refelev = sm.location.elevation
@@ -1264,11 +1294,11 @@ class EDI(object):
         get electric information from the various metadata
         """
         comp = comp.lower()
-        electric = metadata.Electric(component=comp)
+        electric = Electric(component=comp)
         electric.positive.type = "electric"
         electric.negative.type = "electric"
-        if hasattr(self.Measurement, f"meas_{comp}"):
-            meas = getattr(self.Measurement, f"meas_{comp}")
+        if comp in self.Measurement.measurements.keys():
+            meas = self.Measurement.measurements[comp]
             for attr in [
                 "negative.x",
                 "negative.y",
@@ -1278,7 +1308,7 @@ class EDI(object):
                 "translated_azimuth",
             ]:
                 if electric.get_attr_from_name(attr) is None:
-                    electric.set_attr_from_name(attr, 0)
+                    electric.update_attribute(attr, 0)
             electric.dipole_length = meas.dipole_length
             electric.channel_id = meas.id
             electric.measurement_azimuth = meas.azimuth
@@ -1319,7 +1349,7 @@ class EDI(object):
                     continue
                 if f".{comp}." in key:
                     key = key.split(f".{comp}.", 1)[-1]
-                    electric.set_attr_from_name(key, value)
+                    electric.update_attribute(key, value)
         return electric
 
     @property
@@ -1342,13 +1372,13 @@ class EDI(object):
 
         """
 
-        magnetic = metadata.Magnetic(component=comp)
+        magnetic = Magnetic(component=comp)
         magnetic.sensor.type = "magnetic"
-        if hasattr(self.Measurement, f"meas_{comp}"):
-            meas = getattr(self.Measurement, f"meas_{comp}")
+        if comp in self.Measurement.measurements.keys():
+            meas = self.Measurement.measurements[comp]
             for attr in ["location.x", "location.y", "location.z"]:
                 if magnetic.get_attr_from_name(attr) is None:
-                    magnetic.set_attr_from_name(attr, 0)
+                    magnetic.update_attribute(attr, 0)
             magnetic.measurement_azimuth = meas.azm
             magnetic.translated_azimuth = meas.azm
             magnetic.component = meas.chtype
@@ -1370,7 +1400,7 @@ class EDI(object):
                     if key == "type":
                         magnetic.sensor.type = v
                     if key.startswith("sensor."):
-                        magnetic.set_attr_from_name(key, v)
+                        magnetic.update_attribute(key, v)
         return magnetic
 
     @property
@@ -1384,14 +1414,6 @@ class EDI(object):
     @property
     def hz_metadata(self):
         return self._get_magnetic_metadata("hz")
-
-    @property
-    def rrhx_metadata(self):
-        return self._get_magnetic_metadata("rrhx")
-
-    @property
-    def rrhy_metadata(self):
-        return self._get_magnetic_metadata("rrhy")
 
     @property
     def rrhx_metadata(self):

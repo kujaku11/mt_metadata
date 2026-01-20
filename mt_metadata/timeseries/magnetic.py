@@ -1,48 +1,70 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema
-from .standards import SCHEMA_FN_PATHS
-from . import Channel, Instrument, Diagnostic
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("channel", SCHEMA_FN_PATHS))
-dq_dict = get_schema("data_quality", SCHEMA_FN_PATHS)
-dq_dict.add_dict(get_schema("rating", SCHEMA_FN_PATHS), "rating")
-attr_dict.add_dict(dq_dict, "data_quality")
-attr_dict.add_dict(get_schema("filtered", SCHEMA_FN_PATHS), "filter")
-attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
-attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "sensor")
-attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
-attr_dict.add_dict(
-    get_schema("location", SCHEMA_FN_PATHS),
-    "location",
-    keys=["latitude", "longitude", "elevation", "x", "y", "z"],
-)
-# =============================================================================
+from pydantic import Field, PrivateAttr
+
+from mt_metadata.common import StartEndRange
+from mt_metadata.timeseries import Channel
+
+
+# =====================================================
 class Magnetic(Channel):
-    __doc__ = write_lines(attr_dict)
+    _channel_type: str = PrivateAttr("magnetic")
+    component: Annotated[
+        str,
+        Field(
+            default="h_default",
+            description="Component of the magnetic field.",
+            alias=None,
+            pattern=r"^[hHbBrR][a-zA-Z0-9_]*$",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["hx"],
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
+    h_field_min: Annotated[
+        StartEndRange,
+        Field(
+            default_factory=StartEndRange,
+            description="minimum of field strength at the beginning and end",
+            alias=None,
+            json_schema_extra={
+                "units": "nanotesla",
+                "required": True,
+                "examples": ["StartEndRange(start=0.01, end=0.02)"],
+            },
+        ),
+    ]
 
-        self.sensor = Instrument()
-        self.h_field_min = Diagnostic()
-        self.h_field_max = Diagnostic()
+    h_field_max: Annotated[
+        StartEndRange,
+        Field(
+            default_factory=StartEndRange,
+            description="maximum of field strength at the beginning and end",
+            alias=None,
+            json_schema_extra={
+                "units": "nanotesla",
+                "required": True,
+                "examples": ["StartEndRange(start=0.1, end=2.0)"],
+            },
+        ),
+    ]
 
-        Channel.__init__(self, _ch_pattern=r"[r,h,b]\w+", **kwargs)
-
-        self.type = "magnetic"
-
-        self._attr_dict = attr_dict
+    type: Annotated[
+        str,
+        Field(
+            default="magnetic",
+            description="Data type for the channel, should be a descriptive word that a user can understand.",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["magnetic"],
+            },
+        ),
+    ]

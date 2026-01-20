@@ -1,40 +1,37 @@
-# -*- coding: utf-8 -*-
-"""
-==================
-EMTF XML metadata
-==================
+# # -*- coding: utf-8 -*-
+# """
+# ==================
+# EMTF XML metadata
+# ==================
 
-The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__. 
+# The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__.
 
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-    
-:license: 
-    MIT
+# :copyright:
+#     Jared Peacock (jpeacock@usgs.gov)
+
+# :license:
+#     MIT
 
 
-"""
+# """
 
-# package file
+# # package file
 
-### !!! DO NOT CHANGE THE ORDER !!!
+# ### !!! DO NOT CHANGE THE ORDER !!!
 from .external_url import ExternalUrl
 from .primary_data import PrimaryData
 from .attachment import Attachment
-from .person import Person
 from .citation import Citation
-from .comment import Comment
 from .provenance import Provenance
 from .copyright import Copyright
 from .data_quality_notes import DataQualityNotes
 from .data_quality_warnings import DataQualityWarnings
 from .orientation import Orientation
-from .location import Location
 from .site import Site
+from .instrument import Instrument
 from .electrode import Electrode
 from .dipole import Dipole
 from .magnetometer import Magnetometer
-from .instrument import Instrument
 from .run import Run
 from .field_notes import FieldNotes
 from .software import ProcessingSoftware
@@ -58,20 +55,17 @@ __all__ = [
     "ExternalUrl",
     "PrimaryData",
     "Attachment",
-    "Person",
     "Provenance",
     "Citation",
     "Copyright",
-    "Comment",
     "DataQualityNotes",
     "DataQualityWarnings",
     "Orientation",
-    "Location",
     "Site",
+    "Instrument",
     "Electrode",
     "Dipole",
     "Magnetometer",
-    "Instrument",
     "Run",
     "FieldNotes",
     "ProcessingSoftware",

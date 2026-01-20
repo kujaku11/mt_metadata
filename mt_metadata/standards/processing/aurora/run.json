@@ -1,0 +1,68 @@
+{
+    "title": "run",
+    "type": "object",
+    "properties": {
+        "id": {
+            "default": "",
+            "description": "run ID",
+            "title": "id",
+            "examples": "001",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "input_channels": {
+            "type": "string",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of input channels (source)",
+            "title": "input_channels",
+            "examples": "hx, hy",
+            "alias": null,
+            "units": null
+        },
+        "output_channels": {
+            "type": "string",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of output channels (response)",
+            "title": "output_channels",
+            "examples": "ex, ey, hz",
+            "alias": null,
+            "units": null
+        },
+        "time_periods": {
+            "type": "string",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of time periods to process",
+            "title": "time_periods",
+            "examples": "",
+            "alias": null,
+            "units": null
+        },
+        "sample_rate": {
+            "default": 1.0,
+            "description": "sample rate of the run",
+            "title": "sample_rate",
+            "examples": "1",
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        }
+    },
+    "required": [
+        "id",
+        "input_channels",
+        "output_channels",
+        "time_periods",
+        "sample_rate"
+    ],
+    "description": "run"
+}

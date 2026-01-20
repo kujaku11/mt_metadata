@@ -18,15 +18,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channel_layout**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | How the station channels were laid out.       | x              |
+       | **Required**: :blue:`False`                  | How the station channels were laid out.       | X              |
+       |                                              |                                               |                |
+       | **Type**: <enum 'ChannelLayoutEnum'>         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -45,19 +45,19 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | List of components recorded by the station.   | "[ Ex, Ey, Hx, |
        |                                              | Should be a summary of all channels recorded. | Hy, Hz, T]"    |
-       | **Units**: None                              | Dropped channels will be recorded in Run      |                |
+       | **Type**: list[str]                          | Dropped channels will be recorded in Run      |                |
        |                                              | metadata.                                     |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -66,17 +66,67 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments on the station.                  | 5 runs         |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.time_stamp**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.value`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.value**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -95,88 +145,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Type of data recorded. If multiple types      | BBMT           |
        |                                              | input as a comma separated list.              |                |
+       | **Type**: <enum 'DataTypeEnum'>              |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: BBMT                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`geographic_name`
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **geographic_name**                          | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Closest geographic name to the station,       | "Whitehorse,   |
-       |                                              | usually a city, but could be another common   | YK"            |
-       | **Units**: None                              | geographic location.                          |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`id`
-~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **id**                                       | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Station ID name.  This should be an alpha     | MT001          |
-       |                                              | numeric name that is typically 5-6 characters |                |
-       | **Units**: None                              | long.  Commonly the project name in 2 or 3    |                |
-       |                                              | letters and the station number.               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`run_list`
-~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **run_list**                                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | List of runs recorded by the station. Should  | "[ mt001a,     |
-       |                                              | be a summary of all runs recorded.            | mt001b, mt001c |
-       | **Units**: None                              |                                               | ]"             |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -195,13 +170,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -219,14 +194,14 @@ Station
        | **fdsn.network**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
-       |                                              | code.                                         |                |
+       |                                              | code. Needs to be 2 alpha numeric characters. |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -245,13 +220,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
        |                                              | http://docs.fdsn.org/projects/source-         |                |
-       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       | **Type**: str | None                         | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -270,13 +245,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
        |                                              | created or not.                               |                |
+       | **Type**: bool | None                        |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: boolean                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -293,15 +268,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN,.|
-       |                                              |                                               | UNRESTRICTED,_U|
-       | **Units**: None                              |                                               | S-ALL,_US-     |
-       |                                              |                                               | MT,_US-MT-TA   |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -318,15 +293,90 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN,.|
-       |                                              |                                               | UNRESTRICTED,_U|
-       | **Units**: None                              |                                               | S-ALL,_US-     |
-       |                                              |                                               | MT,_US-MT-TA   |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN  |
+       |                                              |                                               | .UNRESTRICTED  |
+       | **Type**: str | None                         |                                               | _US-ALL _US-MT |
+       |                                              |                                               | _US-MT-TA      |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`geographic_name`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **geographic_name**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Closest geographic name to the station,       | Whitehorse, YK |
+       |                                              | usually a city, but could be another common   |                |
+       | **Type**: <class 'str'>                      | geographic location.                          |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`id`
+~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **id**                                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Station ID name.  This should be an alpha     | MT001          |
+       |                                              | numeric name that is typically 5-6 characters |                |
+       | **Type**: <class 'str'>                      | long.  Commonly the project name in 2 or 3    |                |
+       |                                              | letters and the station number.               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`run_list`
+~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **run_list**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | List of runs recorded by the station. Should  | [ mt001a,      |
+       |                                              | be a summary of all runs recorded.            | mt001b, mt001c |
+       | **Type**: list[str]                          |                                               | ]              |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -343,15 +393,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.latitude**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Latitude of the location.                     | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -368,15 +418,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.longitude**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level                                  |                |
+       | **Required**: :blue:`False`                  | Longitude of the location.                    | 12.324         |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -393,90 +443,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.elevation**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | elevation of location in datum specified at   | 123.4          |
-       |                                              | survey level                                  |                |
-       | **Units**: meters                            |                                               |                |
+       | **Required**: :blue:`False`                  | Elevation of the location.                    | 1234.0         |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`location.latitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.latitude_uncertainty**            | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in latitude estimation in degrees | 0.01           |
-       |                                              |                                               |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`location.longitude_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.longitude_uncertainty**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
-       |                                              | degrees                                       |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`location.elevation_uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.elevation_uncertainty**           | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | uncertainty in elevation estimation           | 0.01           |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -493,15 +468,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.datum**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS84          |
+       | **Required**: :blue:`False`                  | Datum of the location values.  Usually a well | WGS 84         |
        |                                              | known datum like WGS84.                       |                |
+       | **Type**: str | int                          |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -520,38 +495,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`location.x2`
-~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.x2**                              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -570,38 +520,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`location.y2`
-~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.y2**                              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
-       |                                              | station                                       |                |
-       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -620,13 +545,138 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.latitude_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.latitude_uncertainty**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in latitude estimation in degrees | 0.01           |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.longitude_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.longitude_uncertainty**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
+       |                                              | degrees                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.elevation_uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.elevation_uncertainty**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | uncertainty in elevation estimation           | 0.01           |
+       |                                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.x2`
+~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.x2**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
+       |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.y2`
+~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.y2**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | relative distance to the center of the        | 10.0           |
+       |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -645,13 +695,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | relative elevation to the center of the       | 10.0           |
        |                                              | station                                       |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -670,13 +720,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | x-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -695,13 +745,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | y-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -720,19 +770,19 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | uncertainty in longitude estimation in        | 0.01           |
        |                                              | z-direction                                   |                |
+       | **Type**: float | None                       |                                               |                |
+       |                                              |                                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.declination.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.declination.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -741,17 +791,67 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.declination.comments**            | **Description**                               | **Example**    |
+       | **location.declination.comments.author**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | any comments on declination                   | estimated from |
-       |                                              |                                               | WMM 2016       |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.declination.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.declination.comments.time_stamp** | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.declination.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.declination.comments.value**      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -770,13 +870,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | geomagnetic reference model used to calculate | WMM            |
        |                                              | declination                                   |                |
+       | **Type**: <enum 'GeomagneticModelEnum'>      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: WMM                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -795,13 +895,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Epoch for which declination was approximated  | 2020           |
        |                                              | in.                                           |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -818,21 +918,21 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.declination.value**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | declination angle relative to geographic      | 12.3           |
+       | **Required**: :red:`True`                    | declination angle relative to geographic      | 12.5           |
        |                                              | north positive clockwise                      |                |
+       | **Type**: <class 'float'>                    |                                               |                |
+       |                                              |                                               |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.country`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.country`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -841,23 +941,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.country**                         | **Description**                               | **Example**    |
+       | **location.geographic_location.country**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Country of the geographic location, should be | United States  |
        |                                              | spelled out in full. Can be a list of         | of America     |
-       | **Units**: None                              | countries.                                    |                |
+       | **Type**: str | list[str] | None             | countries.                                    |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.state`
-~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.state`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -866,23 +966,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.state**                           | **Description**                               | **Example**    |
+       | **location.geographic_location.state**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | State or province of the geographic location, | [Colorado,     |
        |                                              | should be spelled out in full. Can be a list  | Utah]          |
-       | **Units**: None                              | of states or provinces.                       |                |
+       | **Type**: str | list[str] | None             | of states or provinces.                       |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.county`
-~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.county`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -891,23 +991,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.county**                          | **Description**                               | **Example**    |
+       | **location.geographic_location.county**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | County of the geographic location, should be  | [Douglass,     |
        |                                              | spelled out in full. Can be a list of         | Fayet]         |
-       | **Units**: None                              | counties.                                     |                |
+       | **Type**: str | list[str] | None             | counties.                                     |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.township`
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.township`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -916,23 +1016,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.township**                        | **Description**                               | **Example**    |
+       | **location.geographic_location.township**    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Township or city name or code.                | 090            |
        |                                              |                                               |                |
+       | **Type**: str | list[str] | None             |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.section`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.section`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -941,23 +1041,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.section**                         | **Description**                               | **Example**    |
+       | **location.geographic_location.section**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Section name or code.                         | 012            |
        |                                              |                                               |                |
+       | **Type**: str | list[str] | None             |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.quarter`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.quarter`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -966,23 +1066,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.quarter**                         | **Description**                               | **Example**    |
+       | **location.geographic_location.quarter**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Quarter section code.                         | 400            |
        |                                              |                                               |                |
+       | **Type**: str | list[str] | None             |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.parcel`
-~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`location.geographic_location.parcel`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -991,92 +1091,17 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **location.parcel**                          | **Description**                               | **Example**    |
+       | **location.geographic_location.parcel**      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Land parcel ID.                               | 46b29a         |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`acquired_by.name`
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.name**                         | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`acquired_by.organization`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.organization**                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
+       | **Type**: str | list[str] | None             |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`acquired_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **acquired_by.comments**                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1095,13 +1120,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | method for orienting station layout           | compass        |
        |                                              |                                               |                |
+       | **Type**: <enum 'OrientationMethodEnum'>     |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1120,13 +1145,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | "Reference frame for station layout.  There   | geomagnetic    |
        |                                              | are only 2 options geographic and             |                |
-       | **Units**: None                              | geomagnetic.  Both assume a right-handed      |                |
-       |                                              | coordinate system with North=0 E=90 and       |                |
-       | **Type**: string                             | vertical positive downward"                   |                |
+       | **Type**: <enum                              | geomagnetic.  Both assume a right-handed      |                |
+       | 'GeographicReferenceFrameEnum'>              | coordinate system with North=0 E=90 and       |                |
+       | **Units**: None                              | vertical positive downward"                   |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: geographic                      |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1145,13 +1170,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | "Angle to rotate the data to align with       | geomagnetic    |
        |                                              | geographic north. If this number is 0 then it |                |
-       | **Units**: degrees                           | is assumed the data are aligned with          |                |
+       | **Type**: float | None                       | is assumed the data are aligned with          |                |
        |                                              | geographic north in a right handed coordinate |                |
-       | **Type**: float                              | system."                                      |                |
+       | **Units**: degrees                           | system."                                      |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1170,13 +1195,188 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | "Channel orientation relative to each other"  | orthogonal     |
        |                                              |                                               |                |
+       | **Type**: mt_metadata.common.enumerations.Cha|                                               |                |
+       | nnelOrientationEnum | None                   |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.organization**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.email**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.url`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.url**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.author**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.time_stamp**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments.value**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1193,21 +1393,21 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creation_time**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Date and time the file was created.           | 2020-02-08T12:2|
-       |                                              |                                               | 3:40.324600+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | Date and time the file was created.           | 2020-02-       |
+       |                                              |                                               | 08T12:23:40.324|
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               | 600+00:00      |
+       | str | float | int |                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date time                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`provenance.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1216,17 +1416,67 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.comments**                      | **Description**                               | **Example**    |
+       | **provenance.comments.author**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments on provenance of the data.       | all good       |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments.time_stamp**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments.value**                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1243,65 +1493,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.log**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | A history of changes made to the data.        | 2020-02-10T14:2|
-       |                                              |                                               | 4:45+00:00     |
-       | **Units**: None                              |                                               | updated        |
+       | **Required**: :blue:`False`                  | A history of changes made to the data.        | 2020-02-       |
+       |                                              |                                               | 10T14:24:45+00:|
+       | **Type**: str | None                         |                                               | 00 updated     |
        |                                              |                                               | metadata       |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`provenance.creator.name`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.creator.name**                  | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`provenance.creator.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.creator.author**                | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1320,13 +1520,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1345,13 +1545,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1368,21 +1568,21 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.creator.url**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | URL of the contact person                     | em.org         |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.creator.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`provenance.creator.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1391,22 +1591,72 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.creator.comments**              | **Description**                               | **Example**    |
+       | **provenance.creator.comments.author**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.submitter.name`
+:navy:`provenance.creator.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.comments.time_stamp**   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creator.comments.value**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.creator.author`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -1416,42 +1666,17 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.submitter.name**                | **Description**                               | **Example**    |
+       | **provenance.creator.author**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`provenance.submitter.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.submitter.author**              | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1468,15 +1693,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.organization**        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1493,15 +1718,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.email**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1518,21 +1743,21 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.submitter.url**                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | URL of the contact person                     | em.org         |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.submitter.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`provenance.submitter.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1541,23 +1766,23 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.submitter.comments**            | **Description**                               | **Example**    |
+       | **provenance.submitter.comments.author**     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.archive.name`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`provenance.submitter.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1566,42 +1791,67 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.archive.name**                  | **Description**                               | **Example**    |
+       | **provenance.submitter.comments.time_stamp** | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.comments.value**      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.author**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
        |                                              | name.                                         |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`provenance.archive.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.archive.author**                | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
-       |                                              | name.                                         |                |
-       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1620,13 +1870,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1645,13 +1895,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1668,21 +1918,21 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **provenance.archive.url**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | URL of the contact person                     | em.org         |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.archive.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`provenance.archive.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -1691,17 +1941,92 @@ Station
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **provenance.archive.comments**              | **Description**                               | **Example**    |
+       | **provenance.archive.comments.author**       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       | **Required**: :blue:`False`                  | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.comments.time_stamp**   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Type**: float | int | numpy.datetime64 | pa|                                               | 670+00:00      |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.comments.value**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.archive.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.archive.name**                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1720,13 +2045,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Author of the software                        | Neo            |
        |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1745,13 +2070,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Software version                              | 12.01a         |
        |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1770,13 +2095,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Most recent date the software was updated.    | 2020-01-01     |
        |                                              | Prefer to use version, but this works for     |                |
-       | **Units**: None                              | non-versioned software.                       |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  | non-versioned software.                       |                |
+       | str | float | int |                          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1795,13 +2120,13 @@ Station
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | Software name                                 | mtrules        |
        |                                              |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1818,15 +2143,15 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **time_period.end**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04T16:2|
-       |                                              |                                               | 3:45.453670+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-       |
+       |                                              |                                               | 04T16:23:45.453|
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: time                              |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -1843,65 +2168,40 @@ Station
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **time_period.start**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01T09:2|
-       |                                              |                                               | 3:45.453670+00:|
-       | **Units**: None                              |                                               | 00             |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: time                              |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`release_license`
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **release_license**                          | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | How the data can be used. The options are     | CC BY          |
-       |                                              | based on https://github.com/spdx/license-     |                |
-       | **Units**: None                              | list-data                                     |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: CC0-1.0                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`doi`
-~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **doi**                                      | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | full url of the doi number                    | http://doi.### |
-       |                                              |                                               |                |
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-       |
+       |                                              |                                               | 01T09:23:45.453|
+       | **Type**: str | float | int |                |                                               | 670+00:00      |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`runs`
+~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **runs**                                     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | List of runs recorded by the station.         | [Run(id='mt001a|
+       |                                              |                                               | '), Run(id='mt0|
+       | **Type**: mt_metadata.common.list_dict.ListDi|                                               | 01b'), Run(id='|
+       | ct | list | dict |                           |                                               | mt001c')]      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

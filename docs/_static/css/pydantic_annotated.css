@@ -1,0 +1,39 @@
+/* Custom CSS for better display of Pydantic Annotated fields */
+
+/* Hide verbose FieldInfo details in attribute signatures */
+.sig-param em.property {
+    font-size: 0.9em;
+}
+
+/* Style for Annotated types - make them less prominent */
+.sig-param em.property span.pre:contains("Annotated") {
+    color: #666;
+}
+
+/* Break long type annotations onto multiple lines for readability */
+.sig-param em.property {
+    display: block;
+    margin-left: 2em;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Improved formatting for field descriptions */
+.field-list {
+    margin-top: 1em;
+}
+
+.field-list dt {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.field-list dd {
+    margin-left: 2em;
+    margin-bottom: 0.5em;
+}
+
+/* Custom styling for metadata fields added by our extension */
+.field-list .field-body p strong {
+    color: #e74c3c;
+}

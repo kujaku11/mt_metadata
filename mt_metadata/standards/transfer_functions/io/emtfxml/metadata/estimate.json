@@ -1,0 +1,80 @@
+{
+    "title": "estimate",
+    "type": "object",
+    "properties": {
+        "name": {
+            "default": "",
+            "description": "Name of the statistical estimate",
+            "title": "name",
+            "examples": "var",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "type": {
+            "default": "",
+            "description": "Type of number contained in the estimate",
+            "title": "type",
+            "examples": "real",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "real",
+                "complex"
+            ]
+        },
+        "description": {
+            "default": "",
+            "description": "Description of the statistical estimate",
+            "title": "description",
+            "examples": "this is an estimate",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "external_url": {
+            "default": "",
+            "description": "Full path to external link that has additional information",
+            "title": "external_url",
+            "examples": "http://www.iris.edu/dms/products/emtf/variance.html",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "format": "uri"
+        },
+        "intention": {
+            "default": "",
+            "description": "The intension of the statistical estimate",
+            "title": "intention",
+            "examples": "error estimate",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "error estimate",
+                "signal coherence",
+                "signal power estimate",
+                "primary data type"
+            ]
+        },
+        "tag": {
+            "default": "",
+            "description": "A useful tag for the estimate",
+            "title": "tag",
+            "examples": "tipper",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "type",
+        "description",
+        "external_url",
+        "intention",
+        "tag"
+    ],
+    "description": "estimate"
+}

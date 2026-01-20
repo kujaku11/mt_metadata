@@ -74,7 +74,7 @@
 		</DataQualityWarnings>
 	</Site>
 	<ProcessingInfo>
-		<SignConvention>exp(+ i\omega mu)</SignConvention>
+		<SignConvention>exp(+ i\omega t)</SignConvention>
 		<ProcessingTag>KAK</ProcessingTag>
 		<ProcessedBy>Ikuko Fujii</ProcessedBy>
 		<ProcessingSoftware>

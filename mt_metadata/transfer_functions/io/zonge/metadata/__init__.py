@@ -1,25 +1,27 @@
-# package file
+# # package file
 
-from .survey import Survey
-from .tx import Tx
 from .auto import Auto
-from .phase_slope import PhaseSlope
-from .d_plus import DPlus
-from .rx import Rx
-from .mt_edit import MTEdit
-from .mtft24 import MTFT24
-from .unit import Unit
-from .gps import GPS
-from .gdp import GDP
-from .job import Job
 from .ch import CH
-from .stn import STN
+from .d_plus import DPlus
+from .gdp import GDP
+from .gps import GPS
+from .job import Job
 from .line import Line
+from .mtft24 import MTFT24
+from .phase_slope import PhaseSlope
+from .rx import Rx
+from .stn import STN
+from .survey import Survey
+from .tx import Tx, TypeEnum
+from .unit import Unit
+from .mt_edit import MTEdit
 from .header import Header
+
 
 __all__ = [
     "Survey",
     "Tx",
+    "TypeEnum",
     "Auto",
     "PhaseSlope",
     "DPlus",

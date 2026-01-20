@@ -20,13 +20,13 @@ RemoteRef
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | type of remote referencing                    | robust multi-  |
        |                                              |                                               | station remote |
-       | **Units**: None                              |                                               | referencing    |
+       | **Type**: <class 'str'>                      |                                               | referencing    |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: none                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

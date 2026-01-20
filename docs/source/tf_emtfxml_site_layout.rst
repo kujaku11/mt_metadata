@@ -20,13 +20,13 @@ SiteLayout
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of input channels for transfer function  | [Magnetic(hx), |
        |                                              | estimation                                    | Magnetic(hy)]  |
+       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | .io.emtfxml.metadata.electric.Elect          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -45,13 +45,13 @@ SiteLayout
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of output channels for transfer function | [Electric(ex), |
        |                                              | estimation                                    | Electric(ey),  |
-       | **Units**: None                              |                                               | Magnetic(hz)]  |
+       | **Type**: list[mt_metadata.transfer_functions|                                               | Magnetic(hz)]  |
+       | .io.emtfxml.metadata.electric.Elect          |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

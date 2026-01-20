@@ -20,13 +20,13 @@ StatisticalEstimates
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | list of statistical estimates                 | [var cov]      |
        |                                              |                                               |                |
+       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | .io.emtfxml.metadata.estimate.Estim          |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

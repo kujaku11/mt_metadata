@@ -1,31 +1,52 @@
+# =====================================================
+# Imports
+# =====================================================
+from typing import Annotated
+
 import numpy as np
+from pydantic import Field, PrivateAttr
+
+from mt_metadata.timeseries.filters import FilterBase
+
+
 try:
     from obspy.core import inventory
 except ImportError:
     inventory = None
 
-from mt_metadata.base import get_schema
-from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
-from mt_metadata.base.helpers import write_lines, requires
-
-# =============================================================================
-attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
-# =============================================================================
+from mt_metadata.base.helpers import requires
 
 
+# =====================================================
 class CoefficientFilter(FilterBase):
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-        super().__init__()
-
-        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-        self.type = "coefficient"
-
-        if self.gain == 0.0:
-            self.gain = 1.0
+    _filter_type: str = PrivateAttr("coefficient")
+    type: Annotated[
+        str,
+        Field(
+            default="coefficient",
+            description="Type of filter.  Must be 'coefficient'",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["coefficient"],
+            },
+        ),
+    ]
+    gain: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="Scale factor for a simple coefficient filter.",
+            alias=None,
+            # gt=0.0,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["100"],
+            },
+        ),
+    ]
 
     @requires(obspy=inventory)
     def to_obspy(
@@ -71,8 +92,8 @@ class CoefficientFilter(FilterBase):
             stage_number,
             self.gain,
             normalization_frequency,
-            self.units_in,
-            self.units_out,
+            self.units_in_object.symbol,
+            self.units_out_object.symbol,
             cf_type,
             name=self.name,
             decimation_input_sample_rate=sample_rate,
@@ -83,8 +104,8 @@ class CoefficientFilter(FilterBase):
             numerator=[1],
             denominator=[],
             description=self.get_filter_description(),
-            input_units_description=self._units_in_obj.name,
-            output_units_description=self._units_out_obj.name,
+            input_units_description=self.units_in_object.name,
+            output_units_description=self.units_out_object.name,
         )
 
         return stage

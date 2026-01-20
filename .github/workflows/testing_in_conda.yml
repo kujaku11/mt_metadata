@@ -1,12 +1,18 @@
 name: TestingInConda
 
 on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+ push:
+   branches:
+     - '*'
+ pull_request:
+   branches:
+    - '*'
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # This ensures that only one job runs at a time for the same branch
+  # and cancels any in-progress jobs if a new one is triggered.
 jobs:
   setup-build:
     name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }}) (${{ matrix.optionals}})
@@ -15,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12"]
         optionals: ["", "obspy"]
     defaults:
       run:
@@ -34,6 +40,7 @@ jobs:
         pip install pytest
         pip install pytest-cov
         pip install pytest-subtests
+        pip install pytest-xdist[psutil]
     - name: Install Our Package
       run: |
         pip install -e .
@@ -46,7 +53,7 @@ jobs:
       if: ${{ matrix.optionals }}
 
     - name: Run Tests
-      run: pytest --cov=./ --cov-report=xml --cov=mt_metadata
+      run: pytest --cov=./ --cov-report=xml --cov=mt_metadata tests/ -n auto
 
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v3

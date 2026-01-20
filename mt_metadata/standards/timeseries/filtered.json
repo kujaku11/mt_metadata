@@ -1,0 +1,44 @@
+{
+    "title": "filtered",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
+            "title": "name",
+            "examples": "\"[counts2mv, lowpass_magnetic]\"",
+            "alias": null,
+            "units": null
+        },
+        "applied": {
+            "type": "boolean",
+            "default": [],
+            "items": {
+                "type": "boolean"
+            },
+            "description": "Boolean if filter has been applied or not. If more than one filter input as a comma separated list.  Needs to be the same length as name or if only one entry is given it is assumed to apply to all filters listed.",
+            "title": "applied",
+            "examples": "\"[True, False]\"",
+            "alias": null,
+            "units": null
+        },
+        "comments": {
+            "default": null,
+            "description": "Any comments on filters.",
+            "title": "comments",
+            "examples": "low pass is not calibrated",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "applied"
+    ],
+    "description": "filtered"
+}

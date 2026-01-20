@@ -1,0 +1,43 @@
+{
+    "title": "base",
+    "type": "object",
+    "properties": {
+        "weight_type": {
+            "default": "'monotonic'",
+            "description": "Type of weighting kernel (e.g., monotonic, learned, spatial).",
+            "title": "weight_type",
+            "examples": "monotonic",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "monotonic",
+                "learned",
+                "spatial",
+                "custom"
+            ]
+        },
+        "description": {
+            "default": null,
+            "description": "Human-readable description of what this kernel is for.",
+            "title": "description",
+            "examples": "This kernel smoothly transitions between 0 and 1 in a monotonic way",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "active": {
+            "default": null,
+            "description": "If false, this kernel will be skipped during weighting.",
+            "title": "active",
+            "examples": "false",
+            "type": "boolean",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "weight_type"
+    ],
+    "description": "base"
+}

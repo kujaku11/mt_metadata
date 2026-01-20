@@ -1,5 +1,173 @@
 .tight-table td {white-space: normal !important;}
 
+/* ========================================
+   Improved display of Pydantic Annotated fields
+   ======================================== */
+
+/* Hide individual field definitions entirely since all information
+   is already shown in the nicely formatted Fields summary section */
+dl.pydantic_field {
+    display: none;
+}
+
+/* Alternative: If you want to show truncated types, uncomment this instead:
+dl.pydantic_field > dt.sig-object em.property:first-of-type {
+    display: block;
+    padding: 0.3em 0.5em;
+    background-color: #f8f8f8;
+    border-left: 3px solid #e74c3c;
+    margin: 0.3em 0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.8em;
+    color: #c0392b;
+    font-style: normal;
+}
+dl.pydantic_field > dt.sig-object em.property:first-of-type::before {
+    content: "⚠️ Truncated: ";
+    font-weight: bold;
+}
+*/
+
+/* Improve field list display in the Fields summary section */
+/* Add a note that this section contains complete field information */
+.field-odd ul.simple {
+    border-top: 2px solid #3498db;
+    padding-top: 0.5em;
+    margin-top: 0.5em;
+}
+
+.field-odd ul.simple li p {
+    margin: 0.5em 0;
+    line-height: 1.6;
+}
+
+.field-odd code.docutils.literal {
+    display: block;
+    padding: 0.5em;
+    background-color: #f8f8f8;
+    border-left: 3px solid #3498db;
+    margin: 0.3em 0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85em;
+    line-height: 1.5;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+/* Format Annotated field components with proper colors in Fields summary */
+/* JavaScript reformats and adds semantic classes for precise targeting */
+.field-odd code.xref.py.py-obj span.pre {
+    display: inline;
+}
+
+/* Field name - dark and bold */
+.field-odd code.xref.py.py-obj span.pre.field-name {
+    color: #2c3e50 !important;
+    font-weight: bold;
+    font-size: 1.05em;
+}
+
+/* "Annotated" keyword - green */
+.field-odd code.xref.py.py-obj span.pre.annotated-keyword {
+    color: #16a085 !important;
+    font-weight: 500;
+}
+
+/* Brackets and parentheses - green */
+.field-odd code.xref.py.py-obj span.pre.annotated-bracket {
+    color: #16a085 !important;
+}
+
+/* Type annotation (str, float, str | int, etc.) - blue */
+.field-odd code.xref.py.py-obj span.pre.type-annotation {
+    color: #3498db !important;
+    font-weight: 600;
+}
+
+/* Separator (comma) - gray */
+.field-odd code.xref.py.py-obj span.pre.separator {
+    color: #7f8c8d !important;
+}
+
+/* Field(...) or FieldInfo(...) - gray */
+.field-odd code.xref.py.py-obj span.pre.field-info {
+    color: #7f8c8d !important;
+    font-size: 0.9em;
+}
+
+/* Fallback for non-JS styled spans (keep existing nth-child rules) */
+.field-odd code.xref.py.py-obj span.pre:not([class*="field-"]):not([class*="annotated-"]):not([class*="type-"]):not([class*="separator"]):first-child {
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.field-odd code.xref.py.py-obj span.pre:not([class*="field-"]):not([class*="annotated-"]):not([class*="type-"]):not([class*="separator"]):nth-child(2) {
+    color: #16a085;
+    font-weight: 500;
+}
+
+/* Style for truncated/incomplete field entries (those without <a> wrapper and ending in "default=") */
+/* Normal fields have structure: <p><a><code>...</code></a></p> */
+/* Truncated fields have: <p><code>...</code></p> (no <a> wrapper) */
+.field-odd ul.simple li p > code.xref.py.py-obj {
+    background-color: #fff3cd;
+    border-left: 3px solid #ffc107;
+    padding: 0.3em 0.5em;
+    display: block;
+}
+
+.field-odd ul.simple li p > code.xref.py.py-obj::after {
+    content: " ⚠️ (Incomplete Documentation - Sphinx could not resolve the enum, refer to the source code.)";
+    color: #856404;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+/* Remove warning styling from properly wrapped fields */
+.field-odd ul.simple li p > a > code.xref.py.py-obj {
+    background-color: transparent !important;
+    border-left: none !important;
+    padding: 0 !important;
+}
+
+.field-odd ul.simple li p > a > code.xref.py.py-obj::after {
+    content: none !important;
+}
+
+/* Make field name stand out */
+.field-odd code.docutils.literal span.pre:first-child {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.05em;
+}
+
+/* Style "Annotated[" in green */
+.field-odd code.docutils.literal span.pre:nth-child(2) {
+    color: #16a085;
+}
+
+/* Style the type itself (str, float, int, None, etc.) in blue */
+.field-odd code.docutils.literal span.pre:nth-child(3) {
+    color: #3498db;
+    font-weight: 500;
+}
+
+/* Dim the FieldInfo details slightly */
+.field-odd code.docutils.literal span.pre:nth-child(n+4) {
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+/* Ensure constraints section is readable */
+dl.field-list.simple dt.field-odd {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 0.5em;
+}
+
+/* Individual field description styling - removed since fields are hidden */
+
 .black {
     color: black;
 }
