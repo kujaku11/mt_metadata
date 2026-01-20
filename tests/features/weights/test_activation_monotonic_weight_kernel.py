@@ -21,7 +21,6 @@ from mt_metadata.features.weights.activation_monotonic_weight_kernel import (
 )
 from mt_metadata.features.weights.monotonic_weight_kernel import StyleEnum
 
-
 # =====================================================
 # Fixtures for optimal efficiency
 # =====================================================

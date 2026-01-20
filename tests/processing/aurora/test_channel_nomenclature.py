@@ -6,6 +6,7 @@ Created on September 7, 2025
 
 Pytest test suite for ChannelNomenclature basemodel
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -22,7 +23,6 @@ from mt_metadata.processing.aurora.channel_nomenclature import (
     SupportedNomenclatureEnum,
 )
 from mt_metadata.transfer_functions import CHANNEL_MAPS
-
 
 # =============================================================================
 # Fixtures

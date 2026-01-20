@@ -6,7 +6,6 @@ import pytest
 
 from mt_metadata.transfer_functions.io.emtfxml.metadata.value import Value
 
-
 # ============================================================================
 # TEST VALUE DEFAULTS
 # ============================================================================

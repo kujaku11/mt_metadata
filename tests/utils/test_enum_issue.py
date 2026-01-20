@@ -2,10 +2,10 @@
 """
 Test script to demonstrate enum handling in to_dict method
 """
+
 from enum import Enum
 
 from mt_metadata.common.enumerations import DataTypeEnum
-
 
 # Create a simple test to demonstrate the enum issue
 test_enum = DataTypeEnum.RMT

@@ -8,7 +8,6 @@ from pydantic import Field
 from mt_metadata.common import Instrument, Software
 from mt_metadata.timeseries import Battery, TimingSystem
 
-
 # =====================================================
 
 

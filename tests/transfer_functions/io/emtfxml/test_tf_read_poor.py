@@ -8,7 +8,6 @@ Converted to pytest: August 2025
 @author: jpeacock
 """
 
-
 import numpy as np
 
 # =============================================================================
@@ -18,7 +17,6 @@ import pytest
 
 from mt_metadata import TF_POOR_XML
 from mt_metadata.transfer_functions.core import TF
-
 
 # =============================================================================
 # Fixtures

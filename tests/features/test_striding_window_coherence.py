@@ -7,6 +7,7 @@ Created on December 15, 2024
 Comprehensive pytest test suite for StridingWindowCoherence basemodel using fixtures and subtests
 whilst optimizing for efficiency.
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -20,7 +21,6 @@ from pydantic import ValidationError
 from mt_metadata.features.coherence import Coherence
 from mt_metadata.features.striding_window_coherence import StridingWindowCoherence
 from mt_metadata.processing.window import TypeEnum, Window
-
 
 # =============================================================================
 # Fixtures

@@ -2,6 +2,7 @@
 """
 Test suite for Dipole basemodel
 """
+
 from unittest.mock import patch
 
 import pytest

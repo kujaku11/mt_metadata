@@ -7,7 +7,6 @@ from pydantic import computed_field, Field, field_validator, PrivateAttr
 
 from mt_metadata.base import MetadataBase
 
-
 # =====================================================
 
 

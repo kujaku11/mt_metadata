@@ -15,7 +15,6 @@ from mt_metadata.common.mttime import MTime
 
 from . import helpers, ProcessingSoftware, RemoteInfo, RemoteRef
 
-
 # =====================================================
 
 

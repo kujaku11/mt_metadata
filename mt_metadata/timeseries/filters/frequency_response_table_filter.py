@@ -11,7 +11,6 @@ from scipy.interpolate import interp1d
 from mt_metadata.base.helpers import object_to_array, requires
 from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
-
 try:
     from obspy.core.inventory.response import (
         ResponseListElement,

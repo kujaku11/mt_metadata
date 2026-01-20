@@ -8,6 +8,7 @@ Created on Thu Dec 24 12:02:12 2020
 :license: MIT
 
 """
+
 import json
 from collections import OrderedDict
 from collections.abc import MutableMapping

@@ -9,7 +9,6 @@ Converted to pytest suite for enhanced testing with fixtures and parametrization
 Tests EMTFXML functionality with derived quantities data from South Chile.
 """
 
-
 import numpy as np
 
 # =============================================================================

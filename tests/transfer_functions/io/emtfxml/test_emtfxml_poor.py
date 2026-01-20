@@ -41,7 +41,6 @@ import pytest
 from mt_metadata import TF_POOR_XML
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

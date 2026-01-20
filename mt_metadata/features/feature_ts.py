@@ -7,7 +7,6 @@ from pydantic import model_validator
 
 from mt_metadata.features.feature import Feature
 
-
 # =============================================================================
 
 

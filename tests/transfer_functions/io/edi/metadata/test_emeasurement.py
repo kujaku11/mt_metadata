@@ -11,7 +11,6 @@ import pytest
 
 from mt_metadata.transfer_functions.io.edi.metadata import EMeasurement
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

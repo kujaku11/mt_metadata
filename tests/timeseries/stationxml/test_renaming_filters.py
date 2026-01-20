@@ -13,7 +13,6 @@ from collections import OrderedDict
 import numpy as np
 import pytest
 
-
 try:
     from obspy import read_inventory
 except ImportError:

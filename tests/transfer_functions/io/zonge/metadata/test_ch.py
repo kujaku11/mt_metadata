@@ -21,7 +21,6 @@ import json
 
 import pytest
 
-
 # Direct imports without going through potentially problematic __init__.py files
 try:
     from pydantic import ValidationError

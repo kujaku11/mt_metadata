@@ -12,7 +12,6 @@ from mt_metadata.features.feature_weighting_window import (
     ThresholdEnum,
 )
 
-
 # ============================================================================
 # TEST THRESHOLD ENUM
 # ============================================================================

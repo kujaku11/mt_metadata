@@ -4,7 +4,6 @@ from pydantic import ValidationError
 
 from mt_metadata.timeseries.filters import TimeDelayFilter
 
-
 try:
     from obspy.core.inventory.response import CoefficientsTypeResponseStage
 except ImportError:

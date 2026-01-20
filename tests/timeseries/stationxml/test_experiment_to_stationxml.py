@@ -7,6 +7,7 @@ Tests for converting Experiment to StationXML
 
 :license: MIT
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -14,7 +15,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-
 
 try:
     from obspy import read_inventory
@@ -26,7 +26,6 @@ from mt_metadata import MT_EXPERIMENT_MULTIPLE_RUNS, MT_EXPERIMENT_MULTIPLE_RUNS
 from mt_metadata.common.mttime import MTime
 from mt_metadata.timeseries import Electric, Experiment, Magnetic, Run, Station, Survey
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-
 
 # =============================================================================
 # Fixtures

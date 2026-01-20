@@ -9,7 +9,6 @@ Created on Fri Feb 19 16:14:41 2021
 
 """
 
-
 # =============================================================================
 # Imports
 # =============================================================================
@@ -29,7 +28,6 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
     release_dict,
 )
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
-
 
 try:
     from obspy import UTCDateTime

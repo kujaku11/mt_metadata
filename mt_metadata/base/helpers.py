@@ -8,10 +8,9 @@ Created on Wed Dec 23 20:37:52 2020
 :license: MIT
 
 """
-import hashlib
+
 import json
 import logging
-import os
 
 # =============================================================================
 # Imports
@@ -21,14 +20,11 @@ from collections import defaultdict, OrderedDict
 from collections.abc import MutableMapping
 from operator import itemgetter
 from pathlib import Path
-from threading import RLock
-from typing import Any, Dict
 from xml.dom import minidom
 from xml.etree import cElementTree as et
 
 import numpy as np
 from loguru import logger
-from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
 

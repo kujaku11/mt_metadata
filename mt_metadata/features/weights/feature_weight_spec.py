@@ -21,7 +21,6 @@ from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
     TaperMonotonicWeightKernel,
 )
 
-
 ## for new features import and add to this dictionary.
 feature_classes = {
     "base": Feature,

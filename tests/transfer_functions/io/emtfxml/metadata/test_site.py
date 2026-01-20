@@ -33,7 +33,6 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     Site,
 )
 
-
 # ====================================
 # Core Fixtures
 # ====================================

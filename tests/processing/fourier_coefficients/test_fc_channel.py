@@ -7,6 +7,7 @@ Created on September 7, 2025
 Comprehensive pytest test suite for FCChannel basemodel using fixtures and subtests
 whilst optimizing for efficiency.
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -16,7 +17,6 @@ from pydantic import ValidationError
 
 from mt_metadata.common import TimePeriod
 from mt_metadata.processing.fourier_coefficients.fc_channel import FCChannel
-
 
 # =============================================================================
 # Fixtures

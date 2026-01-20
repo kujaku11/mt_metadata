@@ -8,7 +8,6 @@ from pydantic import Field, field_validator, ValidationInfo
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.comment import Comment
 
-
 # =====================================================
 
 # this will be a better way of keeping track of filter names and

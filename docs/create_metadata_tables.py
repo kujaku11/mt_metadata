@@ -12,7 +12,6 @@ Created on Thu Jul 30 17:01:34 2020
 
 """
 
-
 import importlib
 import inspect
 
@@ -25,7 +24,6 @@ from pydantic import ValidationError
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import wrap_description
-
 
 FN_PATH = Path(__file__).parent.joinpath("source")
 # =============================================================================

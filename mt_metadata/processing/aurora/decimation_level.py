@@ -16,18 +16,13 @@ from pydantic import computed_field, Field, field_validator, ValidationInfo
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.band import Band
 from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.features.weights import ChannelWeightSpec
 from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
 from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
-
-
-from mt_metadata.features.weights import ChannelWeightSpec
-
 from mt_metadata.processing.aurora.estimator import Estimator
 from mt_metadata.processing.aurora.frequency_bands import FrequencyBands
 from mt_metadata.processing.aurora.regression import Regression
-
-
 from mt_metadata.processing.fourier_coefficients.decimation import (
     Decimation as FCDecimation,
 )

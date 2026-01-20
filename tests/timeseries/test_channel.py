@@ -23,7 +23,6 @@ from mt_metadata.common import (
 )
 from mt_metadata.timeseries import AppliedFilter, Channel, ChannelBase
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

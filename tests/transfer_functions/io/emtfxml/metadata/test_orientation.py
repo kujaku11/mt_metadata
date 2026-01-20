@@ -2,6 +2,7 @@
 """
 Test suite for Orientation basemodel
 """
+
 from collections import OrderedDict
 
 import pytest

@@ -5,9 +5,9 @@ Test FAP (Frequency-Amplitude-Phase) tables using pytest.
 These tests validate conversion between ObsPy StationXML and MT metadata formats
 for frequency response table filters.
 """
+
 import numpy as np
 import pytest
-
 
 try:
     from obspy.core import inventory
@@ -20,7 +20,6 @@ from mt_metadata import STATIONXML_FAP
 from mt_metadata.common.units import get_unit_object
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-
 
 # --- Fixtures ---
 

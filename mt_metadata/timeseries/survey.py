@@ -29,7 +29,6 @@ from mt_metadata.timeseries.filters import (
     TimeDelayFilter,
 )
 
-
 # =====================================================
 
 

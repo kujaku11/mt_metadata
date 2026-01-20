@@ -11,7 +11,6 @@ Test translation from XML to MTML back to XML for magnetic data.
 import numpy as np
 import pytest
 
-
 try:
     from obspy.core import inventory
 
@@ -20,7 +19,6 @@ except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 from mt_metadata import STATIONXML_MAGNETIC
-
 
 # =============================================================================
 # Fixtures

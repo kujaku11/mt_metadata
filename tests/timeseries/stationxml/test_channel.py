@@ -7,13 +7,13 @@ Tests for converting between XML Channel and MT Channel formats using pytest
 
 :license: MIT
 """
+
 from collections import OrderedDict
 
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
-
 
 try:
     from obspy import read_inventory

@@ -48,12 +48,11 @@ import os
 import sys
 from pathlib import Path
 from threading import RLock
-from typing import Annotated, Any, Dict, get_args, get_origin, Literal, Optional, Union
+from typing import Annotated, Any, Dict, get_args, get_origin, Literal, Union
 
 from pydantic import __version__ as _PYDANTIC_VERSION
 from pydantic import TypeAdapter  # Pydantic v2
 from pydantic import BaseModel
-
 
 # try:
 #     # Optional dependency for platform-aware cache directory

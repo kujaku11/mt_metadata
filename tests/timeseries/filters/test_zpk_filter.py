@@ -4,7 +4,6 @@ from pydantic import ValidationError
 
 from mt_metadata.timeseries.filters import PoleZeroFilter
 
-
 try:
     from obspy.core.inventory.response import PolesZerosResponseStage
 except ImportError:

@@ -6,11 +6,9 @@ This module tests the Information class functionality including reading/writing
 information sections, parsing metadata and handling different file formats.
 """
 
-
 import pytest
 
 from mt_metadata.transfer_functions.io.edi.metadata.information import Information
-
 
 # =============================================================================
 # Fixtures

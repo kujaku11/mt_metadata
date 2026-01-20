@@ -4,6 +4,7 @@ Created on Sat Dec  4 17:44:51 2021
 
 @author: jpeacock
 """
+
 import json
 
 # =============================================================================
@@ -12,7 +13,6 @@ import json
 import urllib.request as url_request
 
 from loguru import logger
-
 
 # =============================================================================
 

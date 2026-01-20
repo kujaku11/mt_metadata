@@ -20,7 +20,6 @@ import pytest
 # Import the Attachment class directly to avoid circular imports
 from mt_metadata.transfer_functions.io.emtfxml.metadata import Attachment
 
-
 # =============================================================================
 # Test Data Constants
 # =============================================================================

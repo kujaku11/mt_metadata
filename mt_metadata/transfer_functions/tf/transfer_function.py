@@ -18,7 +18,6 @@ from mt_metadata.common import (
 from mt_metadata.common.mttime import MTime
 from mt_metadata.common.units import get_unit_object
 
-
 # =====================================================
 
 

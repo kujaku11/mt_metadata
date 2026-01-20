@@ -7,13 +7,13 @@ Tests for converting between StationXML Station and MT Station objects using pyt
 
 :license: MIT
 """
+
 from collections import OrderedDict
 
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
-
 
 try:
     from obspy import read_inventory
@@ -23,7 +23,6 @@ except ImportError:
 from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries import Station
 from mt_metadata.timeseries.stationxml import XMLStationMTStation
-
 
 # =============================================================================
 # Fixtures

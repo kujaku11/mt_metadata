@@ -9,7 +9,6 @@ from mt_metadata.timeseries.filters.helper_functions import (
     make_frequency_response_table_filter,
 )
 
-
 try:
     from obspy.core.inventory.response import ResponseListResponseStage
 except ImportError:

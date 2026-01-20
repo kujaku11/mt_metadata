@@ -10,7 +10,6 @@ Tests for StationXML to MT Experiment conversion.
 
 import pytest
 
-
 try:
     from obspy import read_inventory
 except ImportError:
@@ -18,7 +17,6 @@ except ImportError:
 
 from mt_metadata import STATIONXML_01, STATIONXML_02, STATIONXML_MULTIPLE_NETWORKS
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-
 
 # =============================================================================
 # Fixtures

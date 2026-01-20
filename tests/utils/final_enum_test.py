@@ -2,6 +2,7 @@
 """
 Final demonstration of enum handling in to_dict method
 """
+
 from typing import Any, List
 
 from pydantic import Field

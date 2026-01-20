@@ -24,7 +24,6 @@ from mt_metadata.common import TimePeriod
 from mt_metadata.processing.aurora.channel import Channel
 from mt_metadata.processing.aurora.run import Run
 
-
 # =====================================================
 # Fixtures
 # =====================================================

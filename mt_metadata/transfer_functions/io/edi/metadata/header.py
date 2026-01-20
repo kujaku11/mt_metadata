@@ -21,7 +21,6 @@ from mt_metadata.common.units import get_unit_object
 from mt_metadata.utils.location_helpers import convert_position_float2str
 from mt_metadata.utils.validators import validate_station_name
 
-
 # =====================================================
 
 

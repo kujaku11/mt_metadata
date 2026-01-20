@@ -13,7 +13,6 @@ from pydantic import ValidationError
 
 from mt_metadata.common import AuthorPerson, Person, Provenance, Software
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================

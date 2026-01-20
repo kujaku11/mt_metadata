@@ -16,7 +16,6 @@ import pytest
 
 from mt_metadata.features.weights.base import Base, WeightTypeEnum
 
-
 # =====================================================
 # Fixtures for optimal efficiency
 # =====================================================

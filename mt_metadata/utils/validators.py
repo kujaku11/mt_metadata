@@ -14,6 +14,7 @@ Created on Wed Apr 29 11:11:31 2020
 
 @author: jpeacock
 """
+
 import re
 
 # =============================================================================
@@ -28,7 +29,6 @@ from pydantic import HttpUrl
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
 from mt_metadata.utils.exceptions import MTSchemaError, MTValidatorError
-
 
 # from mt_metadata.common.comment import Comment
 

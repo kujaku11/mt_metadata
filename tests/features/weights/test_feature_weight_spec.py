@@ -28,7 +28,6 @@ from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
     TaperMonotonicWeightKernel,
 )
 
-
 # ============================================================================
 # FIXTURES
 # ============================================================================

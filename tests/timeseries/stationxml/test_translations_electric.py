@@ -10,11 +10,11 @@ Created on Fri Mar 26 08:15:49 2021
 :license: MIT
 
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
-
 
 try:
     from obspy.core import inventory
@@ -24,7 +24,6 @@ except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 from mt_metadata import STATIONXML_ELECTRIC
-
 
 # =============================================================================
 # Fixtures

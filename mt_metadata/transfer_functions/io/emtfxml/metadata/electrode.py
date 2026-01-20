@@ -11,7 +11,6 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
 from mt_metadata.common.enumerations import ElectrodeLocationEnum
 
-
 # =====================================================
 
 

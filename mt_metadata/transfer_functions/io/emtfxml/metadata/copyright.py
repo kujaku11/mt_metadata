@@ -11,7 +11,6 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 from . import Citation
 
-
 # =====================================================
 
 

@@ -20,7 +20,6 @@ import pytest
 from mt_metadata import TF_ZMM
 from mt_metadata.transfer_functions.core import TF
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================
@@ -47,7 +46,6 @@ import pytest
 
 from mt_metadata import TF_ZMM
 from mt_metadata.transfer_functions.core import TF
-
 
 # =============================================================================
 # Fixtures

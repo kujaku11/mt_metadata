@@ -36,7 +36,6 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata.helpers import (
     to_xml,
 )
 
-
 # ====================================
 # Core Fixtures
 # ====================================

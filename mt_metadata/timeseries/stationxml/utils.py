@@ -8,6 +8,7 @@ Created on Tue Feb 16 10:33:27 2021
 :license: MIT
 
 """
+
 from loguru import logger
 from obspy.core.inventory import Comment
 

@@ -12,7 +12,6 @@ import pytest
 import mt_metadata
 from mt_metadata.features.weights.channel_weight_spec import ChannelWeightSpec
 
-
 # Path setup
 init_file = inspect.getfile(mt_metadata)
 MT_METADATA_PATH = pathlib.Path(init_file).parent.parent

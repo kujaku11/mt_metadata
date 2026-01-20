@@ -5,7 +5,6 @@ Simplified pytest suite for mt_metadata.utils.summarize module
 Tests core functionality with realistic scenarios and actual behavior.
 """
 
-
 import pandas as pd
 import pytest
 from pydantic import Field

@@ -6,6 +6,7 @@ Created on September 7, 2025
 
 Pytest test suite for Band basemodel
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -15,7 +16,6 @@ import pandas as pd
 import pytest
 
 from mt_metadata.common.band import Band, CenterAveragingTypeEnum, ClosedEnum
-
 
 # =============================================================================
 # Fixtures

@@ -9,6 +9,7 @@ Created on Sat Sep  4 17:59:53 2021
 
 @author: jpeacock
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -31,7 +32,6 @@ from mt_metadata.transfer_functions.tf import Station
 from mt_metadata.utils.validators import validate_attribute
 
 from . import metadata as emtf_xml
-
 
 meta_classes = dict(
     [

@@ -10,7 +10,6 @@ Tests for converting between StationXML Equipment and MT Run objects using pytes
 
 import pytest
 
-
 try:
     from obspy import read_inventory
 except ImportError:

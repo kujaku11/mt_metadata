@@ -13,7 +13,6 @@ import unittest
 from mt_metadata.common import TimePeriod
 from mt_metadata.processing.aurora import Run, Station
 
-
 # =============================================================================
 
 

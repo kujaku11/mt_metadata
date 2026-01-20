@@ -11,7 +11,6 @@ from mt_metadata.common import Comment
 from mt_metadata.features.feature import DomainEnum, Feature
 from mt_metadata.features.feature_ts import FeatureTS
 
-
 # ============================================================================
 # FIXTURES
 # ============================================================================

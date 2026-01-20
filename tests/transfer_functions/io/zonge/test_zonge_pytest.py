@@ -9,6 +9,7 @@ Created on August 17, 2025
 :license: MIT
 
 """
+
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
@@ -24,7 +25,6 @@ from mt_metadata import TF_AVG, TF_AVG_NEWER, TF_AVG_TIPPER
 from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
 from mt_metadata.transfer_functions.io.zonge import ZongeMTAvg
 from mt_metadata.transfer_functions.tf import Station
-
 
 # =============================================================================
 # Fixtures

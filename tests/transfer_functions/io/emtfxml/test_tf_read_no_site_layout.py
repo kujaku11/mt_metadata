@@ -22,7 +22,6 @@ RESOLVED: Previous Pydantic validation error in ProcessingSoftware.author field 
 fixed by allowing None values in the Software.author field definition.
 """
 
-
 import numpy as np
 
 # =============================================================================
