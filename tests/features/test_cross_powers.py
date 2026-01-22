@@ -14,6 +14,7 @@ from mt_metadata.common import Comment
 from mt_metadata.features.cross_powers import CrossPowers
 from mt_metadata.features.feature import DomainEnum, Feature
 
+
 # ============================================================================
 # FIXTURES
 # ============================================================================
@@ -273,7 +274,7 @@ class TestFeatureDataHandling:
         """Test Feature with xarray DataArray containing coordinates."""
         import pandas as pd
 
-        times = pd.date_range("2023-01-01", periods=3, freq="H")
+        times = pd.date_range("2023-01-01", periods=3, freq="h")
         freqs = np.logspace(0, 2, 4)
         data = np.random.rand(3, 4)
 
