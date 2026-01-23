@@ -32,6 +32,7 @@ from mt_metadata.timeseries.filters import ChannelResponse
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import validate_name
 
+
 # =====================================================
 
 
@@ -645,7 +646,7 @@ class ChannelBase(MetadataBase):
 
     def _find_filter_keys(self, meta_dict: dict) -> str | None:
         """
-        Search for filter-related keys in the meta_dict.
+        Search for filter-related keys in the meta_dict to support backwards compatibility.
 
         Parameters
         ----------
@@ -658,6 +659,13 @@ class ChannelBase(MetadataBase):
             Returns 'filter' if any keys have 'filter' as base (before '.'),
             'filtered' if any keys have 'filtered' as base (before '.'),
             or None if no filter-related keys are found.
+
+        Notes
+        -----
+        Supports three filter formats:
+        - Legacy: 'filter.applied' and 'filter.name' (oldest format)
+        - Old: 'filtered.applied' and 'filtered.name' (intermediate format)
+        - New: 'filters' as list of AppliedFilter objects (current format)
         """
         keys = list(meta_dict.keys())
 
@@ -677,14 +685,12 @@ class ChannelBase(MetadataBase):
 
     def from_dict(self, meta_dict: dict, skip_none: bool = False) -> None:
         """
-        fill attributes from a dictionary but need to make it
-        backwards compatible with accepting filtered.applied and
-        filtered.name as lists.
+        Fill attributes from a dictionary with backwards compatibility for legacy filter formats.
 
         Parameters
         ----------
         meta_dict : dict
-            dictionary of attributes to set.
+            Dictionary of attributes to set.
         skip_none : bool, optional
             If True, skip attributes with None values, by default False.
 
@@ -693,6 +699,24 @@ class ChannelBase(MetadataBase):
         MTSchemaError
             If the input dictionary is not valid.
 
+        Notes
+        -----
+        Supports backwards compatibility for three filter formats:
+
+        1. **Legacy format** (oldest):
+           - Keys: 'filter.applied', 'filter.name'
+           - Values: Lists of booleans and strings
+
+        2. **Old format** (intermediate):
+           - Keys: 'filtered.applied', 'filtered.name'
+           - Values: Lists of booleans and strings
+
+        3. **New format** (current):
+           - Key: 'filters'
+           - Value: List of AppliedFilter objects or dictionaries
+
+        All legacy formats are automatically converted to the new format using
+        AppliedFilter objects. A warning is issued when legacy formats are detected.
         """
         if not isinstance(meta_dict, (dict, OrderedDict)):
             msg = f"Input must be a dictionary not {type(meta_dict)}"
@@ -718,12 +742,9 @@ class ChannelBase(MetadataBase):
             )
             meta_dict = helpers.flatten_dict(meta_dict)
 
-        # Use helper method to detect filter format
-        filter_format = self._find_filter_keys(meta_dict)
-
-        # Handle different filter formats based on detection
-        if filter_format == "filtered":
-            # Handle old format filters using f-string formatting
+        # Handle all legacy filter formats (both 'filter' and 'filtered')
+        # Process them in order: 'filter' (oldest) first, then 'filtered' (old)
+        for filter_format in ["filter", "filtered"]:
             old_format_applied = meta_dict.pop(f"{filter_format}.applied", None)
             old_format_names = meta_dict.pop(f"{filter_format}.name", None)
 
@@ -743,9 +764,13 @@ class ChannelBase(MetadataBase):
                         raise MTSchemaError(msg)
                     for name, applied in zip(filter_name, filter_applied):
                         self.add_filter(name=name, applied=applied)
+            elif old_format_applied is not None or old_format_names is not None:
+                # Handle case where only one of .applied or .name exists
+                logger.warning(
+                    f"Incomplete {filter_format} data: both .applied and .name are required"
+                )
 
-        elif filter_format == "filter":
-            # Handle legacy single 'filter' attribute - just remove and warn
+            # Also remove standalone filter/filtered key if present
             legacy_filter = meta_dict.pop(filter_format, None)
             if legacy_filter is not None:
                 logger.warning(
