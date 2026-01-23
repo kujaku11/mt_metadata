@@ -13,7 +13,6 @@ from pydantic import ValidationError
 from mt_metadata.common import Comment
 from mt_metadata.features.feature import DomainEnum, Feature
 
-
 # ============================================================================
 # FIXTURES
 # ============================================================================

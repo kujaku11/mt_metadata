@@ -14,7 +14,6 @@ from mt_metadata.common import Comment
 from mt_metadata.features.cross_powers import CrossPowers
 from mt_metadata.features.feature import DomainEnum, Feature
 
-
 # ============================================================================
 # FIXTURES
 # ============================================================================
