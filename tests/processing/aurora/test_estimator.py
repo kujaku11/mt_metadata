@@ -248,7 +248,7 @@ class TestEstimatorValidation:
         with pytest.raises(TypeError):
             Estimator(engine=123)
 
-        with pytest.raises(TypeError):
+        with pytest.raises(ValidationError):
             Estimator(engine=None)
 
     def test_empty_initialization_uses_defaults(self):
