@@ -8,6 +8,7 @@ from pathlib import Path
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema, CoreSchema
 
+
 # =====================================================
 
 
@@ -27,6 +28,11 @@ class StrEnumerationBase(str, Enum):
         """Convert input to the proper enum member for validation."""
         if isinstance(value, cls):
             return value  # Already the correct enum type
+
+        # Handle None values - let them pass through so pydantic can handle them
+        # based on field requirements (Optional, default values, etc.)
+        if value is None:
+            return None
 
         if not isinstance(value, str):
             raise TypeError(f"Expected string, got {type(value)}")
