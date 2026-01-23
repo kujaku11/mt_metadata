@@ -32,7 +32,6 @@ from mt_metadata.timeseries.filters import ChannelResponse
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import validate_name
 
-
 # =====================================================
 
 

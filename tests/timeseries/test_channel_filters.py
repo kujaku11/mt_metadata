@@ -20,7 +20,6 @@ from mt_metadata.timeseries import AppliedFilter, Channel
 from mt_metadata.timeseries.filters import CoefficientFilter, FIRFilter, PoleZeroFilter
 from mt_metadata.timeseries.filters.channel_response import ChannelResponse
 
-
 # =============================================================================
 # Fixtures
 # =============================================================================
