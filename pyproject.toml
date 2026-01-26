@@ -95,3 +95,20 @@ remove-all-unused-imports = true
 expand-star-imports = true
 ignore-init-module-imports = true
 in-place = true
+
+[tool.bumpversion]
+current_version = "1.0.0"
+commit = true
+tag = true
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+
+[[tool.bumpversion.files]]
+filename = "mt_metadata/__init__.py"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+
+[[tool.bumpversion.files]]
+filename = "code.json"
