@@ -236,3 +236,11 @@ History
 
 
 **Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v0.4.0...v1.0.0
+
+1.0.1 (2026-01-25)
+----------------------
+* Minor bug fixes and improvements to Pydantic models.
+* Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/271
+
+
+**Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v1.0.0...v1.0.1
