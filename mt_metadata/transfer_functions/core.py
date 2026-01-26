@@ -28,7 +28,6 @@ from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile, ZMM, ZongeMTA
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
 from mt_metadata.transfer_functions.tf import Station
 
-
 # =============================================================================
 
 
@@ -1947,6 +1946,12 @@ class TF:
             logger.error(msg)
             raise TFError(msg)
         fn = self.save_dir.joinpath(fn_basename)
+
+        if not isinstance(self._rotation_angle, (float, int)):
+            if self._rotation_angle.size != self.period.size:
+                self._rotation_angle = np.repeat(
+                    self._rotation_angle.mean(), self.period.size
+                )
 
         obj = self._read_write_dict[file_type]["write"]()
         obj._fn = fn

@@ -77,6 +77,24 @@ def backward_compatibility_dict():
 
 
 @pytest.fixture(scope="module")
+def legacy_filter_format_dict():
+    """
+    Fixture to provide a dictionary with legacy filter.applied and filter.name format.
+    This is the oldest format before 'filtered' was used.
+    """
+    return {
+        "channel": {
+            "component": "hz",
+            "sample_rate": 128.0,
+            "filter.applied": [True, True, False],
+            "filter.name": ["dipole_calibration", "sensor_response", "decimation"],
+            "location.latitude": 35.0,
+            "location.longitude": -115.0,
+        }
+    }
+
+
+@pytest.fixture(scope="module")
 def new_style_filters_dict():
     """
     Fixture to provide a dictionary with new-style filters data.
@@ -358,6 +376,32 @@ class TestBackwardCompatibility:
             assert channel.location.latitude == 45.0
             assert channel.location.longitude == -120.0
 
+    def test_from_dict_legacy_filter_format(self, legacy_filter_format_dict, subtests):
+        """Test loading from legacy filter.applied and filter.name format (oldest format)."""
+        channel = Channel()
+        channel.from_dict(legacy_filter_format_dict)
+
+        with subtests.test("filters loaded from legacy format"):
+            assert len(channel.filters) == 3
+
+        with subtests.test("filter properties from legacy format"):
+            expected = [
+                ("dipole_calibration", True, 1),
+                ("sensor_response", True, 2),
+                ("decimation", False, 3),
+            ]
+            for i, (name, applied, stage) in enumerate(expected):
+                filter_obj = channel.filters[i]
+                assert filter_obj.name == name
+                assert filter_obj.applied == applied
+                assert filter_obj.stage == stage
+
+        with subtests.test("other attributes preserved"):
+            assert channel.component == "hz"
+            assert channel.sample_rate == 128.0
+            assert channel.location.latitude == 35.0
+            assert channel.location.longitude == -115.0
+
     def test_from_dict_mismatched_lengths(self, subtests):
         """Test error handling when filtered.applied and filtered.name have different lengths."""
         channel = Channel()
@@ -370,6 +414,21 @@ class TestBackwardCompatibility:
         }
 
         with subtests.test("mismatched lengths raise error"):
+            with pytest.raises(Exception):  # Should raise MTSchemaError
+                channel.from_dict(bad_dict)
+
+    def test_from_dict_legacy_mismatched_lengths(self, subtests):
+        """Test error handling when filter.applied and filter.name have different lengths."""
+        channel = Channel()
+
+        bad_dict = {
+            "channel": {
+                "filter.applied": [True, False, True],
+                "filter.name": ["filter1", "filter2"],  # Different length
+            }
+        }
+
+        with subtests.test("legacy mismatched lengths raise error"):
             with pytest.raises(Exception):  # Should raise MTSchemaError
                 channel.from_dict(bad_dict)
 
@@ -395,6 +454,68 @@ class TestBackwardCompatibility:
             filter_names = [f.name for f in channel.filters]
             assert "old_filter1" in filter_names
             assert "old_filter2" in filter_names
+
+    def test_mixed_legacy_and_new_format(self, subtests):
+        """Test handling when both legacy filter format and new format are present."""
+        channel = Channel()
+
+        mixed_dict = {
+            "channel": {
+                "filter.applied": [True, False],
+                "filter.name": ["legacy_filter1", "legacy_filter2"],
+                "filters": [{"name": "new_filter", "applied": True, "stage": 1}],
+            }
+        }
+
+        # The legacy format should be processed first, then the new format
+        channel.from_dict(mixed_dict)
+
+        with subtests.test("both formats processed"):
+            assert len(channel.filters) >= 2  # At least the legacy filters
+
+        with subtests.test("legacy format filters present"):
+            filter_names = [f.name for f in channel.filters]
+            assert "legacy_filter1" in filter_names
+            assert "legacy_filter2" in filter_names
+
+    def test_all_three_formats_together(self, subtests):
+        """Test handling when all three formats are present (should merge all)."""
+        channel = Channel()
+
+        all_formats_dict = {
+            "channel": {
+                "filter.applied": [True],
+                "filter.name": ["legacy_filter"],
+                "filtered.applied": [False],
+                "filtered.name": ["old_filter"],
+                "filters": [{"name": "new_filter", "applied": True, "stage": 1}],
+            }
+        }
+
+        # All formats should be processed and combined
+        channel.from_dict(all_formats_dict)
+
+        with subtests.test("all formats processed"):
+            # Should have filters from all three sources: 1 legacy + 1 old + 1 new = 3
+            assert len(channel.filters) == 3
+
+        with subtests.test("legacy filter present"):
+            filter_names = [f.name for f in channel.filters]
+            assert "legacy_filter" in filter_names
+            legacy_filter = channel.get_filter("legacy_filter")
+            assert legacy_filter.applied is True
+
+        with subtests.test("old format filter present"):
+            filter_names = [f.name for f in channel.filters]
+            assert "old_filter" in filter_names
+            old_filter = channel.get_filter("old_filter")
+            assert old_filter.applied is False
+
+        with subtests.test("new format filter present"):
+            filter_names = [f.name for f in channel.filters]
+            assert "new_filter" in filter_names
+            new_filter = channel.get_filter("new_filter")
+            assert new_filter.applied is True
 
 
 # =============================================================================

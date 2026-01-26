@@ -235,7 +235,7 @@ class TestCGGEDI:
     def test_measurement_metadata(self, cgg_edi_obj):
         """Test measurement metadata."""
         m_list = [
-            '    REFLOC="TEST01"\n',
+            "    REFLOC=TEST01\n",
             "    REFLAT=-30:55:49.026000\n",
             "    REFLON=127:13:45.228000\n",
             "    REFELEV=175.27\n",
