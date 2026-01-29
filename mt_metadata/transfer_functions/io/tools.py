@@ -149,14 +149,24 @@ def _validate_edi_lines(edi_lines) -> list[str]:
     """
 
     if len(edi_lines) == 1:
-        print("cleaning edi lines")
-        edi_lines = edi_lines[0].replace('"', "").replace("\r", "\n").split("\n")
+        edi_lines = (
+            edi_lines[0]
+            .replace('"', "")
+            .replace("\r", "\n")
+            .replace("'", "")
+            .replace("[", "")
+            .replace("]", "")
+            .split("\n")
+        )
         if len(edi_lines) > 1:
             return edi_lines
         else:
             raise ValueError("*** EDI format not correct check file ***")
     else:
-        return [line.replace('"', "") for line in edi_lines]
+        return [
+            line.replace('"', "").replace("'", "").replace("[", "").replace("]", "")
+            for line in edi_lines
+        ]
 
 
 def get_nm_elev(latitude, longitude):

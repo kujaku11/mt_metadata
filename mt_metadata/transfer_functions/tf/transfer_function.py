@@ -228,3 +228,14 @@ class TransferFunction(MetadataBase):
             raise KeyError(error)
         except KeyError as error:
             raise KeyError(error)
+
+    @field_validator("coordinate_system", mode="before")
+    @classmethod
+    def validate_coordinate_system(cls, value: str) -> str:
+        if value in [None, ""]:
+            return "geographic"
+        try:
+            coordinate_system = GeographicReferenceFrameEnum(value)
+            return coordinate_system.value
+        except ValueError:
+            return "geographic"
