@@ -12,6 +12,7 @@ import datetime
 
 import pytest
 
+
 try:
     from obspy import read_inventory
     from obspy.core import inventory
@@ -21,6 +22,7 @@ except ImportError:
 from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries import Survey
 from mt_metadata.timeseries.stationxml import xml_network_mt_survey
+
 
 # =============================================================================
 # Fixtures
@@ -146,7 +148,7 @@ class TestNetwork01ToSurvey:
             assert survey.fdsn.network == "ZU"
 
         with subtests.test("id"):
-            assert survey.id == ""
+            assert survey.id == "ZU"
 
         with subtests.test("summary"):
             assert (
