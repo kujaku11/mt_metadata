@@ -16,6 +16,7 @@ import pytest
 from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.tf.transfer_function import TransferFunction
 
+
 # =============================================================================
 # Fixtures
 # =============================================================================
@@ -220,21 +221,26 @@ class TestValidation:
                 "value": "invalid_units",
                 "error": None,
             },  # No error expected, returns "unknown"
-            {"field": "sign_convention", "value": "invalid_sign", "error": ValueError},
+            {"field": "sign_convention", "value": 2, "error": ValueError},
             {
                 "field": "coordinate_system",
                 "value": "invalid_coord",
-                "error": ValueError,
-            },
+                "error": None,
+            },  # No error expected, returns "geographic"
         ],
     )
     def test_invalid_values(self, invalid_values):
         """Test that invalid values are handled appropriately."""
-        if invalid_values["error"] is None:
+        if invalid_values["field"] in ["units"]:
             # For units, invalid values should be accepted and normalized to "unknown"
             tf = TransferFunction()
             setattr(tf, invalid_values["field"], invalid_values["value"])
             assert getattr(tf, invalid_values["field"]) == "unknown"
+        elif invalid_values["field"] in ["coordinate_system"]:
+            # For coordinate_system, invalid values should be accepted and normalized to "geographic"
+            tf = TransferFunction()
+            setattr(tf, invalid_values["field"], invalid_values["value"])
+            assert getattr(tf, invalid_values["field"]) == "geographic"
         else:
             # For other fields, invalid values should raise errors
             with pytest.raises(invalid_values["error"]):

@@ -66,7 +66,7 @@ def expected_info():
         "process date": "2023-05-30 16:22",
         "duration": "24h 47m 13s",
         "station.location.declination.value": "0",
-        "coordinates": "40 38' 53.2, -106 12' 44.7",
+        "coordinates": "40 38 53.2, -106 12 44.7",
         "gps (min - max)": "8 - 13",
         "temperature (min - max)": "18 - 48",
         "comb filter": "60 HZ",

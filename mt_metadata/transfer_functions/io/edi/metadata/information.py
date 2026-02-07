@@ -252,9 +252,9 @@ class Information(MetadataBase):
                     if not isinstance(tf_parameters, list):
                         tf_parameters = [tf_parameters]
                     tf_parameters.append(f"{key}={value}")
-                    self.info_dict["transfer_function.processing_parameters"] = (
-                        tf_parameters
-                    )
+                    self.info_dict[
+                        "transfer_function.processing_parameters"
+                    ] = tf_parameters
                 else:
                     self.info_dict[std_key] = value
             else:
@@ -372,7 +372,15 @@ class Information(MetadataBase):
                 else:
                     value = ",".join(v.strip() for v in value)
 
-            value = value.replace("°", "").replace("Â", "").strip()
+            value = (
+                value.replace("°", "")
+                .replace("Â", "")
+                .replace(" m", "")
+                .replace(" V", "")
+                .replace(" â„", "")
+                .replace("¦", "")
+                .strip()
+            )
 
             # Build the key based on section/component context
             std_key = self._get_empower_std_key(section, component, key, sub_section)
