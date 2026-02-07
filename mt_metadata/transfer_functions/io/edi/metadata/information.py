@@ -379,6 +379,7 @@ class Information(MetadataBase):
                 .replace(" V", "")
                 .replace(" â„", "")
                 .replace("¦", "")
+                .replace(" Ω", "")
                 .strip()
             )
 
