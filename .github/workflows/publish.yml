@@ -30,7 +30,7 @@ jobs:
         run: |
           pip install bump-my-version build
           sudo apt-get update
-          sudo apt-get install -y git-cliff
+          cargo install -y git-cliff
 
       - name: Detect dry-run mode
         id: dryrun
