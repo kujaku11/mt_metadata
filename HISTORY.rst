@@ -244,3 +244,11 @@ History
 
 
 **Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v1.0.0...v1.0.1
+
+1.0.2 (2026-02-10)
+----------------------
+* Minor bug fixes and improvements to EDI reader (still too strict).
+* patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/272
+
+
+**Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v1.0.1...v1.0.2
