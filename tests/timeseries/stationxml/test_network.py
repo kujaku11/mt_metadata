@@ -146,7 +146,7 @@ class TestNetwork01ToSurvey:
             assert survey.fdsn.network == "ZU"
 
         with subtests.test("id"):
-            assert survey.id == ""
+            assert survey.id == "ZU"
 
         with subtests.test("summary"):
             assert (

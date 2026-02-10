@@ -141,7 +141,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
                 mt_survey.update_attribute(mt_key, value)
-        if mt_survey.id is None:
+        if mt_survey.id in [None, ""]:
             mt_survey.id = mt_survey.fdsn.network
 
         mt_survey.update_all()
