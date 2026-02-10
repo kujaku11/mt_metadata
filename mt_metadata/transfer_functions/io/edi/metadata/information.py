@@ -252,9 +252,9 @@ class Information(MetadataBase):
                     if not isinstance(tf_parameters, list):
                         tf_parameters = [tf_parameters]
                     tf_parameters.append(f"{key}={value}")
-                    self.info_dict[
-                        "transfer_function.processing_parameters"
-                    ] = tf_parameters
+                    self.info_dict["transfer_function.processing_parameters"] = (
+                        tf_parameters
+                    )
                 else:
                     self.info_dict[std_key] = value
             else:

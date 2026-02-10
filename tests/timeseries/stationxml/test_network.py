@@ -12,7 +12,6 @@ import datetime
 
 import pytest
 
-
 try:
     from obspy import read_inventory
     from obspy.core import inventory
@@ -22,7 +21,6 @@ except ImportError:
 from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries import Survey
 from mt_metadata.timeseries.stationxml import xml_network_mt_survey
-
 
 # =============================================================================
 # Fixtures
