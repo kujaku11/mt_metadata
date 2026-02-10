@@ -32,6 +32,11 @@ jobs:
           sudo apt-get update
           cargo install git-cliff
 
+      - name: Set up Git user
+        run: |
+            git config --local user.email "github-actions@github.com"
+            git config --local user.name "GitHub Actions"
+
       - name: Detect dry-run mode
         id: dryrun
         run: |
@@ -65,8 +70,6 @@ jobs:
       - name: Commit version bump
         if: steps.dryrun.outputs.dryrun == 'false'
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
           git add .
           git commit -m "Bump version (${{ steps.bump.outputs.type }}) [skip ci]" || echo "No changes to commit"
 
