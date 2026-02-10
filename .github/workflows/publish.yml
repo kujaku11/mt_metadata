@@ -30,7 +30,15 @@ jobs:
         run: |
           pip install bump-my-version build
           sudo apt-get update
-          sudo apt-get install -y git-cliff
+      - name: Install git-cliff
+        run: |
+          CLIFF_VERSION="2.3.0"
+          curl -sSL https://github.com/orhun/git-cliff/releases/download/v${CLIFF_VERSION}/git-cliff-${CLIFF_VERSION}-x86_64-unknown-linux-musl.tar.gz \
+            -o cliff.tar.gz
+          tar -xzf cliff.tar.gz
+          sudo mv git-cliff /usr/local/bin/git-cliff
+          git-cliff --version
+
 
       - name: Detect dry-run mode
         id: dryrun
