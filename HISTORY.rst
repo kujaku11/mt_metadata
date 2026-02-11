@@ -251,4 +251,32 @@ History
 * patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/272
 
 
-**Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v1.0.1...v1.0.2
+**Full Changelog**: https://github.com/kujaku11/mt_metadata/compare/v1.0.1...v1.0.2Changelog All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.All notable changes to this project will be documented in this
+file.
