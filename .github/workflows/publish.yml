@@ -38,7 +38,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          VERSION=$(bump-my-version show current)
+          VERSION=$(bump-my-version show current_version)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
