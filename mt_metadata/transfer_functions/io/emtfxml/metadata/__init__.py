@@ -27,6 +27,7 @@ from .copyright import Copyright
 from .data_quality_notes import DataQualityNotes
 from .data_quality_warnings import DataQualityWarnings
 from .orientation import Orientation
+from .location import Location
 from .site import Site
 from .instrument import Instrument
 from .electrode import Electrode
@@ -61,6 +62,7 @@ __all__ = [
     "DataQualityNotes",
     "DataQualityWarnings",
     "Orientation",
+    "Location",
     "Site",
     "Instrument",
     "Electrode",

@@ -1193,6 +1193,9 @@ class EMTFXML:
         self.site.location.latitude = sm.location.latitude
         self.site.location.longitude = sm.location.longitude
         self.site.location.elevation = sm.location.elevation
+        self.site.location.declination.value = sm.location.declination.value
+        self.site.location.declination.epoch = sm.location.declination.epoch
+        self.site.location.declination.model = sm.location.declination.model
         self.site.orientation.angle_to_geographic_north = (
             sm.orientation.angle_to_geographic_north
             if sm.orientation.angle_to_geographic_north is not None

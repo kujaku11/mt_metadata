@@ -9,9 +9,9 @@ import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import BasicLocationNoDatum, Comment
+from mt_metadata.common import Comment
 from mt_metadata.common.mttime import MTime
-from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers, Location
 
 from . import DataQualityNotes, DataQualityWarnings, Orientation
 
@@ -204,15 +204,17 @@ class Site(MetadataBase):
     ]
 
     location: Annotated[
-        BasicLocationNoDatum,
+        Location,
         Field(
-            default_factory=BasicLocationNoDatum,  # type: ignore
+            default_factory=Location,  # type: ignore
             description="Location of the site",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
-                "examples": ["BasicLocation('latitude=60.0, longitude=-135.0')"],
+                "examples": [
+                    "Location('latitude=60.0, longitude=-135.0, declination=10.0')"
+                ],
             },
         ),
     ]
