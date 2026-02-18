@@ -33,7 +33,6 @@ from mt_metadata.utils.validators import validate_attribute
 
 from . import metadata as emtf_xml
 
-
 meta_classes = dict(
     [
         (validate_attribute(k), v)
