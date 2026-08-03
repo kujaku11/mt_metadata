@@ -454,6 +454,25 @@ class TestEMTFXMLWriteIntegration:
             assert np.allclose(original_emtfxml.data.t, tf_roundtrip.data.t)
 
 
+class TestEMTFXMLWriteFile:
+    """Test writing an EMTFXML file and reading it back."""
+
+    @pytest.fixture(scope="class")
+    def written_fn(self, original_emtfxml, tmp_path_factory):
+        """Write the original EMTFXML object to a file."""
+        fn = tmp_path_factory.mktemp("emtfxml") / "written.xml"
+        original_emtfxml.write(fn)
+        return fn
+
+    def test_sub_type_element(self, written_fn):
+        """Test SubType is written as the enum value."""
+        assert "<SubType>MT_TF</SubType>" in written_fn.read_text()
+
+    def test_read_written_file(self, original_emtfxml, written_fn):
+        """Test a written file can be read back in."""
+        assert original_emtfxml.sub_type == EMTFXML(written_fn).sub_type
+
+
 # =============================================================================
 # Performance and Edge Case Tests
 # =============================================================================
