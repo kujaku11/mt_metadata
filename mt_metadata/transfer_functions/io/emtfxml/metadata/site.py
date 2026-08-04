@@ -24,7 +24,6 @@ class Site(MetadataBase):
             default="",
             description="Name of the project",
             alias=None,
-            pattern="^[a-zA-Z0-9-_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
