@@ -80,7 +80,7 @@ class Site(MetadataBase):
             default="",
             description="Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9_-]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
