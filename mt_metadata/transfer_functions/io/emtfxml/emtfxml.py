@@ -611,7 +611,7 @@ class EMTFXML:
             }
 
             dipole_names = []
-            for d in self.field_notes.run_list[0].dipole:
+            for d in self.field_notes._run_list[0].dipole:
                 if isinstance(d.name, str):
                     dipole_names.append(d.name.lower())
                 else:
@@ -621,13 +621,13 @@ class EMTFXML:
             elif None in dipole_names:
                 index = dipole_names.index(None)
             else:
-                self.field_notes.run_list[0].magnetometer.append(
+                self.field_notes._run_list[0].dipole.append(
                     emtf_xml.Dipole(name=comp)
                 )
                 index = -1
 
             setattr(
-                self.field_notes.run_list[0].dipole[index],
+                self.field_notes._run_list[0].dipole[index],
                 e_dict[fkey],
                 value,
             )
@@ -679,7 +679,7 @@ class EMTFXML:
             }
 
             mag_names = []
-            for d in self.field_notes.run_list[0].magnetometer:
+            for d in self.field_notes._run_list[0].magnetometer:
                 if isinstance(d.name, str):
                     mag_names.append(d.name.lower())
                 else:
@@ -690,13 +690,13 @@ class EMTFXML:
             elif None in mag_names:
                 index = mag_names.index(None)
             else:
-                self.field_notes.run_list[0].magnetometer.append(
+                self.field_notes._run_list[0].magnetometer.append(
                     emtf_xml.Magnetometer(name=comp)
                 )
                 index = -1
 
             setattr(
-                self.field_notes.run_list[0].magnetometer[index],
+                self.field_notes._run_list[0].magnetometer[index],
                 m_dict[fkey],
                 value,
             )
@@ -779,13 +779,13 @@ class EMTFXML:
             if comment.count(":") >= 1:
                 key, value = [c.strip() for c in comment.split(":", 1)]
                 if "fieldnotes" in key:
-                    if len(self.field_notes.run_list) == 0:
-                        self.field_notes.run_list.append(emtf_xml.Run())
+                    if len(self.field_notes._run_list) == 0:
+                        self.field_notes._run_list.append(emtf_xml.Run())
 
                 if "datalogger" in key:
                     key, value = self._parse_comments_data_logger(key, value)
                     try:
-                        self.field_notes.run_list[0].update_attribute(key, value)
+                        self.field_notes._run_list[0].update_attribute(key, value)
                         key = None
                         value = None
                     except:
