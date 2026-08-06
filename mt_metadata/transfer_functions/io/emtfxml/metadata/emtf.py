@@ -32,7 +32,6 @@ class EMTF(MetadataBase):
             default="",
             description="ID given as the archive ID of the station",
             alias=None,
-            pattern="^[a-zA-Z0-9._-]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
