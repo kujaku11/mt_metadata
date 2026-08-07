@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import ReleaseStatusEnum
@@ -99,6 +99,14 @@ class Copyright(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("citation", mode="before")
+    @classmethod
+    def validate_citation(cls, value) -> Citation:
+        """Ensure citation is an instance of Citation, an empty element is None."""
+        if value is None:
+            return Citation()  # type: ignore
+        return value
 
     def read_dict(self, input_dict):
         """
