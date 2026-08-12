@@ -44,6 +44,98 @@ from mt_metadata.utils.validators import validate_attribute, validate_name
 from . import helpers, pydantic_helpers
 
 # =============================================================================
+#  Classes built by add_new_field, keyed by the class, name and field asked for
+# =============================================================================
+
+_NEW_FIELD_CACHE: dict[tuple, type[BaseModel]] = {}
+
+
+def _hashable(value: Any) -> Any:
+    """
+    Convert a value into something hashable, raising TypeError if it cannot be.
+
+    Parameters
+    ----------
+    value : Any
+        The value to convert.
+
+    Returns
+    -------
+    Any
+        A hashable version of the value.
+
+    Raises
+    ------
+    TypeError
+        If the value cannot be represented as a hashable object.
+    """
+
+    if isinstance(value, Mapping):
+        return tuple(sorted((k, _hashable(v)) for k, v in value.items()))
+    if isinstance(value, (list, tuple)):
+        return tuple(_hashable(v) for v in value)
+    if isinstance(value, set):
+        return frozenset(_hashable(v) for v in value)
+    hash(value)
+    return value
+
+
+def _new_field_key(cls: type, name: str, new_field_info: FieldInfo) -> tuple | None:
+    """
+    Build a cache key for a class with a new field added to it.
+
+    Parameters
+    ----------
+    cls : type
+        The class the field is added to.
+    name : str
+        Name of the new attribute.
+    new_field_info : FieldInfo
+        Information about the new attribute.
+
+    Returns
+    -------
+    tuple | None
+        The cache key, None if the field cannot be described by one.
+    """
+
+    try:
+        return (
+            cls,
+            name,
+            _hashable(
+                [
+                    getattr(new_field_info, attr, None)
+                    for attr in [
+                        "annotation",
+                        "default",
+                        "default_factory",
+                        "alias",
+                        "validation_alias",
+                        "serialization_alias",
+                        "title",
+                        "description",
+                        "examples",
+                        "exclude",
+                        "discriminator",
+                        "json_schema_extra",
+                        "frozen",
+                        "validate_default",
+                        "repr",
+                        "init",
+                        "init_var",
+                        "kw_only",
+                        "metadata",
+                    ]
+                ]
+            ),
+        )
+    except TypeError:
+        logger.debug(f"Cannot cache the class for new field {name}")
+        return None
+
+
+# =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
 
@@ -943,15 +1035,24 @@ class MetadataBase(DotNotationBaseModel):
         new_basemodel_object = new_basemodel()
 
         """
+        key = _new_field_key(self.__class__, name, new_field_info)
+        if key is not None and key in _NEW_FIELD_CACHE:
+            return _NEW_FIELD_CACHE[key]
+
         existing_model_fields = self.__pydantic_fields__.copy()
         existing_model_fields[name] = new_field_info
         all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
 
-        return create_model(  # type: ignore
+        new_model = create_model(  # type: ignore
             self.__class__.__name__,  # Preserve the original class name
             __base__=self.__class__,  # Preserve the original class hierarchy
             **all_fields,
         )
+
+        if key is not None:
+            _NEW_FIELD_CACHE[key] = new_model
+
+        return new_model
 
     def to_dict(
         self, nested: bool = False, single: bool = False, required: bool = True
