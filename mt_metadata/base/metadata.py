@@ -11,6 +11,7 @@ Created on Wed Dec 23 20:41:16 2020
 
 from __future__ import annotations
 
+import copy
 import json
 from collections import OrderedDict
 from enum import Enum
@@ -20,6 +21,7 @@ from enum import Enum
 # =============================================================================
 from operator import itemgetter
 from pathlib import Path
+from threading import RLock
 from typing import Any, Mapping
 from xml.etree import cElementTree as et
 
@@ -48,11 +50,22 @@ from . import helpers, pydantic_helpers
 # =============================================================================
 
 _NEW_FIELD_CACHE: dict[tuple, type[BaseModel]] = {}
+_NEW_FIELD_LOCK = RLock()
+
+
+def clear_new_field_cache() -> None:
+    """Empty the cache of classes built by add_new_field."""
+    with _NEW_FIELD_LOCK:
+        _NEW_FIELD_CACHE.clear()
 
 
 def _hashable(value: Any) -> Any:
     """
     Convert a value into something hashable, raising TypeError if it cannot be.
+
+    The value's type is part of the result, so values that compare equal
+    across types (1, 1.0, True), signed zeros, and equal-content containers
+    of different kinds do not share a key.
 
     Parameters
     ----------
@@ -71,13 +84,13 @@ def _hashable(value: Any) -> Any:
     """
 
     if isinstance(value, Mapping):
-        return tuple(sorted((k, _hashable(v)) for k, v in value.items()))
-    if isinstance(value, (list, tuple)):
-        return tuple(_hashable(v) for v in value)
-    if isinstance(value, set):
-        return frozenset(_hashable(v) for v in value)
+        return ("map", tuple(sorted((k, _hashable(v)) for k, v in value.items())))
+    if isinstance(value, (list, tuple, set, frozenset)):
+        return (type(value).__name__, tuple(sorted(map(repr, value)))
+                if isinstance(value, (set, frozenset))
+                else tuple(_hashable(v) for v in value))
     hash(value)
-    return value
+    return (type(value).__module__, type(value).__qualname__, value, repr(value))
 
 
 def _new_field_key(cls: type, name: str, new_field_info: FieldInfo) -> tuple | None:
@@ -126,6 +139,9 @@ def _new_field_key(cls: type, name: str, new_field_info: FieldInfo) -> tuple | N
                         "init_var",
                         "kw_only",
                         "metadata",
+                        "deprecated",
+                        "alias_priority",
+                        "field_title_generator",
                     ]
                 ]
             ),
@@ -1036,8 +1052,14 @@ class MetadataBase(DotNotationBaseModel):
 
         """
         key = _new_field_key(self.__class__, name, new_field_info)
-        if key is not None and key in _NEW_FIELD_CACHE:
-            return _NEW_FIELD_CACHE[key]
+        if key is not None:
+            with _NEW_FIELD_LOCK:
+                cached = _NEW_FIELD_CACHE.get(key)
+            if cached is not None:
+                return cached
+            # the built class holds this FieldInfo; a copy keeps a later
+            # mutation by the caller out of the cached class
+            new_field_info = copy.deepcopy(new_field_info)
 
         existing_model_fields = self.__pydantic_fields__.copy()
         existing_model_fields[name] = new_field_info
@@ -1050,7 +1072,8 @@ class MetadataBase(DotNotationBaseModel):
         )
 
         if key is not None:
-            _NEW_FIELD_CACHE[key] = new_model
+            with _NEW_FIELD_LOCK:
+                _NEW_FIELD_CACHE[key] = new_model
 
         return new_model
 
