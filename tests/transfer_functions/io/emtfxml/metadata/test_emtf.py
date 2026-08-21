@@ -41,6 +41,7 @@ from typing import Any, Dict, List
 import pytest
 
 from mt_metadata.common.enumerations import DataTypeEnum
+from mt_metadata.timeseries import Survey
 from mt_metadata.transfer_functions.io.emtfxml.metadata import EMTF
 
 
@@ -133,10 +134,10 @@ def performance_emtf_data() -> List[Dict[str, Any]]:
         ("test.123", True),  # Valid with period
         ("USMTArray.NVS11.2020", True),  # Valid example from field definition
         ("test-123", True),  # Valid with hyphen (now allowed)
-        ("test 123", False),  # Invalid with space
-        ("test@123", False),  # Invalid with special character
-        ("test/path", False),  # Invalid with slash
-        ("test#123", False),  # Invalid with hash
+        ("test 123", True),  # Valid with space (now allowed)
+        ("test@123", True),  # Valid with special character (now allowed)
+        ("test/path", True),  # Valid with slash (now allowed)
+        ("test#123", True),  # Valid with hash (now allowed)
     ]
 )
 def product_id_test_cases(request) -> tuple[str, bool]:
@@ -285,22 +286,12 @@ class TestEmtfFieldValidation:
             basic_emtf.product_id = pattern
             assert basic_emtf.product_id == pattern
 
-    def test_product_id_invalid_patterns(self):
-        """Test invalid product_id patterns that should fail validation."""
-        invalid_patterns = [
-            "test 123",  # Space not allowed
-            "test@domain.com",  # Special characters not allowed
-            "test/path",  # Slash not allowed
-            "test#123",  # Hash not allowed
-            "test%123",  # Percent not allowed
-            "test&123",  # Ampersand not allowed
-            "test+123",  # Plus not allowed
-            "test=123",  # Equal not allowed
-        ]
+    def test_product_id_from_survey_project(self):
+        """Test product_id accepts an id composed from a survey project name."""
+        survey = Survey(project="Test Project Name")
+        product_id = f"{survey.project}.MT001.2020"
 
-        for pattern in invalid_patterns:
-            with pytest.raises(Exception):  # Pydantic ValidationError
-                EMTF(product_id=pattern)  # type: ignore
+        assert EMTF(product_id=product_id).product_id == product_id  # type: ignore
 
     def test_tags_assignment(self, basic_emtf):
         """Test assignment of tags field."""
@@ -681,33 +672,28 @@ class TestEmtfSpecialCases:
         assert emtf.notes is None
 
     def test_pattern_validation_comprehensive(self):
-        """Test comprehensive pattern validation for product_id."""
-        # Test edge cases for allowed pattern: ^[a-zA-Z0-9._-]*$
+        """Test comprehensive value handling for product_id."""
         test_cases = [
-            ("", True),  # Empty string
-            ("A", True),  # Single letter
-            ("1", True),  # Single number
-            ("A1", True),  # Letter and number
-            ("1A", True),  # Number and letter
-            ("ABC123DEF456", True),  # Long alphanumeric
-            ("123456789", True),  # Long numeric
-            ("ABCDEFGHIJ", True),  # Long alphabetic
-            ("test-123", True),  # Hyphen allowed
-            ("test_123", True),  # Underscore allowed
-            ("test.123", True),  # Period allowed
-            ("test.-_123", True),  # Mix of allowed special chars
-            ("test@123", False),  # @ not allowed
-            ("test 123", False),  # Space not allowed
-            ("test/123", False),  # Slash not allowed
+            "",  # Empty string
+            "A",  # Single letter
+            "1",  # Single number
+            "A1",  # Letter and number
+            "1A",  # Number and letter
+            "ABC123DEF456",  # Long alphanumeric
+            "123456789",  # Long numeric
+            "ABCDEFGHIJ",  # Long alphabetic
+            "test-123",  # Hyphen
+            "test_123",  # Underscore
+            "test.123",  # Period
+            "test.-_123",  # Mix of special chars
+            "test@123",  # At sign
+            "test 123",  # Space, as a project name gives
+            "test/123",  # Slash
         ]
 
-        for test_value, should_be_valid in test_cases:
-            if should_be_valid:
-                emtf = EMTF(product_id=test_value)  # type: ignore
-                assert emtf.product_id == test_value
-            else:
-                with pytest.raises(Exception):
-                    EMTF(product_id=test_value)  # type: ignore
+        for test_value in test_cases:
+            emtf = EMTF(product_id=test_value)  # type: ignore
+            assert emtf.product_id == test_value
 
     def test_enum_value_persistence(self, basic_emtf):
         """Test that enum values persist correctly through operations."""
