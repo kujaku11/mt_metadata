@@ -43,7 +43,6 @@ from mt_metadata.utils.validators import validate_attribute, validate_name
 
 from . import helpers, pydantic_helpers
 
-
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================

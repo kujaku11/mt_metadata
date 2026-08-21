@@ -621,9 +621,7 @@ class EMTFXML:
             elif None in dipole_names:
                 index = dipole_names.index(None)
             else:
-                self.field_notes._run_list[0].dipole.append(
-                    emtf_xml.Dipole(name=comp)
-                )
+                self.field_notes._run_list[0].dipole.append(emtf_xml.Dipole(name=comp))
                 index = -1
 
             setattr(

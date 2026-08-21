@@ -11,7 +11,6 @@ Created on Wed Mar  8 19:53:04 2023
 from collections import OrderedDict
 from enum import Enum
 from xml.etree import cElementTree as et
-from enum import Enum
 
 from loguru import logger
 
@@ -123,7 +122,7 @@ def _write_single(
         if isinstance(value, Enum):
             element.text = str(value.value)
         else:
-          element.text = str(value)
+            element.text = str(value)
     return element
 
 
