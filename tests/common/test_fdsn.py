@@ -39,12 +39,13 @@ def test_fdsn_custom_values():
     assert fdsn.alternate_network_code == "_INT-NON_FDSN"
 
 
-def test_fdsn_invalid_id():
+def test_fdsn_id_from_product_id():
     """
-    Test the Fdsn model with an invalid id.
+    Test the Fdsn model with an id composed from a project name.
     """
-    with pytest.raises(ValidationError):
-        Fdsn(id="MT@001")  # Invalid character in id
+    product_id = "Test Project Name.MT001.2020"
+
+    assert Fdsn(id=product_id).id == product_id
 
 
 def test_fdsn_invalid_network():

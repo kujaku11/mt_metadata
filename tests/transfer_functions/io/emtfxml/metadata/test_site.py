@@ -26,6 +26,7 @@ import pytest
 
 from mt_metadata.common import Comment
 from mt_metadata.common.mttime import MTime
+from mt_metadata.timeseries import Station, Survey
 from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     DataQualityNotes,
     DataQualityWarnings,
@@ -177,11 +178,11 @@ def run_list_data(request):
         ("project", "TEST", True),  # Valid uppercase
         ("project", "test-123", True),  # Valid with hyphen (now allowed)
         ("project", "test_123", True),  # Valid with underscore (now allowed)
-        ("project", "test 123", False),  # Invalid space
+        ("project", "test 123", True),  # Valid with space (now allowed)
         ("id", "MT001", True),  # Valid alphanumeric
         ("id", "abc123", True),  # Valid lowercase
-        ("id", "MT-001", False),  # Invalid hyphen (still not allowed for id)
-        ("id", "MT_001", False),  # Invalid underscore (still not allowed for id)
+        ("id", "MT-001", True),  # Valid with hyphen (now allowed)
+        ("id", "MT_001", True),  # Valid with underscore (now allowed)
         ("id", "MT 001", False),  # Invalid space
     ]
 )
@@ -323,6 +324,16 @@ class TestSiteFieldValidation:
             # Should raise a validation error
             with pytest.raises(ValueError):
                 Site(**{field_name: value})
+
+    def test_project_from_survey(self):
+        """Test project accepts a project name held by a Survey."""
+        survey = Survey(project="Test Project Name")
+        assert Site(project=survey.project).project == survey.project
+
+    def test_id_from_station(self):
+        """Test id accepts a station id held by a Station."""
+        station = Station(id="MT_001")
+        assert Site(id=station.id).id == station.id
 
     # @pytest.mark.skip(
     #     reason="year_collected conversion has complex interaction with other validators"
@@ -500,12 +511,6 @@ class TestSiteEdgeCases:
     def test_invalid_pattern_fields(self):
         """Test validation errors for pattern-restricted fields."""
         invalid_patterns = [
-            ("project", "test name"),  # Space not allowed
-            ("project", "test@name"),  # Special char not allowed
-            ("project", "test/name"),  # Slash not allowed
-            ("project", "test%name"),  # Percent not allowed
-            ("id", "MT-001"),  # Hyphen not allowed for id
-            ("id", "MT_001"),  # Underscore not allowed for id
             ("id", "MT 001"),  # Space not allowed
             ("id", "MT@001"),  # Special char not allowed
         ]

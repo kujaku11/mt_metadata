@@ -27,8 +27,10 @@ import numpy as np
 import pytest
 
 from mt_metadata import TF_XML
+from mt_metadata.timeseries import Run
 from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
+from mt_metadata.transfer_functions.tf import Station
 
 
 # =============================================================================
@@ -452,6 +454,65 @@ class TestEMTFXMLWriteIntegration:
             assert np.allclose(original_emtfxml.data.z, tf_roundtrip.data.z)
         if original_emtfxml.data.t is not None and tf_roundtrip.data.t is not None:
             assert np.allclose(original_emtfxml.data.t, tf_roundtrip.data.t)
+
+
+class TestEMTFXMLWriteFile:
+    """Test writing an EMTFXML file and reading it back."""
+
+    @pytest.fixture(scope="class")
+    def written_fn(self, original_emtfxml, tmp_path_factory):
+        """Write the original EMTFXML object to a file."""
+        fn = tmp_path_factory.mktemp("emtfxml") / "written.xml"
+        original_emtfxml.write(fn)
+        return fn
+
+    def test_sub_type_element(self, written_fn):
+        """Test SubType is written as the enum value."""
+        assert "<SubType>MT_TF</SubType>" in written_fn.read_text()
+
+    def test_read_written_file(self, original_emtfxml, written_fn):
+        """Test a written file can be read back in."""
+        assert original_emtfxml.sub_type == EMTFXML(written_fn).sub_type
+
+
+class TestEMTFXMLWriteFieldNoteComments:
+    """Test station comments that carry field note information."""
+
+    @pytest.fixture
+    def station(self):
+        """Create station metadata whose comments hold field note information."""
+        station = Station(id="MT001")
+        station.add_run(Run(id="MT001a", sample_rate=1.0))
+        station.comments.value = (
+            "fieldnotes.datalogger.manufacturer = Data Logger Co\n"
+            "fieldnotes.electrode_ex.manufacturer = Electrode Co\n"
+            "fieldnotes.magnetometer_hx.manufacturer = Magnetometer Co"
+        )
+        return station
+
+    def test_field_note_run(self, station):
+        """Test the comment values are read into the field notes."""
+        emtfxml = EMTFXML()
+        emtfxml.station_metadata = station
+
+        run = emtfxml.field_notes._run_list[0]
+        assert run.instrument.manufacturer == "Data Logger Co"
+        assert run.dipole[0].manufacturer == "Electrode Co"
+        assert run.magnetometer[0].manufacturer == "Magnetometer Co"
+
+    def test_field_notes_written(self, station, tmp_path):
+        """Test the comment values are written to the XML file."""
+        emtfxml = EMTFXML()
+        emtfxml.station_metadata = station
+        emtfxml.data.period = np.array([1.0, 2.0])
+
+        fn = tmp_path / "field_notes.xml"
+        emtfxml.write(fn)
+
+        written = fn.read_text()
+        assert "Data Logger Co" in written
+        assert "Electrode Co" in written
+        assert "Magnetometer Co" in written
 
 
 # =============================================================================

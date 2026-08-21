@@ -375,6 +375,13 @@ class TestCopyrightReadDict:
         # Should not raise an exception (the helper may log a warning but that's expected)
         basic_copyright.read_dict(test_dict)
 
+    def test_read_dict_empty_citation(self):
+        """Test read_dict with the None that an empty Citation element reads as."""
+        copyright_obj = Copyright()
+        copyright_obj.read_dict({"copyright": {"citation": None}})
+
+        assert isinstance(copyright_obj.citation, Citation)
+
 
 class TestCopyrightEdgeCases:
     """Test Copyright edge cases and special scenarios."""
