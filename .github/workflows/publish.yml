@@ -1,10 +1,19 @@
 name: Publish to PyPI
 
 on:
-  pull_request_target:
-    types: [closed]
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      publish_to_pypi:
+        description: "Publish to PyPI after successful TestPyPI publish"
+        required: true
+        type: boolean
+        default: false
+
+      version:
+        description: "Optional version override (leave empty to read from bump-my-version)"
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -12,15 +21,8 @@ permissions:
 
 jobs:
   publish:
-    # Run only after PR is merged with release labels
-    if: |
-      github.event.pull_request.merged == true && (
-        contains(github.event.pull_request.labels.*.name, 'release:major') ||
-        contains(github.event.pull_request.labels.*.name, 'release:minor') ||
-        contains(github.event.pull_request.labels.*.name, 'release:patch')
-      )
     runs-on: ubuntu-latest
-
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -38,7 +40,11 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          VERSION=$(bump-my-version show current_version)
+          if [ -n "${{ inputs.version }}" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION=$(bump-my-version show current_version)
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
@@ -59,9 +65,9 @@ jobs:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
           attestations: false
-          
+
       - name: Publish to PyPI
-        if: steps.test-pypi.outcome == 'success'
+        if: inputs.publish_to_pypi && steps.test-pypi.outcome == 'success'
         uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           skip-existing: true
