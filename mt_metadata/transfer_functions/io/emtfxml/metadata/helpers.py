@@ -11,6 +11,7 @@ Created on Wed Mar  8 19:53:04 2023
 from collections import OrderedDict
 from enum import Enum
 from xml.etree import cElementTree as et
+from enum import Enum
 
 from loguru import logger
 
@@ -118,9 +119,11 @@ def _write_single(
 
     element = et.SubElement(parent, _capwords(key), attributes)
     if value not in NULL_VALUES:
+        # for enumerate objects
         if isinstance(value, Enum):
-            value = value.value
-        element.text = str(value)
+            element.text = str(value.value)
+        else:
+          element.text = str(value)
     return element
 
 
