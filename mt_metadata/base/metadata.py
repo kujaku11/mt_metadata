@@ -292,7 +292,6 @@ class DotNotationBaseModel(BaseModel):
 
         # Set the final attribute
         setattr(current, parts[-1], attr_value)
-        setattr(current, parts[-1], attr_value)
 
 
 class MetadataBase(DotNotationBaseModel):
