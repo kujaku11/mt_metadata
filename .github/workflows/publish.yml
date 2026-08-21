@@ -1,10 +1,9 @@
 name: Publish to PyPI
 
 on:
-  pull_request_target:
-    types: [closed]
-    branches:
-      - main
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -12,15 +11,7 @@ permissions:
 
 jobs:
   publish:
-    # Run only after PR is merged with release labels
-    if: |
-      github.event.pull_request.merged == true && (
-        contains(github.event.pull_request.labels.*.name, 'release:major') ||
-        contains(github.event.pull_request.labels.*.name, 'release:minor') ||
-        contains(github.event.pull_request.labels.*.name, 'release:patch')
-      )
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,35 +24,19 @@ jobs:
           python-version: "3.13"
 
       - name: Install tools
-        run: pip install bump-my-version build
-
-      - name: Extract version
-        id: version
-        run: |
-          VERSION=$(bump-my-version show current_version)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: v${{ steps.version.outputs.version }}
-          body_path: CHANGELOG.md
-          generate_release_notes: false
+        run: pip install build
 
       - name: Build package
         run: python -m build
 
       - name: Publish to TestPyPI
-        id: test-pypi
         uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
           attestations: false
-          
+
       - name: Publish to PyPI
-        if: steps.test-pypi.outcome == 'success'
         uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           skip-existing: true
