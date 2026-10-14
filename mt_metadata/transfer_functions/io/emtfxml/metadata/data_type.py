@@ -141,7 +141,7 @@ class DataType(MetadataBase):
     units: Annotated[
         str,
         Field(
-            default="milliVolt per kilometer per nanoTesla",
+            default="[mV/km]/[nT]",
             description="Units for the data type",
             alias=None,
             json_schema_extra={
